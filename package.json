@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "lint:build": "mv ./out/_next ./out/next && cd ./out && grep -rl '/_next' * | xargs sed -i 's|/_next|/next|g'",
+    "build": "next build && next export && npm run lint:build",
     "start": "next start",
     "lint": "next lint"
   },
