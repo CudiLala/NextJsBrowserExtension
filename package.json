@@ -6,7 +6,8 @@
     "dev": "next dev",
     "lint:build": "mv ./out/_next ./out/next && cd ./out && grep -rl '/_next' * | xargs sed -i 's|/_next|/next|g'",
     "lint:build-osx": "mv ./out/_next ./out/next && cd ./out && grep -rli '_next' * | xargs -I@ sed  's|/_next|/next|g'",
-    "build": "next build && next export && npm run lint:build-osx",
+    "build": "next build && next export && npm run lint:build",
+    "build-osx": "next build && next export && npm run lint:build-osx",
     "start": "next start",
     "lint": "next lint"
   },
