@@ -1,18 +1,20 @@
 import molaLogo from "@/public/mola-logo-1.png";
 import Image from "next/image";
+import Router, { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [introState, setIntroState] = useState<
-    "showLogo" | "showWelcome" | "login"
-  >("showLogo");
+  const [introState, setIntroState] = useState<"showLogo" | "showWelcome">(
+    "showLogo"
+  );
+  const router = useRouter();
 
   useEffect(() => {
     if (introState === "showLogo")
       setTimeout(() => {
         setIntroState("showWelcome");
       }, 2000);
-
+    router.prefetch("/on-board");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -28,6 +30,7 @@ export default function Home() {
 
 function WelcomeScreen() {
   const [welcomeState, setWelcomeState] = useState<number>(0);
+  const router = useRouter();
 
   const welcomeMessages = [
     {
@@ -68,7 +71,11 @@ function WelcomeScreen() {
       </div>
       <button
         className="cursor-pointer py-3 px-6 w-40 text-center bg-blue-600 mt-1 leading-none rounded-full font-semibold text-white"
-        onClick={() => (welcomeState < 2 ? setWelcomeState((p) => p + 1) : "")}
+        onClick={() =>
+          welcomeState < 2
+            ? setWelcomeState((p) => p + 1)
+            : router.push("/on-board")
+        }
       >
         {welcomeMessages[welcomeState].actionText}
       </button>
