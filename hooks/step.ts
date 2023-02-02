@@ -12,7 +12,7 @@ export function useStep(steps: number): [number] {
     else setStep(1);
   }
 
-  // useEffect(setStepByQuery, [steps]);
+  useEffect(setStepByQuery);
 
   useEffect(() => {
     router.events.on("routeChangeComplete", setStepByQuery);

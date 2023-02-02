@@ -1,4 +1,8 @@
-import { TickHeavyIcon, UpIcon, DoubleIcon } from "components/icons";
+import {
+  TickHeavyIcon,
+  UpIcon,
+  DoubleIcon,
+} from "@/components/icons/accessibility";
 import { GAS_PRIORITY } from "./digits";
 
 export const priorities = {

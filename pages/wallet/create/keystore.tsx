@@ -138,7 +138,7 @@ function _2({ success, password }: { success: boolean; password: string }) {
   const router = useRouter();
 
   useEffect(() => {
-    if (!success) router.replace("?step=1", undefined, { shallow: true });
+    if (!success) router.push("?step=1", undefined, { shallow: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -199,18 +199,17 @@ function _2({ success, password }: { success: boolean; password: string }) {
         </div>
       </div>
 
-      <Link
-        href="?step=3"
-        shallow={true}
+      <button
         className="w-full flex py-2 px-6 bg-blue-600 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
         onClick={async () => {
           const keyFile = await generateWalletUsingKeyStore(password);
 
           storeWalletKey(keyFile, `${new Date(Date.now()).toISOString()}.json`);
+          router.push("?step=3", undefined, { shallow: true });
         }}
       >
         Download
-      </Link>
+      </button>
     </div>
   );
 }
@@ -227,7 +226,7 @@ function _3() {
         offer!
       </p>
       <Link
-        href="/access/keystore"
+        href="/wallet/access/keystore"
         className="w-full flex py-2 px-6 bg-blue-600 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
       >
         Access Wallet
