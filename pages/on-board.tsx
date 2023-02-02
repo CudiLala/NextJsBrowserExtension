@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function OnBoardingPage() {
   return (
-    <div className="flex flex-col h-full justify-center">
+    <div className="flex flex-col h-full">
       <div className="border-b border-neutral-300 px-6 py-2 w-full font-medium">
         <h1 className="text-center w-full text-base">
           <span>Mola Wallet</span>
