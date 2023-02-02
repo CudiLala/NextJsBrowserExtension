@@ -19,7 +19,7 @@ export default function OnBoardingPage() {
           </span>
           <Link
             href="/wallet/access"
-            className="text-white bg-blue-600 flex justify-center items-center rounded-lg py-2 shadow-lg shadow-blue-200"
+            className="text-white bg-blue-600 flex justify-center items-center font-semibold rounded-lg py-2 shadow-md shadow-blue-200"
           >
             Access Your Wallet
           </Link>
@@ -33,7 +33,7 @@ export default function OnBoardingPage() {
           </span>
           <Link
             href="/wallet/create"
-            className="text-white bg-blue-600 flex justify-center items-center rounded-lg py-2 shadow-lg shadow-blue-200"
+            className="text-white bg-blue-600 flex justify-center items-center font-semibold rounded-lg py-2 shadow-md shadow-blue-200"
           >
             Create New Wallet
           </Link>
