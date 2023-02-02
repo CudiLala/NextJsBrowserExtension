@@ -22,6 +22,7 @@ export default function KeystoreCreateWalllet() {
       </div>
       {step === 1 && <_1 setSuccess={setSuccess} setPassword={setPassword} />}
       {step === 2 && <_2 success={success} password={password} />}
+      {step === 3 && <_3 />}
     </div>
   );
 }
@@ -209,6 +210,27 @@ function _2({ success, password }: { success: boolean; password: string }) {
         }}
       >
         Download
+      </Link>
+    </div>
+  );
+}
+
+function _3() {
+  return (
+    <div className="p-4 flex flex-col gap-4">
+      <h2 className="text-base">
+        <span className="mr-2">Step 3:</span>
+        <span className="mr-2">Congratulations</span>
+      </h2>
+      <p className="text-neutral-800">
+        You are now ready to take advantage of all that Mola Digital has to
+        offer!
+      </p>
+      <Link
+        href="/access/keystore"
+        className="w-full flex py-2 px-6 bg-blue-600 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
+      >
+        Access Wallet
       </Link>
     </div>
   );
