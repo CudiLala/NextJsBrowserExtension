@@ -154,7 +154,7 @@ export default function PrivateKey() {
           }
         >
           <div className="flex flex-col">
-            <label className="mb-px">Enter your password</label>
+            <label className="mb-px">Enter your private key</label>
             <input
               ref={privateKeyRef}
               type="password"
