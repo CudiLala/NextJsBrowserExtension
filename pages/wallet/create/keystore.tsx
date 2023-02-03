@@ -1,11 +1,12 @@
 import BackButton from "@/components/button/back";
 import { useStep } from "@/hooks/step";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Notification, { useNotification } from "@/components/notification";
 import { generateWalletUsingKeyStore, storeWalletKey } from "@/utils/wallet";
 import Link from "next/link";
 import Image from "next/image";
+import { LoaderContext } from "@/context/loader";
 
 export default function KeystoreCreateWalllet() {
   const [step] = useStep(3);
@@ -136,6 +137,7 @@ function _1({
 
 function _2({ success, password }: { success: boolean; password: string }) {
   const router = useRouter();
+  const [startLoader, stopLoader] = useContext(LoaderContext);
 
   useEffect(() => {
     if (!success) router.push("?step=1", undefined, { shallow: true });
@@ -202,10 +204,12 @@ function _2({ success, password }: { success: boolean; password: string }) {
       <button
         className="w-full flex py-2 px-6 bg-blue-600 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
         onClick={async () => {
+          startLoader();
           const keyFile = await generateWalletUsingKeyStore(password);
 
           storeWalletKey(keyFile, `${new Date(Date.now()).toISOString()}.json`);
           router.push("?step=3", undefined, { shallow: true });
+          stopLoader();
         }}
       >
         Download
