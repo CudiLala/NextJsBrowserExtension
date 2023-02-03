@@ -185,7 +185,7 @@ function _2({
       stopLoader();
       router.push("/wallet");
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
       stopLoader();
 

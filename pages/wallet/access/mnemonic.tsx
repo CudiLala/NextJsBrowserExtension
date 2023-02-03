@@ -109,6 +109,7 @@ export default function MnemonicAccessWallet() {
       router.push("/wallet");
     } catch (error) {
       stopLoader();
+      console.error(error);
 
       pushNotification({
         element: (
@@ -170,6 +171,53 @@ export default function MnemonicAccessWallet() {
           Access With Mnemonic
         </h1>
       </div>
+      <div className="flex flex-col gap-4 p-4">
+        <h2 className="text-base">
+          <span>Type in your mnemonic phrase</span>
+        </h2>
+
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={async (e) => await handleSubmit(e)}
+        >
+          <div className="grid grid-cols-3 gap-4 justify-center">
+            {new Array(12).fill("").map((e, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center justify-center rounded-md h-9 bg-cyan-100 relative px-4"
+              >
+                <input
+                  type="text"
+                  spellCheck={false}
+                  id={`mnemonic_input_${i + 1}`}
+                  autoComplete="off"
+                  className="inline-flex w-full h-7 bg-transparent border-none outline-none focus:outline-none"
+                />
+                <span className="absolute inline-flex items-center justify-center w-5 h-5 top-0 left-0 text-blue-600 text-[0.625rem] font-semibold">
+                  {i + 1}
+                </span>
+              </span>
+            ))}
+          </div>
+
+          <button
+            type="reset"
+            className="p-2 bg-slate-100 rounded-lg text-blue-600 text-center font-semibold shadow-md shadow-blue-200"
+          >
+            Clear All
+          </button>
+          <button
+            type="submit"
+            className="p-2 bg-blue-600 rounded-lg text-white text-center font-semibold shadow-md shadow-blue-200 -mt-1"
+          >
+            Access wallet
+          </button>
+        </form>
+      </div>
+      <Notification
+        notification={notification}
+        pushNotification={pushNotification}
+      />
     </div>
   );
 }
