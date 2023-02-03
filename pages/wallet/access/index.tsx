@@ -43,7 +43,7 @@ export default function AccessWalletPage() {
           </div>
         </Link>
         <Link
-          href="/wallet/access/private_key"
+          href="/wallet/access/private-key"
           className="p-4 flex flex-col text-neutral-900 rounded-2xl border border-neutral-300"
         >
           <h2 className="text-base font-medium mb-1">Private Key</h2>
