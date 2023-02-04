@@ -10,6 +10,12 @@ import { useEffect } from "react";
 import { initAssetEngine } from "utils/assetEngine";
 
 export default function App({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    (async () => {
+      await initAssetEngine();
+    })();
+  }, []);
+
   return (
     <div className="w-full flex justify-center">
       <div className="relative w-[22rem] h-[36rem] overflow-auto c-scroll border border-neutral-300">
