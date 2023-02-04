@@ -2,6 +2,7 @@ import BackButton from "@/components/button/back";
 import Notification, { useNotification } from "@/components/notification";
 import { primaryFixedValue, GAS_PRIORITY } from "@/constants/digits";
 import { AccountContext } from "@/context/account";
+import { LoaderContext } from "@/context/loader";
 import { ProviderContext } from "@/context/web3";
 import { AssetProviderContext } from "@/context/web3/assets";
 import { SocketProviderContext } from "@/context/web3/socket";
@@ -123,7 +124,7 @@ function _2({
   const [prevSocketProvider, setSocketProvider] = useContext(
     SocketProviderContext
   );
-  // const [startLoader, stopLoader] = useContext(LoaderContext);
+  const [startLoader, stopLoader] = useContext(LoaderContext);
 
   useEffect(() => {
     if (!success) router.replace("?step=1");
@@ -135,7 +136,7 @@ function _2({
   async function handleSubmit(e: any) {
     e.preventDefault();
 
-    // startLoader();
+    startLoader();
 
     try {
       const wallet = decryptWallet(
@@ -181,11 +182,12 @@ function _2({
 
       setAssetProvider(walletAssets);
 
-      // stopLoader()
+      stopLoader();
       router.push("/wallet");
     } catch (error) {
-      console.log(error);
-      // stopLoader();
+      console.error(error);
+
+      stopLoader();
 
       pushNotification({
         element: (
@@ -197,7 +199,7 @@ function _2({
       });
     }
 
-    // stopLoader();
+    stopLoader();
   }
 
   useEffect(() => {

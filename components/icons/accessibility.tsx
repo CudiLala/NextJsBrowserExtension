@@ -15,6 +15,46 @@ export function DoubleIcon() {
   );
 }
 
+export function PenOnLineIcon() {
+  return (
+    <svg
+      width="100%"
+      height="100%"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4 20.0001H20M4 20.0001V16.0001L14.8686 5.13146C15.2646 4.73545 15.4627 4.53744 15.691 4.46325C15.8919 4.39799 16.1082 4.39799 16.3091 4.46325C16.5374 4.53744 16.7353 4.73545 17.1313 5.13146L18.8686 6.86872C19.2646 7.26474 19.4627 7.46279 19.5369 7.69112C19.6021 7.89196 19.6021 8.10823 19.5369 8.30908C19.4627 8.5374 19.2646 8.73545 18.8686 9.13146L8 20.0001L4 20.0001Z"
+        stroke="currentcolor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function ReloadIcon() {
+  return (
+    <svg
+      width="100%"
+      height="100%"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10 16H5V21M14 8H19V3M4.58301 9.00316C5.14369 7.61542 6.08244 6.41279 7.29255 5.53198C8.50266 4.65117 9.93602 4.12752 11.4289 4.02051C12.9218 3.9135 14.4146 4.2274 15.738 4.92661C17.0613 5.62582 18.1614 6.68228 18.9142 7.97587M19.4176 14.9968C18.8569 16.3846 17.9181 17.5872 16.708 18.468C15.4979 19.3488 14.0652 19.8725 12.5723 19.9795C11.0794 20.0865 9.58606 19.7726 8.2627 19.0734C6.93933 18.3742 5.83882 17.3178 5.08594 16.0242"
+        stroke="currentcolor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function TickHeavyIcon() {
   return (
     <svg
