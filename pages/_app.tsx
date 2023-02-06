@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
     (async () => {
       await initAssetEngine();
     })();
-  });
+  }, []);
 
   return (
     <div className="w-full flex justify-center">

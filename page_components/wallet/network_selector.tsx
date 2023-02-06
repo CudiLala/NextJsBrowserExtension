@@ -182,8 +182,8 @@ export default function NetworkSelector() {
   console.log(network);
   return (
     <>
-      {/* <button
-        className="rounded-lg p-4 font-semibold text-left w-full bg-neutral-200 capitalize"
+      <button
+        className="rounded-lg p-4 font-semibold text-left w-full bg-neutral-200 capitalize text-neutral-800"
         onClick={() => setModalActive(true)}
       >
         <div className="flex items-center">
@@ -208,85 +208,105 @@ export default function NetworkSelector() {
         </div>
       </button>
       <div
-        className={`fixed top-0 left-0 bg-neutral-100 opacity-0 -z-10 transition w-full h-full flex justify-center items-center p-2 ${
-          modalActive ? "opacity-1 z-50" : ""
+        className={`text-neutral-800 absolute top-0 left-0 bg-white bg-opacity-70 transition w-full h-full flex flex-col p-2 ${
+          modalActive ? "opacity-1 z-50" : "-z-10 opacity-0"
         }`}
       >
         <div
-          className={`bg-white shadow-2xl shadow-neutral-800 p-4 max-w-5xl w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative c-scroll`}
+          className={`bg-white shadow-2xl shadow-neutral-800 p-2 max-w-5xl w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
         >
-          <h4 className="font-semibold p-4 text-base text-center w-full text-blue-600">
+          <h4 className="font-semibold p-2 text-base text-center w-full text-blue-600">
             Select Network
           </h4>
           <button
-            className="w-10 h-10 flex-shrink-0 absolute right-2 top-2 bg-transparent"
+            className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
             onClick={() => setModalActive(false)}
           >
             <CloseIcon />
           </button>
 
-          <div className="p-2 my-2 w-full flex justify-between">
+          <div className="my-2 w-full flex flex-col gap-2">
+            <div className="flex rounded-full overflow-hidden">
+              <button
+                className={`flex-grow h-9 px-3 transition capitalize font-semibold ${
+                  filter == "main" ? "bg-blue-500 text-white z-1" : "bg-sky-100"
+                }`}
+                onClick={() => setFilter("main")}
+              >
+                main
+              </button>
+              <button
+                className={`flex-grow h-9 px-3 transition capitalize font-semibold ${
+                  filter == "test" ? "bg-blue-500 text-white z-1" : "bg-sky-100"
+                }`}
+                onClick={() => setFilter("test")}
+              >
+                test
+              </button>
+              <button
+                className={`flex-grow h-9 px-3 transition capitalize font-semibold ${
+                  filter == "all" ? "bg-blue-500 text-white z-1" : "bg-sky-100"
+                }`}
+                onClick={() => setFilter("all")}
+              >
+                all
+              </button>
+            </div>
+
             <form
-              className="relative bg-sky-50 rounded-lg h-9 px-4 flex items-center mr-4 w-full"
+              className="relative bg-sky-100 rounded-lg h-9 px-4 flex items-center mr-4 w-full"
               onSubmit={handleSearch}
             >
-              <button
-                className="inline-flex h-4 w-4 bg-blue-600 mr-3"
-                type="submit"
-              >
+              <button className="inline-flex h-4 w-4 mr-3" type="submit">
                 <SearchIcon />
               </button>
               <input
                 type="text"
-                className="border-none outline-none inline-flex w-full text-netural-800 leading-none"
+                className="border-none outline-none inline-flex w-full text-netural-800 leading-none bg-transparent"
                 placeholder="Find in network"
               />
             </form>
-
-            <div className="flex ml-4 rounded-full overflow-hidden">
-              {["main", "test", "all"].map((e, i) => (
-                <button
-                  className={`w-14 h-9 px-3 transition capitalize bg-sky-50 ${
-                    filter == e ? "bg-blue-300 text-black z-1" : ""
-                  }`}
-                  onClick={() => setFilter(e)}
-                  key={i}
-                >
-                  {e}
-                </button>
-              ))}
-            </div>
           </div>
-          <table className="border border-sky-200 h-13">
+          <div className="table border border-sky-300 w-full rounded-lg">
             {Object.values(NET_CONFIG)
               .filter(networkFilterFunction)
               .map((e, i) => (
-                <tr key={i} className="border border-sky-200 h-13">
+                <div key={i} className="table-row group">
                   <button
-                    className="w-full h-13 flex items-center text-left px-5"
+                    className="table-cell w-full py-2 border-b group-last:border-none border-sky-300 items-center text-left px-5"
                     onClick={() => chooseNetwork(e)}
                   >
-                    <span className="bg-white rounded-full w-7 h-7 flex-shrink-0 flex items-center flex-center mr-2">
-                      {networkLogoMap[e.chainName]}
-                    </span>
-                    <span className="w-full mx-2">{e.nativeCurrency.name}</span>
-                    <span
-                      className={`inline-flex w-5 h-5 border border-gray-400 rounded-full flex-shrink-0 items-center justify-center ${
-                        network.chainId == e.chainId ? "border-blue-400" : ""
-                      }`}
-                    >
-                      <span></span>
+                    <span className="flex items-center">
+                      <span className="bg-white rounded-full w-7 h-7 flex-shrink-0 flex items-center flex-center mr-2">
+                        {networkLogoMap[e.chainName]}
+                      </span>
+                      <span className="w-full mx-2">
+                        {e.nativeCurrency.name}
+                      </span>
+                      <span
+                        className={`inline-flex w-5 h-5 border rounded-full flex-shrink-0 items-center justify-center ${
+                          network.chainId == e.chainId
+                            ? "border-sky-400"
+                            : "border-gray-400"
+                        }`}
+                      >
+                        <span
+                          className={`inline-flex w-4 h-4 rounded-full ${
+                            network.chainId === e.chainId ? "bg-sky-400" : ""
+                          }`}
+                        ></span>
+                      </span>
                     </span>
                   </button>
-                </tr>
+                </div>
               ))}
-          </table>
+          </div>
         </div>
       </div>
       <Notification
         notification={notification}
         pushNotification={pushNotification}
-      /> */}
+      />
     </>
   );
 }

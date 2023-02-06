@@ -173,8 +173,8 @@ export default function WalletPage() {
               </tbody>
             </table>
           </div>
-          <NetworkSelector />
         </div>
+        <NetworkSelector />
       </div>
     </div>
   );

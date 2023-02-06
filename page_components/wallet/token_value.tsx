@@ -1,6 +1,6 @@
 import { AccountContext } from "context/account";
 import { useContext } from "react";
-import { NetworkContext } from "./context";
+import { NetworkContext } from "@/context/network";
 import network_styles from "styles/pages/wallet/network_selector.module.css";
 import styles from "styles/pages/wallet/transaction_history.module.css";
 import { networkLogoMap } from "./network_selector";

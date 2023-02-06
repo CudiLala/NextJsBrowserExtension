@@ -36,10 +36,6 @@ import NetworkSelector, {
 import { LoaderContext } from "context/loader";
 import Image from "next/image";
 
-import styles from "styles/pages/wallet/send.module.css";
-import network_styles from "styles/pages/wallet/network_selector.module.css";
-import settings_styles from "styles/pages/wallet/settings.module.css";
-
 import { useRouter } from "next/router";
 import Link from "next/link";
 import TokenValue from "page_components/wallet/token_value";
