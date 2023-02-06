@@ -279,7 +279,7 @@ export default function SendWalletPage() {
   }, [details, account, gasPrice]);
 
   return (
-    <div className={styles.main}>
+    <div className="p-3 w-full">
       <TransConfirmModal
         active={transConfirmModalActive}
         setActive={setTransConfirmModalActive}
@@ -300,184 +300,138 @@ export default function SendWalletPage() {
         setGasPriority={setGasPriority}
       />
       <InfoModal active={infoModal} setActive={setInfoModal} />
-      <div className={styles.container}>
-        <div className={styles.md_network_selector}>
+      <div className="flex flex-col gap-3">
+        <div className="bg-neutral-200 p-2 rounded-lg flex flex-col gap-3">
+          <h2 className="text-blue-600 text-base text-center uppercase relative">
+            Send Token
+          </h2>
+
+          <div className="flex flex-col relative gap-0.5">
+            <label className="font-semibold">Select Currency</label>
+            <div className="h-11 px-4 rounded-lg border border-neutral-500 flex items-center">
+              <span className="mr-4 relative bg-white rounded-full w-7 h-7 flex-shrink-0 flex">
+                {currentToken?.token?.logo ? (
+                  <Image src={currentToken.token.logo} layout="fill" alt="" />
+                ) : (
+                  networkLogoMap[network.chainName]
+                )}
+              </span>
+              <span>
+                {isNotNative
+                  ? details.currency
+                  : currentNetwork.nativeCurrency.symbol}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col relative gap-0.5">
+            <label className="font-semibold">Amount</label>
+            <input
+              className={`px-4 rounded-lg border border-neutral-500 flex items-center ${
+                !amountValid.value ? "ring-2 ring-offset-1 ring-red" : ""
+              }`}
+              type="number"
+              value={details.amount}
+              onChange={(e) =>
+                setDetails((prev) => ({
+                  ...prev,
+                  amount: e.target.value,
+                }))
+              }
+            />
+            {!amountValid.value && <span>{amountValid.msg}</span>}
+          </div>
+
+          <div
+            className={`flex flex-col relative gap-0.5 group ${
+              !addressValid.value ? "error" : ""
+            }`}
+          >
+            <label>Address</label>
+            <AddressInput address={details.address} setDetails={setDetails} />
+          </div>
+          {!addressValid.value && <span>{addressValid.msg}</span>}
+
+          <div>
+            <h6 className="font-semibold text-base">Transfer fee</h6>
+            <div className="flex justify-between my-2 font-semibold">
+              <div className="flex items-center">
+                <div className="bg-neutral-300 flex items-center rounded-lg px-3 py-2 mr-3">
+                  <span className="text-base">Bal: {account.balance}</span>
+                  <span className="flex items-center text-blue-500">
+                    <span className="w-5 h-5 mr-1 ml-4 inline-flex text-blue-500">
+                      <ClockFillIcon />
+                    </span>
+                    {gasPriority?.time}
+                  </span>
+                  <button
+                    className="ml-2 text-blue-600 flex w-10 p-2 bg-transparent outline-none"
+                    onClick={() => setTransFee(true)}
+                  >
+                    <CaretDownOutline />
+                  </button>
+                </div>
+                {gasPrice}
+              </div>
+              <div className="py-3">Total: {+details.amount + +gasPrice}</div>
+            </div>
+            <button
+              className="text-blue-500 bg-transparent"
+              onClick={() => setInfoModal(true)}
+            >
+              How fees are determined?
+            </button>
+          </div>
+
+          <SendAdvancedSection
+            hiddenComponent={
+              <GasAndDataForm
+                addData={details.addData}
+                gasLimit={details.gasLimit}
+                gasLimitValid={gasLimitValid}
+                setDetails={setDetails}
+              />
+            }
+          >
+            <h6>Advanced</h6>
+          </SendAdvancedSection>
+
+          <div className="flex justify-center mt-6 mb-1 gap-4">
+            <button
+              className={`bg-transparent text-blue-600 border-2 border-current rounded-md py-2 px-6 font-semibold w-60`}
+              onClick={resetDetails}
+            >
+              Clear All
+            </button>
+            <button
+              className={`bg-blue-600 text-white border-2 border-blue-600 rounded-md py-2 px-6 font-semibold w-60`}
+              onClick={() => setTransConfirmModalActive(true)}
+              disabled={
+                !(
+                  gasLimitValid.value &&
+                  addressValid.value &&
+                  amountValid.value &&
+                  details.address
+                )
+              }
+              // disabled={true}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+        <Notification
+          notification={notification}
+          pushNotification={pushNotification}
+        />
+        <div>
           <NetworkSelector />
         </div>
         <div>
-          <div className={styles.send_container}>
-            <h2 className={styles.heading}>
-              <button
-                className={styles.arrow_left}
-                onClick={() => router.back()}
-              >
-                <ArrowBack />
-              </button>
-              Send Token
-            </h2>
-
-            <div>
-              <div>
-                <div className={styles.input_container}>
-                  <div className={styles.input_box}>
-                    <label>Select Currency</label>
-                    <div
-                      className={styles.input}
-                      style={{ height: "4.5rem", padding: "0 2rem" }}
-                    >
-                      <span
-                        className={network_styles.network_icon_box}
-                        style={{
-                          marginRight: "1.6rem",
-                          position: "relative",
-                        }}
-                      >
-                        {currentToken?.token?.logo ? (
-                          <Image
-                            src={currentToken.token.logo}
-                            layout="fill"
-                            alt=""
-                          />
-                        ) : (
-                          networkLogoMap[network.chainName]
-                        )}
-                      </span>
-                      <span>
-                        {isNotNative
-                          ? details.currency
-                          : currentNetwork.nativeCurrency.symbol}
-                      </span>
-                    </div>
-                  </div>
-                  <div className={styles.input_box}>
-                    <label>Amount</label>
-                    <input
-                      className={`${styles.input} ${
-                        !amountValid.value ? styles.error : ""
-                      }`}
-                      type="number"
-                      value={details.amount}
-                      onChange={(e) =>
-                        setDetails((prev) => ({
-                          ...prev,
-                          amount: e.target.value,
-                        }))
-                      }
-                    />
-                    {!amountValid.value && <span>{amountValid.msg}</span>}
-                  </div>
-                </div>
-
-                <div
-                  className={styles.input_container}
-                  style={{ flexDirection: "column" }}
-                >
-                  <div
-                    className={`${styles.input_box} ${
-                      styles.address_input_box
-                    } ${!addressValid.value ? styles.error : ""}`}
-                  >
-                    <label>Address</label>
-                    <AddressInput
-                      address={details.address}
-                      setDetails={setDetails}
-                    />
-                  </div>
-                  {!addressValid.value && <span>{addressValid.msg}</span>}
-                </div>
-
-                <div className={styles.transfer_fee_section}>
-                  <h6>Transfer fee</h6>
-                  <div className={styles.transfer_fee_container}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <div className={styles.transfer_fee_box}>
-                        <span style={{ fontSize: "1.7rem" }}>
-                          Bal: {account.balance}
-                        </span>
-                        <span className={styles.timer}>
-                          <span className={styles.clock_icon}>
-                            <ClockFillIcon />
-                          </span>
-                          {gasPriority?.time}
-                        </span>
-                        <button
-                          className={styles.caret_down_icon}
-                          style={{ marginLeft: "1rem", color: "#00244e" }}
-                          onClick={() => setTransFee(true)}
-                        >
-                          <CaretDownOutline />
-                        </button>
-                      </div>
-                      {gasPrice}
-                    </div>
-                    <div style={{ padding: "1.6rem 0" }}>
-                      Total: {+details.amount + +gasPrice}
-                    </div>
-                  </div>
-                  <button
-                    className={styles.blue_text}
-                    onClick={() => setInfoModal(true)}
-                  >
-                    How fees are determined?
-                  </button>
-                </div>
-
-                <SendAdvancedSection
-                  hiddenComponent={
-                    <GasAndDataForm
-                      addData={details.addData}
-                      gasLimit={details.gasLimit}
-                      gasLimitValid={gasLimitValid}
-                      setDetails={setDetails}
-                    />
-                  }
-                >
-                  <h6>Advanced</h6>
-                </SendAdvancedSection>
-
-                <div className={styles.center_box}>
-                  <button
-                    className={`${styles.btn} ${styles.btn_secondary}`}
-                    style={{ width: "15rem", marginRight: "2rem" }}
-                    onClick={resetDetails}
-                  >
-                    Clear All
-                  </button>
-                  <button
-                    style={{ width: "15rem" }}
-                    className={styles.btn}
-                    onClick={() => setTransConfirmModalActive(true)}
-                    disabled={
-                      !(
-                        gasLimitValid.value &&
-                        addressValid.value &&
-                        amountValid.value &&
-                        details.address
-                      )
-                    }
-                    // disabled={true}
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <Notification
-            notification={notification}
-            pushNotification={pushNotification}
-          />
+          <TokenValue />
         </div>
-        <div className={styles.cards_container}>
-          <div className={styles.lg_network_selector}>
-            <NetworkSelector />
-          </div>
-          <div>
-            <TokenValue />
-          </div>
-          <div>
-            <TransactionHistory network={network.chainName} />
-          </div>
+        <div>
+          <TransactionHistory network={network.chainName} />
         </div>
       </div>
     </div>
@@ -494,14 +448,16 @@ function SendAdvancedSection({
   const [active, setActive] = useState(false);
 
   return (
-    <div className={`${styles.section} ${styles.advanced_section}`}>
-      <div style={{ display: "flex" }}>
-        <div className={styles.left}>{children}</div>
-        <div className={styles.right}>
+    <div className={`px-4 py-2 bg-white shadow-a rounded-md my-3`}>
+      <div className="flex">
+        <div className="flex items-center flex-grow flex-shrink w-full">
+          {children}
+        </div>
+        <div className="flex items-center mr-8">
           <span>Gas limit and Data</span>
           <button
-            className={`${styles.caret_down_icon} ${
-              active ? styles.active : ""
+            className={`flex w-8 h-8 p-2 bg-transparent flex-shrink-0 transition ${
+              active ? "rotate-180" : ""
             }`}
             onClick={() => setActive((prev) => !prev)}
           >
@@ -510,8 +466,8 @@ function SendAdvancedSection({
         </div>
       </div>
       <div
-        className={`${styles.expandable} ${
-          active ? styles.active : ""
+        className={`overflow-hidden transition ${
+          active ? "max-h-[100rem] duration-700" : "max-h-0 duration-300"
         } c-scroll`}
       >
         {hiddenComponent}
@@ -532,54 +488,49 @@ function GasAndDataForm({
   setDetails: React.Dispatch<React.SetStateAction<details>>;
 }) {
   return (
-    <div className={styles.gas_data_form}>
-      <div className={styles.info}>
-        <h6 className={styles.heading}>For Advanced Users Only</h6>
+    <div className="py-4 gap-4 flex flex-col">
+      <div className="p-5 bg-neutral-300">
+        <h6 className="text-base mb-1">For Advanced Users Only</h6>
         <p>
           Please don’t edit these fields unless you are an expert user & know
           what you’re doing. Entering the wrong information could result in your
           transaction failing or getting stuck.
         </p>
       </div>
-      <div className={styles.input_container} style={{ marginTop: "2rem" }}>
-        <div className={styles.input_box}>
-          <label>Gas limit</label>
-          <button
-            style={{ position: "absolute", right: "0.5rem" }}
-            className={styles.blue_text}
-            onClick={() =>
-              setDetails((prev) => ({ ...prev, gasLimit: "21000" }))
-            }
-          >
-            Reset to default: 21000
-          </button>
-          <input
-            className={`${styles.input} ${
-              !gasLimitValid.value ? styles.error : ""
-            }`}
-            value={gasLimit}
-            type="number"
-            onChange={(e) =>
-              setDetails((prev) => ({
-                ...prev,
-                gasLimit: e.target.value,
-              }))
-            }
-          />
-          {!gasLimitValid.value && <span>{gasLimitValid.msg}</span>}
-        </div>
+
+      <div className="flex flex-col relative gap-0.5">
+        <label className="font-semibold">Gas limit</label>
+        <button
+          className="text-blue-500 absolute right-2"
+          onClick={() => setDetails((prev) => ({ ...prev, gasLimit: "21000" }))}
+        >
+          Reset to default: 21000
+        </button>
+        <input
+          className={`px-4 rounded-lg border border-neutral-500 flex items-center ${
+            !gasLimitValid.value ? "ring-2 ring-offset-1 ring-red" : ""
+          }`}
+          value={gasLimit}
+          type="number"
+          onChange={(e) =>
+            setDetails((prev) => ({
+              ...prev,
+              gasLimit: e.target.value,
+            }))
+          }
+        />
+        {!gasLimitValid.value && <span>{gasLimitValid.msg}</span>}
       </div>
-      <div className={styles.input_container}>
-        <div className={styles.input_box}>
-          <label>Add Data</label>
-          <input
-            className={styles.input}
-            value={addData}
-            onChange={(e) =>
-              setDetails((prev) => ({ ...prev, addData: e.target.value }))
-            }
-          />
-        </div>
+
+      <div className="flex flex-col relative gap-0.5">
+        <label className="font-semibold">Add Data</label>
+        <input
+          className={`px-4 rounded-lg border border-neutral-500 flex items-center`}
+          value={addData}
+          onChange={(e) =>
+            setDetails((prev) => ({ ...prev, addData: e.target.value }))
+          }
+        />
       </div>
     </div>
   );
@@ -597,7 +548,9 @@ function AddressInput({
 
   return (
     <div
-      className={`${styles.address_input} ${active ? styles.active : ""}`}
+      className={`rounded-md flex flex-col mt-1 border border-neutral-500 ${
+        active ? "ring-2 ring-blue-500 group-[error]:ring-red-400" : ""
+      }`}
       onFocusCapture={() => setActive(true)}
       onBlur={() => setActive(false)}
     >
@@ -610,7 +563,11 @@ function AddressInput({
         />
       </div>
       {!!account.addressList?.length && (
-        <div className={`${styles.dropdown} c-scroll`}>
+        <div
+          className={`overflow-auto transition c-scroll ${
+            active ? "max-h-[50rem] duration-800" : "max-h-0"
+          }`}
+        >
           <div style={{ padding: ".5rem" }}>
             {account.addressList?.map((e, i) => (
               <button
@@ -643,9 +600,16 @@ function Address({ address, nickname }: { address: string; nickname: string }) {
 
   return (
     <>
-      <span ref={imageRef} className={styles.blockies_img}></span>
-      <span className={styles.nickname}>{shorten(nickname, 8, 0, 10)}</span>
-      <span className={styles.address}>{shorten(address, 15, 6, 24)}</span>
+      <span
+        ref={imageRef}
+        className="rounded-full overflow-hidden w-7 h-7 flex-shrink-0 mr-2"
+      ></span>
+      <span className="flex-shrink-0 w-40 inline-flex">
+        {shorten(nickname, 8, 0, 10)}
+      </span>
+      <span className="w-full flex-grow flex-shrink">
+        {shorten(address, 15, 6, 24)}
+      </span>
     </>
   );
 }
@@ -677,37 +641,38 @@ function TransConfirmModal({
 
   return (
     <div
-      className={`${network_styles.modal} ${
-        active ? network_styles.active : ""
+      className={`absolute top-0 left-0 bg-black bg-opacity-10 transition w-full h-full flex flex-col p-2 ${
+        active ? "opacity-1 z-50" : "opacity-0 -z-10"
       }`}
     >
       <div
-        className={`${network_styles.container} c-scroll`}
-        style={{ padding: "4rem" }}
+        className={`bg-white shadow-b p-3 max-h-[95%] overflow-x-hidden overflow-y-auto c-scroll`}
       >
         <button
-          className={network_styles.close_btn}
+          className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
           type="button"
           onClick={() => setActive(false)}
         >
           <CloseIcon />
         </button>
 
-        <h4>TRANSACTION CONFIRMATION</h4>
+        <h4 className="font-semibold p-2 text-base text-center w-full text-blue-600">
+          TRANSACTION CONFIRMATION
+        </h4>
 
-        <p style={{ fontSize: "1.7rem", padding: "1rem 0 3rem" }}>
+        <p className="py-2">
           Please double check everything, mola team will not be able to reverse
           your transactions once it summited, you will still be charged gas fee
           even if the transaction fails.{" "}
           <Link href="#">
-            <a style={{ color: "#1e89dd" }}>Learn More</a>
+            <a className="text-blue-500">Learn More</a>
           </Link>
         </p>
-        <div className={styles.trans_illustration}>
-          <div className={styles.bodies}>
-            <h6>SENDING</h6>
-            <div className={styles.sec}>
-              <span className={network_styles.network_icon_box}>
+        <div className="flex">
+          <div className="bg-neutral-200 w-full flex-grow flex-shrink p-3">
+            <h6 className="font-semibold">SENDING</h6>
+            <div className="my-2 flex font-semibold">
+              <span className="bg-white rounded-full w-7 h-7 flex-shrink-0 flex items-center flex-center mr-2">
                 {networkLogoMap[network.chainName]}
               </span>
               <div>
@@ -716,18 +681,17 @@ function TransConfirmModal({
               </div>
             </div>
           </div>
-          <div className={styles.icon_box}>
-            <span className={styles.arrow_right}>
+          <div className="mx-4 flex items-center">
+            <span className="w-4 h-4 text-blue-500 flex flex-shrink-0">
               <ArrowForward />
             </span>
           </div>
-          <div className={styles.bodies}>
+          <div className="bg-neutral-200 w-full flex-grow flex-shrink p-3">
             <h6>TO ADDRESS</h6>
-            <div className={styles.sec}>
+            <div className="my-2 flex font-semibold">
               <span
-                className={network_styles.network_icon_box}
+                className="bg-white rounded-full w-7 h-7 flex-shrink-0 flex items-center flex-center mr-2 overflow-hidden"
                 ref={imageRef}
-                style={{ borderRadius: "50%", overflow: "hidden" }}
               ></span>
               <div>
                 <p>Username</p>
@@ -737,27 +701,29 @@ function TransConfirmModal({
           </div>
         </div>
         <div style={{ margin: "2rem 0" }}>
-          <div className={styles.transaction_details}>
-            <p>TRANSACTION FEE</p>
-            <p>{Number(gasPrice).toFixed(10)}</p>
+          <div className="py-2 flex">
+            <p className="w-1/2 font-semibold">TRANSACTION FEE</p>
+            <p className="w-1/2 font-semibold">
+              {Number(gasPrice).toFixed(10)}
+            </p>
           </div>
-          <div className={styles.transaction_details}>
+          <div className="py-2 flex">
             <p>TOTAL</p>
             <p>{(+details.amount + +gasPrice).toFixed(10)}</p>
           </div>
         </div>
-        <div className={styles.transaction_label}>Transaction Details</div>
-        <div className={styles.center_box}>
+        <div className="text-base border-t border-b border-neutral-400">
+          Transaction Details
+        </div>
+        <div className="flex justify-center mt-6 mb-1 gap-4">
           <button
-            className={`${styles.btn} ${styles.btn_secondary}`}
-            style={{ minWidth: "15rem", marginRight: "2rem" }}
+            className={`bg-transparent text-blue-600 border-2 border-current rounded-md py-2 px-6 font-semibold w-60`}
             onClick={() => setActive(false)}
           >
             Cancel
           </button>
           <button
-            style={{ minWidth: "15rem" }}
-            className={styles.btn}
+            className={`bg-blue-600 text-white border-2 border-blue-600 rounded-md py-2 px-6 font-semibold w-60`}
             onClick={sendToken}
           >
             Confirm & Send
@@ -779,45 +745,47 @@ function TransInitModal({
 }) {
   return (
     <div
-      className={`${network_styles.modal} ${
-        active ? network_styles.active : ""
+      className={`text-neutral-800 absolute top-0 left-0 bg-white bg-opacity-70 transition w-full h-full flex flex-col p-2 ${
+        active ? "opacity-1 z-50" : "-z-10 opacity-0"
       }`}
     >
       <div
-        className={`${network_styles.container} ${styles.trans_init} c-scroll`}
-        style={{ padding: "4rem" }}
+        className={`bg-white shadow-b shadow-neutral-500 p-2 max-w-5xl w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
       >
         <button
-          className={network_styles.close_btn}
+          className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
           type="button"
           onClick={() => setActive(false)}
         >
           <CloseIcon />
         </button>
 
-        <h4>TRANSACTION INITIATED</h4>
-        <div className={styles.tick_icon_box}>
+        <h4 className="font-semibold p-2 text-base text-center w-full text-blue-600">
+          TRANSACTION INITIATED
+        </h4>
+
+        <div className="mx-auto w-60 text-blue-500">
           <TickHeavyIcon />
         </div>
-        <div style={{ margin: "2rem" }}>
-          <p style={{ textAlign: "center", fontSize: "1.7rem" }}>
+
+        <div className="m-4">
+          <p className="text-center">
             Ones completed the token amount will be deposited to the address you
             provided, this takes a few min depending on how conjested the
             etherum network is.
           </p>
         </div>
-        <div className={styles.href_box}>
-          <Link href={txHash}>
-            <a target="_blank">View On Explorer</a>
+        <div className="my-4 mx-auto w-4/5 justify-between flex">
+          <Link href={txHash} className="text-blue-500" target="_blank">
+            View On Explorer
           </Link>
-          <Link href="/wallet/notifications">
-            <a>View Progress</a>
+          <Link href="/wallet/notifications" className="text-blue-500">
+            View Progress
           </Link>
         </div>
-        <div className={styles.center_box}>
+        <div className="flex justify-center mt-6 mb-1 gap-4">
           <button
-            className={styles.btn}
-            style={{ width: "30rem" }}
+            className={`bg-blue-600 text-white border-2 border-blue-600 rounded-md py-2 px-6 font-semibold w-60`}
             onClick={() => setActive(false)}
           >
             Close
@@ -843,16 +811,15 @@ function TransFee({
 }) {
   return (
     <div
-      className={`${network_styles.modal} ${
-        active ? network_styles.active : ""
+      className={`absolute top-0 left-0 bg-black bg-opacity-10 transition w-full h-full flex flex-col p-2 ${
+        active ? "opacity-1 z-50" : "opacity-0 -z-10"
       }`}
     >
       <div
-        className={`${network_styles.container} ${styles.trans_init} c-scroll`}
-        style={{ padding: "4rem" }}
+        className={`bg-white shadow-b p-3 max-h-[95%] overflow-x-hidden overflow-y-auto c-scroll`}
       >
         <button
-          className={network_styles.close_btn}
+          className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
           type="button"
           onClick={() => setActive(false)}
         >
@@ -868,12 +835,12 @@ function TransFee({
           </p>
         </div>
 
-        <div className={settings_styles.priorities_container}>
+        <div className="w-full">
           {Object.values(priorities).map((e, i) => {
             return (
               <button
-                className={`${settings_styles.priorities_box} ${
-                  gasPriority.id == e.id ? settings_styles.active : ""
+                className={`flex items-center w-[calc(100%-0.6rem)] py-2 pr-1 pl-3 border focus:ring-2 ring-offset-1 ring-blue-500 border-neutral-200 rounded-md text-left transition my-3 mx-0.5 group ${
+                  gasPriority.id == e.id ? "ring-2" : ""
                 }`}
                 key={i}
                 onClick={() => {
@@ -881,15 +848,17 @@ function TransFee({
                   setTimeout(() => setActive(false), 100);
                 }}
               >
-                <span className={settings_styles.icon_box}>
+                <span className="w-5 h-5 flex-shrink-0 mr-5 inline-flex text-blue-500">
                   <e.icon />
                 </span>
-                <span className={settings_styles.text}>{e.text}</span>
-                <span className={settings_styles.time_box}>
-                  <span className={settings_styles.clock_icon_box}>
+                <span className="w-full transition font-semibold group-focus:text-blue-500">
+                  {e.text}
+                </span>
+                <span className="w-40 font-semibold text-blue-500 flex items-center">
+                  <span className="inline-flex w-4 h-4 mr-2">
                     <ClockIcon />
                   </span>
-                  <span className={settings_styles.time}>{e.time}</span>
+                  <span>{e.time}</span>
                 </span>
               </button>
             );
@@ -909,16 +878,15 @@ function InfoModal({
 }) {
   return (
     <div
-      className={`${network_styles.modal} ${
-        active ? network_styles.active : ""
+      className={`absolute top-0 left-0 bg-black bg-opacity-10 transition w-full h-full flex flex-col p-2 ${
+        active ? "opacity-1 z-50" : "opacity-0 -z-10"
       }`}
     >
       <div
-        className={`${network_styles.container} ${styles.trans_init} c-scroll`}
-        style={{ padding: "4rem" }}
+        className={`bg-white shadow-b p-3 max-h-[95%] overflow-x-hidden overflow-y-auto c-scroll`}
       >
         <button
-          className={network_styles.close_btn}
+          className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
           type="button"
           onClick={() => setActive(false)}
         >
