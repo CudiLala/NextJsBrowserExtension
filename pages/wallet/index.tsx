@@ -13,7 +13,7 @@ import {
 import Image from "next/image";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AccountContext } from "@/context/account";
-import { NetworkContext } from "@/context/wallet";
+import { NetworkContext } from "@/context/network";
 
 import NET_CONFIG from "@/config/allNet";
 import Notification, { useNotification } from "@/components/notification";

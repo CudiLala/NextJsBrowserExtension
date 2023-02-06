@@ -27,7 +27,7 @@ import React, {
   useState,
 } from "react";
 import { AccountContext } from "@/context/account";
-import { NetworkContext } from "@/context/wallet";
+import { NetworkContext } from "@/context/network";
 import NET_CONFIG from "config/allNet";
 import Notification, { useNotification } from "components/notification";
 import NetworkSelector, {

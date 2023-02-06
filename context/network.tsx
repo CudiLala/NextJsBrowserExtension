@@ -14,7 +14,7 @@ export const NetworkContext = createContext<
   [INETWORK_CONFIG, Dispatch<SetStateAction<INETWORK_CONFIG>>]
 >([{} as INETWORK_CONFIG, () => {}]);
 
-export default function WalletContext({ children }: { children: ReactNode }) {
+export function NetworkContextComponent({ children }: { children: ReactNode }) {
   const [network, setNetwork] = useState<INETWORK_CONFIG>(
     NETWORK_CONFIG[NETWORKS.ETHEREUM]
   );

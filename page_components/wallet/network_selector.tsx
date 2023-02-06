@@ -5,7 +5,7 @@ import {
   CloseIcon,
 } from "@/components/icons/accessibility";
 import { useContext, useEffect, useState } from "react";
-import { NetworkContext } from "@/context/wallet";
+import { NetworkContext } from "@/context/network";
 import { NETWORKS } from "interfaces/IRpc";
 import NET_CONFIG from "config/allNet";
 import INET_CONFIG from "interfaces/INetwok";
@@ -179,9 +179,10 @@ export default function NetworkSelector() {
     })();
   }, []);
 
+  console.log(network);
   return (
     <>
-      <button
+      {/* <button
         className="rounded-lg p-4 font-semibold text-left w-full bg-neutral-200 capitalize"
         onClick={() => setModalActive(true)}
       >
@@ -285,7 +286,7 @@ export default function NetworkSelector() {
       <Notification
         notification={notification}
         pushNotification={pushNotification}
-      />
+      /> */}
     </>
   );
 }
