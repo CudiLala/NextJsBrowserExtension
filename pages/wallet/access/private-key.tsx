@@ -75,7 +75,7 @@ export default function PrivateKey() {
       }));
 
       setProvider(provider);
-
+      console.log(walletAssets);
       setAssetProvider(walletAssets);
       router.push("/wallet");
     } catch (error: any) {

@@ -20,6 +20,10 @@ import Notification, { useNotification } from "@/components/notification";
 import { AssetProviderContext } from "@/context/web3/assets";
 import { shorten } from "@/utils/string";
 
+import NetworkSelector, {
+  networkLogoMap,
+} from "page_components/wallet/network_selector";
+
 export default function WalletPage() {
   const [account] = useContext(AccountContext);
   const [currentNetwork] = useContext(NetworkContext);
@@ -113,6 +117,63 @@ export default function WalletPage() {
               Send
             </Link>
           </div>
+        </div>
+        <div className="bg-neutral-200 rounded-md">
+          <div className="px-3 py-2 flex flex-col gap-2 text-neutral-900">
+            <h4 className="text-base font-semibold">My tokens value</h4>
+            <p className="font-mono">$ {account.balanceFiat}</p>
+          </div>
+          <div className="w-full overflow-auto">
+            <table className="min-w-full">
+              <thead>
+                <tr className="bg-neutral-700 min-w-full">
+                  <th className="py-2 px-3">Token</th>
+                  <th className="py-2 px-3">Name</th>
+                  <th className="py-2 px-3">Balance</th>
+                  <th className="py-2 px-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {console.log(assets)}
+                {!!assets.length &&
+                  assets.map((e: any, i: number) => (
+                    <tr key={i}>
+                      <td>
+                        <span className="flex">
+                          <span className="relative mr-2">
+                            {e.logo ? (
+                              <Image src={e.logo} fill alt="" />
+                            ) : (
+                              networkLogoMap[network.chainName]
+                            )}
+                          </span>
+                          <span className="font-semibold">{e.symbol}</span>
+                        </span>
+                      </td>
+
+                      <td>{e.name}</td>
+
+                      <td className="flex flex-col font-mono">
+                        <span className="flex justify-between flex-wrap">
+                          <span>{Number(e.balance).toFixed(2)} </span>
+                          <span>{e.symbol}</span>
+                        </span>
+                      </td>
+
+                      <td>
+                        <Link
+                          href={`/wallet/send?token=${e.symbol}`}
+                          className="text-blue-500"
+                        >
+                          Send
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+          <NetworkSelector />
         </div>
       </div>
     </div>

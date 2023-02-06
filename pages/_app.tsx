@@ -14,11 +14,11 @@ export default function App({ Component, pageProps }: AppProps) {
     (async () => {
       await initAssetEngine();
     })();
-  }, []);
+  });
 
   return (
     <div className="w-full flex justify-center">
-      <div className="relative w-[22rem] h-[36rem] overflow-auto c-scroll border border-neutral-300">
+      <div className="relative w-96 h-[38rem] overflow-auto c-scroll border border-neutral-300">
         <LoaderContextComponent>
           <ProviderContextComponent>
             <SocketProviderContextComponent>
