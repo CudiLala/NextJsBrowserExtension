@@ -88,7 +88,7 @@ export function List({ e }: { e: INotification }) {
           <div className="table-row">
             <span className="table-cell">Transaction Hash:</span>
             <a
-              className="table-cell"
+              className="table-cell items-start text-blue-500"
               href={e.txLink}
               target="_blank"
               rel="noreferrer"
@@ -99,17 +99,19 @@ export function List({ e }: { e: INotification }) {
 
           <div className="table-row">
             <span className="table-cell">Gas Price:</span>
-            <span className="table-cell">{e.gasPrice}</span>
+            <span className="table-cell text-left">{e.gasPrice}</span>
           </div>
 
           <div className="table-row">
             <span className="table-cell">Gas Limit:</span>
-            <span className="table-cell">{e.gasLimit}</span>
+            <span className="table-cell text-left">{e.gasLimit}</span>
           </div>
 
           <div className="table-row">
             <span className="table-cell">Total transaction fee:</span>
-            <span className="table-cell">{e.amount + e.gasPrice}</span>
+            <span className="table-cell text-left">
+              {e.amount + e.gasPrice}
+            </span>
           </div>
         </div>
       </div>
