@@ -14,7 +14,6 @@ export default function NotificationPage() {
       ? Object.values(Notifier.state)
           .filter((notifier) => notifier.chain === network.chainName)
           .sort((a, b) => b.time - a.time)
-          .slice(0, 3)
       : [];
 
   return (
