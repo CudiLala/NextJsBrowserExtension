@@ -45,6 +45,7 @@ import { fetchWalletAssets } from "utils/assetEngine";
 import { Notifier } from "utils/notifications";
 import { Priority, details, Priories } from "types/gas";
 import { priorities } from "constants/gas";
+import BackButton from "@/components/button/back";
 
 export default function SendWalletPage() {
   const [account, setAccount] = useContext(AccountContext);
@@ -81,6 +82,8 @@ export default function SendWalletPage() {
   const [transFee, setTransFee] = useState(false);
   const [infoModal, setInfoModal] = useState(false);
   const [gasPriority, setGasPriority] = useState({} as Priority);
+
+  const [networkClick, setNetworkClick] = useState(false);
 
   const sendNative = async (e: any) => {
     e.preventDefault();
@@ -279,7 +282,7 @@ export default function SendWalletPage() {
   }, [details, account, gasPrice]);
 
   return (
-    <div className="p-3 w-full">
+    <div className="w-full flex flex-col gap-3">
       <TransConfirmModal
         active={transConfirmModalActive}
         setActive={setTransConfirmModalActive}
@@ -300,132 +303,139 @@ export default function SendWalletPage() {
         setGasPriority={setGasPriority}
       />
       <InfoModal active={infoModal} setActive={setInfoModal} />
-      <div className="flex flex-col gap-3">
-        <div className="bg-neutral-200 p-2 rounded-lg flex flex-col gap-3">
-          <h2 className="text-blue-600 text-base text-center uppercase relative">
-            Send Token
-          </h2>
 
-          <div className="flex flex-col relative gap-0.5">
-            <label className="font-semibold">Select Currency</label>
-            <div className="h-11 px-4 rounded-lg border border-neutral-500 flex items-center">
-              <span className="mr-4 relative bg-white rounded-full w-7 h-7 flex-shrink-0 flex">
-                {currentToken?.token?.logo ? (
-                  <Image src={currentToken.token.logo} layout="fill" alt="" />
-                ) : (
-                  networkLogoMap[network.chainName]
-                )}
-              </span>
-              <span>
-                {isNotNative
-                  ? details.currency
-                  : currentNetwork.nativeCurrency.symbol}
-              </span>
-            </div>
-          </div>
+      <div className="py-2 px-4 sticky top-0 z-20 border-b border-neutral-300 bg-white">
+        <h1 className="text-base text-center font-medium relative">
+          <BackButton />
+          Send Token
+        </h1>
+      </div>
 
-          <div className="flex flex-col relative gap-0.5">
-            <label className="font-semibold">Amount</label>
-            <input
-              className={`px-4 rounded-lg border border-neutral-500 flex items-center ${
-                !amountValid.value ? "ring-2 ring-offset-1 ring-red" : ""
-              }`}
-              type="number"
-              value={details.amount}
-              onChange={(e) =>
-                setDetails((prev) => ({
-                  ...prev,
-                  amount: e.target.value,
-                }))
-              }
-            />
-            {!amountValid.value && <span>{amountValid.msg}</span>}
-          </div>
+      <div className="flex flex-col gap-3 px-3">
+        <div className="flex flex-col relative gap-0.5">
+          <label className="font-semibold">Select Currency</label>
+          <button
+            className="h-11 px-4 rounded-lg border border-neutral-500 flex items-center"
+            onClick={() => setNetworkClick(true)}
+          >
+            <span className="mr-4 relative bg-white rounded-full w-7 h-7 flex-shrink-0 flex">
+              {currentToken?.token?.logo ? (
+                <Image src={currentToken.token.logo} layout="fill" alt="" />
+              ) : (
+                networkLogoMap[network.chainName]
+              )}
+            </span>
+            <span>
+              {isNotNative
+                ? details.currency
+                : currentNetwork.nativeCurrency.symbol}
+            </span>
+          </button>
+        </div>
 
-          <div
-            className={`flex flex-col relative gap-0.5 group ${
-              !addressValid.value ? "error" : ""
+        <div className="flex flex-col relative gap-0.5">
+          <label className="font-semibold">Amount</label>
+          <input
+            className={`px-4 py-1.5 rounded-lg border border-neutral-500 flex items-center outline-none ring-2 ring-transparent focus:!ring-blue-600 focus:ring-offset-1 ${
+              !amountValid.value ? "!ring-red-400" : ""
             }`}
-          >
-            <label>Address</label>
-            <AddressInput address={details.address} setDetails={setDetails} />
-          </div>
-          {!addressValid.value && <span>{addressValid.msg}</span>}
-
-          <div>
-            <h6 className="font-semibold text-base">Transfer fee</h6>
-            <div className="flex justify-between my-2 font-semibold">
-              <div className="flex items-center">
-                <div className="bg-neutral-300 flex items-center rounded-lg px-3 py-2 mr-3">
-                  <span className="text-base">Bal: {account.balance}</span>
-                  <span className="flex items-center text-blue-500">
-                    <span className="w-5 h-5 mr-1 ml-4 inline-flex text-blue-500">
-                      <ClockFillIcon />
-                    </span>
-                    {gasPriority?.time}
-                  </span>
-                  <button
-                    className="ml-2 text-blue-600 flex w-10 p-2 bg-transparent outline-none"
-                    onClick={() => setTransFee(true)}
-                  >
-                    <CaretDownOutline />
-                  </button>
-                </div>
-                {gasPrice}
-              </div>
-              <div className="py-3">Total: {+details.amount + +gasPrice}</div>
-            </div>
-            <button
-              className="text-blue-500 bg-transparent"
-              onClick={() => setInfoModal(true)}
-            >
-              How fees are determined?
-            </button>
-          </div>
-
-          <SendAdvancedSection
-            hiddenComponent={
-              <GasAndDataForm
-                addData={details.addData}
-                gasLimit={details.gasLimit}
-                gasLimitValid={gasLimitValid}
-                setDetails={setDetails}
-              />
+            type="number"
+            value={details.amount}
+            onChange={(e) =>
+              setDetails((prev) => ({
+                ...prev,
+                amount: e.target.value,
+              }))
             }
-          >
-            <h6>Advanced</h6>
-          </SendAdvancedSection>
+          />
+          {!amountValid.value && (
+            <span className="text-red-500">{amountValid.msg}</span>
+          )}
+        </div>
 
-          <div className="flex justify-center mt-6 mb-1 gap-4">
-            <button
-              className={`bg-transparent text-blue-600 border-2 border-current rounded-md py-2 px-6 font-semibold w-60`}
-              onClick={resetDetails}
-            >
-              Clear All
-            </button>
-            <button
-              className={`bg-blue-600 text-white border-2 border-blue-600 rounded-md py-2 px-6 font-semibold w-60`}
-              onClick={() => setTransConfirmModalActive(true)}
-              disabled={
-                !(
-                  gasLimitValid.value &&
-                  addressValid.value &&
-                  amountValid.value &&
-                  details.address
-                )
-              }
-              // disabled={true}
-            >
-              Next
-            </button>
+        <div
+          className={`flex flex-col relative gap-0.5 group ${
+            !addressValid.value ? "error" : ""
+          }`}
+        >
+          <label>Address</label>
+          <AddressInput address={details.address} setDetails={setDetails} />
+        </div>
+        {!addressValid.value && <span>{addressValid.msg}</span>}
+
+        <div>
+          <h6 className="font-semibold text-base">Transfer fee</h6>
+          <div className="flex justify-between my-2 font-semibold">
+            <div className="flex items-center">
+              <div className="bg-neutral-300 flex items-center rounded-lg px-3 py-2 mr-3">
+                <span className="text-base">Bal: {account.balance}</span>
+                <span className="flex items-center text-blue-500">
+                  <span className="w-5 h-5 mr-1 ml-4 inline-flex text-blue-500">
+                    <ClockFillIcon />
+                  </span>
+                  {gasPriority?.time}
+                </span>
+                <button
+                  className="ml-2 text-blue-600 flex w-10 p-2 bg-transparent outline-none"
+                  onClick={() => setTransFee(true)}
+                >
+                  <CaretDownOutline />
+                </button>
+              </div>
+              {gasPrice}
+            </div>
+            <div className="py-3">Total: {+details.amount + +gasPrice}</div>
           </div>
+          <button
+            className="text-blue-500 bg-transparent"
+            onClick={() => setInfoModal(true)}
+          >
+            How fees are determined?
+          </button>
+        </div>
+
+        <SendAdvancedSection
+          hiddenComponent={
+            <GasAndDataForm
+              addData={details.addData}
+              gasLimit={details.gasLimit}
+              gasLimitValid={gasLimitValid}
+              setDetails={setDetails}
+            />
+          }
+        >
+          <h6>Advanced</h6>
+        </SendAdvancedSection>
+
+        <div className="flex justify-center mt-6 mb-1 gap-4">
+          <button
+            className={`bg-transparent text-blue-600 border-2 border-current rounded-md py-2 px-6 font-semibold w-60 disabled:!ring-0 active:ring-2 ring-offset-1 ring-blue-600`}
+            onClick={resetDetails}
+          >
+            Clear All
+          </button>
+          <button
+            className={`bg-blue-600 text-white border-2 border-blue-600 rounded-md py-2 px-6 font-semibold w-60 disabled:cursor-not-allowed disabled:!ring-0 active:ring-2 ring-offset-1 ring-blue-600`}
+            onClick={() => setTransConfirmModalActive(true)}
+            disabled={
+              !(
+                gasLimitValid.value &&
+                addressValid.value &&
+                amountValid.value &&
+                details.address
+              )
+            }
+            // disabled={true}
+          >
+            Next
+          </button>
         </div>
         <Notification
           notification={notification}
           pushNotification={pushNotification}
         />
         <div>
-          <NetworkSelector />
+          <NetworkSelector click={networkClick} setClick={setNetworkClick} />
         </div>
         <div>
           <TokenValue />
@@ -507,7 +517,7 @@ function GasAndDataForm({
           Reset to default: 21000
         </button>
         <input
-          className={`px-4 rounded-lg border border-neutral-500 flex items-center ${
+          className={`px-4 py-1.5 rounded-lg border border-neutral-500 flex items-center outline-none ${
             !gasLimitValid.value ? "ring-2 ring-offset-1 ring-red" : ""
           }`}
           value={gasLimit}
@@ -641,12 +651,12 @@ function TransConfirmModal({
 
   return (
     <div
-      className={`absolute top-0 left-0 bg-black bg-opacity-10 transition w-full h-full flex flex-col p-2 ${
-        active ? "opacity-1 z-50" : "opacity-0 -z-10"
+      className={`fixed top-0 left-0 bg-black bg-opacity-10 transition w-full h-full flex flex-col items-center p-2 ${
+        active ? "opacity-1 z-40" : "opacity-0 -z-10"
       }`}
     >
       <div
-        className={`bg-white shadow-b p-3 max-h-[95%] overflow-x-hidden overflow-y-auto c-scroll`}
+        className={`bg-white shadow-b p-3 max-w-[22rem] max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
       >
         <button
           className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
@@ -664,8 +674,8 @@ function TransConfirmModal({
           Please double check everything, mola team will not be able to reverse
           your transactions once it summited, you will still be charged gas fee
           even if the transaction fails.{" "}
-          <Link href="#">
-            <a className="text-blue-500">Learn More</a>
+          <Link href="#" className="text-blue-500">
+            Learn More
           </Link>
         </p>
         <div className="flex">
@@ -745,12 +755,12 @@ function TransInitModal({
 }) {
   return (
     <div
-      className={`text-neutral-800 absolute top-0 left-0 bg-white bg-opacity-70 transition w-full h-full flex flex-col p-2 ${
-        active ? "opacity-1 z-50" : "-z-10 opacity-0"
+      className={`text-neutral-800 fixed top-0 left-0 bg-white bg-opacity-70 transition w-full h-full flex flex-col items-center p-2 ${
+        active ? "opacity-1 z-40" : "-z-10 opacity-0"
       }`}
     >
       <div
-        className={`bg-white shadow-b shadow-neutral-500 p-2 max-w-5xl w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
+        className={`bg-white shadow-b shadow-neutral-500 p-2 max-w-[22rem] w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
       >
         <button
           className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
@@ -811,12 +821,12 @@ function TransFee({
 }) {
   return (
     <div
-      className={`absolute top-0 left-0 bg-black bg-opacity-10 transition w-full h-full flex flex-col p-2 ${
-        active ? "opacity-1 z-50" : "opacity-0 -z-10"
+      className={`fixed top-0 left-0 bg-black bg-opacity-10 transition w-full h-full flex flex-col items-center p-2 ${
+        active ? "opacity-1 z-40" : "opacity-0 -z-10"
       }`}
     >
       <div
-        className={`bg-white shadow-b p-3 max-h-[95%] overflow-x-hidden overflow-y-auto c-scroll`}
+        className={`bg-white shadow-b p-3 max-w-[22rem] max-h-[95%] overflow-x-hidden overflow-y-auto rounded-xl c-scroll relative`}
       >
         <button
           className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
@@ -826,10 +836,12 @@ function TransFee({
           <CloseIcon />
         </button>
 
-        <h4>SELECT TRANSACTION FEE</h4>
+        <h4 className="font-semibold p-2 text-base text-center w-full text-blue-600">
+          SELECT TRANSACTION FEE
+        </h4>
 
-        <div style={{ margin: "2rem" }}>
-          <p style={{ textAlign: "center", fontSize: "1.7rem" }}>
+        <div className="my-4 flex justify-center">
+          <p className="text-center text-lg leading-snug w-4/5">
             The fee is charged by ethereum network and fluntuate depending on
             network traffic, mola does not profit from this fee.
           </p>
@@ -878,12 +890,12 @@ function InfoModal({
 }) {
   return (
     <div
-      className={`absolute top-0 left-0 bg-black bg-opacity-10 transition w-full h-full flex flex-col p-2 ${
-        active ? "opacity-1 z-50" : "opacity-0 -z-10"
+      className={`fixed top-0 left-0 bg-black bg-opacity-10 transition w-full h-full flex flex-col items-center p-2 ${
+        active ? "opacity-1 z-40" : "opacity-0 -z-10"
       }`}
     >
       <div
-        className={`bg-white shadow-b p-3 max-h-[95%] overflow-x-hidden overflow-y-auto c-scroll`}
+        className={`bg-white shadow-b p-3 max-w-[22rem] max-h-[95%] overflow-x-hidden overflow-y-auto c-scroll relative rounded-xl`}
       >
         <button
           className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
@@ -892,14 +904,8 @@ function InfoModal({
         >
           <CloseIcon />
         </button>
-        <div style={{ margin: "2rem 0" }}>
-          <h3
-            style={{
-              fontSize: "2.4rem",
-              fontWeight: "600",
-              marginBottom: "1rem",
-            }}
-          >
+        <div className="my-4">
+          <h3 className="font-semibold text-2xl mb-2">
             How fees are determined
           </h3>
           <p>
@@ -908,16 +914,8 @@ function InfoModal({
             etherum network is.
           </p>
         </div>
-        <div style={{ margin: "2rem 0" }}>
-          <h3
-            style={{
-              fontSize: "2.4rem",
-              fontWeight: "600",
-              marginBottom: "1rem",
-            }}
-          >
-            What should I do?
-          </h3>
+        <div className="my-4">
+          <h3 className="font-semibold text-2xl mb-2">What should I do?</h3>
           <p>
             Good news! You have options! If you’re not in a hurry, you can use
             the “Normal” setting and your transaction will be mined at a later

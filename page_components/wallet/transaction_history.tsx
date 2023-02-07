@@ -1,5 +1,3 @@
-import styles from "styles/pages/wallet/transaction_history.module.css";
-import network_styles from "styles/pages/wallet/network_selector.module.css";
 import { shorten } from "utils/string";
 import { useRef, useEffect, useState } from "react";
 import blockies from "ethereum-blockies";
@@ -18,9 +16,9 @@ export default function TransactionHistory({ network }: { network: string }) {
       : [];
 
   return (
-    <div className={styles.main}>
-      <p className={styles.heading}>TX History</p>
-      <div style={{ margin: "2rem 0 4rem" }}>
+    <div className="p-2 bg-white rounded-md">
+      <p className="font-semibold text-base text-center p-4">TX History</p>
+      <div className="pt-4 pb-8">
         {notifications.length > 0 ? (
           notifications.map((e) => <List key={e?.id} e={e} />)
         ) : (
@@ -28,9 +26,7 @@ export default function TransactionHistory({ network }: { network: string }) {
         )}
       </div>
       <div>
-        <Link href="/wallet/notifications">
-          <a>See more</a>
-        </Link>
+        <Link href="/wallet/notifications">See more</Link>
       </div>
     </div>
   );
@@ -50,33 +46,32 @@ export function List({ e }: { e: INotification }) {
 
   return (
     <button
-      className={`${styles.list} ${
+      className={`mb-2 flex flex-col p-2 rounded-md bg-transparent w-full tet-left group ${
         e.status === TX_STATUS.PENDING
-          ? styles.pending
+          ? "pending bg-yellow-50 border border-yellow-400"
           : e.status === TX_STATUS.SUCCESS
-          ? styles.success
-          : styles.error
+          ? "success bg-green-50 border border-green-400"
+          : "error bg-red-50 border border-red-400"
       }`}
       onClick={() => setExpandActive((prev) => !prev)}
     >
-      <span className={styles.visible}>
+      <span className="flex items-center w-full">
         <span
-          className={network_styles.network_icon_box}
-          style={{ borderRadius: "50%", overflow: "hidden" }}
+          className="bg-white rounded-full w-7 h-7 flex-shrink-0 flex items-center flex-center mr-2 overflow-hidden"
           ref={imageRef}
         ></span>
-        <span style={{ width: "100%", marginLeft: "0.5rem" }}>
+        <span className="w-full ml-1">
           <p>
-            <span className={styles.field_label}>From:</span>
+            <span className="mr-1">From:</span>
             {shorten(e.from, 8, 4, 15)}
           </p>
           <span>
-            <span className={styles.field_label}>Amount:</span>
+            <span className="mr-1">Amount:</span>
             {e.amount}
           </span>
         </span>
-        <span className={styles.time_box}>
-          <span className={styles.direction}>
+        <span className="flex flex-col items-center flex-shrink-0">
+          <span className="text-white py-px px-2 group-[success]:bg-green-400 group-[pending]:bg-yellow-400 group-[error]:bg-red-400">
             {e.direction === TX_TYPE.OUT
               ? "OUT"
               : e.direction === TX_TYPE.IN
@@ -89,31 +84,36 @@ export function List({ e }: { e: INotification }) {
         </span>
       </span>
       <div
-        className={`${styles.expandable_section} ${
-          expandActive ? styles.active : ""
+        className={`w-full overflow-hidden transition ${
+          expandActive ? "max-h-[30rem] duration-1000" : "max-h-0 duration-500"
         }`}
       >
-        <div className={styles.padder}>
-          <div className={styles.item}>
-            <span>Transaction Hash:</span>
-            <a href={e.txLink} target="_blank" rel="noreferrer">
+        <div className="table border-spacing-x-2 border-spacing-y-1">
+          <div className="table-row">
+            <span className="table-cell">Transaction Hash:</span>
+            <a
+              className="table-cell"
+              href={e.txLink}
+              target="_blank"
+              rel="noreferrer"
+            >
               {e.txHash}
             </a>
           </div>
 
-          <div className={styles.item}>
-            <span>Gas Price:</span>
-            <span>{e.gasPrice}</span>
+          <div className="table-row">
+            <span className="table-cell">Gas Price:</span>
+            <span className="table-cell">{e.gasPrice}</span>
           </div>
 
-          <div className={styles.item}>
-            <span>Gas Limit:</span>
-            <span>{e.gasLimit}</span>
+          <div className="table-row">
+            <span className="table-cell">Gas Limit:</span>
+            <span className="table-cell">{e.gasLimit}</span>
           </div>
 
-          <div className={styles.item}>
-            <span>Total transaction fee:</span>
-            <span>{e.amount + e.gasPrice}</span>
+          <div className="table-row">
+            <span className="table-cell">Total transaction fee:</span>
+            <span className="table-cell">{e.amount + e.gasPrice}</span>
           </div>
         </div>
       </div>

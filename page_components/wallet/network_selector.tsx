@@ -4,7 +4,7 @@ import {
   CaretRight,
   CloseIcon,
 } from "@/components/icons/accessibility";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NetworkContext } from "@/context/network";
 import { NETWORKS } from "interfaces/IRpc";
 import NET_CONFIG from "config/allNet";
@@ -30,7 +30,13 @@ export const networkLogoMap: { [key: string]: JSX.Element } = {
   [NETWORKS.MUMBAI]: <PolygonIcon />,
 };
 
-export default function NetworkSelector() {
+export default function NetworkSelector({
+  click,
+  setClick,
+}: {
+  click?: boolean;
+  setClick?: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [notification, pushNotification] = useNotification();
   const [network, setNetwork] = useContext(NetworkContext);
   const [account, setAccount] = useContext(AccountContext);
@@ -179,7 +185,13 @@ export default function NetworkSelector() {
     })();
   }, []);
 
-  console.log(network);
+  useEffect(() => {
+    if (click === true && setClick !== undefined) {
+      setModalActive(true);
+      setClick(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [click]);
   return (
     <>
       <button
@@ -208,12 +220,12 @@ export default function NetworkSelector() {
         </div>
       </button>
       <div
-        className={`text-neutral-800 absolute top-0 left-0 bg-white bg-opacity-70 transition w-full h-full flex flex-col p-2 ${
-          modalActive ? "opacity-1 z-50" : "-z-10 opacity-0"
+        className={`text-neutral-800 fixed top-0 left-0 bg-white bg-opacity-70 transition w-full h-full flex flex-col items-center p-2 ${
+          modalActive ? "opacity-1 z-40" : "-z-10 opacity-0"
         }`}
       >
         <div
-          className={`bg-white shadow-b shadow-neutral-500 p-2 max-w-5xl w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
+          className={`bg-white shadow-b shadow-neutral-500 p-2 max-w-[22rem] w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
         >
           <h4 className="font-semibold p-2 text-base text-center w-full text-blue-600">
             Select Network
