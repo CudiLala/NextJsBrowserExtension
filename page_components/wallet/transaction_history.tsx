@@ -16,18 +16,14 @@ export default function TransactionHistory({ network }: { network: string }) {
       : [];
 
   return (
-    <div className="p-2 bg-white rounded-md">
-      <p className="font-semibold text-base text-center p-4">TX History</p>
-      <div className="pt-4 pb-8">
-        {notifications.length > 0 ? (
-          notifications.map((e) => <List key={e?.id} e={e} />)
-        ) : (
-          <></>
-        )}
-      </div>
-      <div>
-        <Link href="/wallet/notifications">See more</Link>
-      </div>
+    <div className="p-2 bg-neutral-200 rounded-md flex flex-col gap-2">
+      <p className="font-semibold text-base text-center">TX History</p>
+      {notifications.length > 0 ? (
+        notifications.map((e) => <List key={e?.id} e={e} />)
+      ) : (
+        <></>
+      )}
+      <Link href="/wallet/notifications">See more</Link>
     </div>
   );
 }
@@ -46,21 +42,21 @@ export function List({ e }: { e: INotification }) {
 
   return (
     <button
-      className={`mb-2 flex flex-col p-2 rounded-md bg-transparent w-full tet-left group ${
+      className={`mb-2 flex flex-col p-2 rounded-md bg-transparent w-full tet-left ${
         e.status === TX_STATUS.PENDING
-          ? "pending bg-yellow-50 border border-yellow-400"
+          ? "grouppending bg-yellow-50 border border-yellow-400"
           : e.status === TX_STATUS.SUCCESS
-          ? "success bg-green-50 border border-green-400"
-          : "error bg-red-50 border border-red-400"
+          ? "groupsuccess bg-green-50 border border-green-400"
+          : "grouperror bg-red-50 border border-red-400"
       }`}
       onClick={() => setExpandActive((prev) => !prev)}
     >
       <span className="flex items-center w-full">
         <span
-          className="bg-white rounded-full w-7 h-7 flex-shrink-0 flex items-center flex-center mr-2 overflow-hidden"
+          className="bg-white rounded-full w-7 h-7 flex-shrink-0 flex mr-2 overflow-hidden"
           ref={imageRef}
         ></span>
-        <span className="w-full ml-1">
+        <span className="w-full ml-1 text-left">
           <p>
             <span className="mr-1">From:</span>
             {shorten(e.from, 8, 4, 15)}
@@ -71,7 +67,7 @@ export function List({ e }: { e: INotification }) {
           </span>
         </span>
         <span className="flex flex-col items-center flex-shrink-0">
-          <span className="text-white py-px px-2 group-[success]:bg-green-400 group-[pending]:bg-yellow-400 group-[error]:bg-red-400">
+          <span className="text-white py-px px-2 group-[success]:bg-green-400 group-[pending]:bg-yellow-400 group-[error]:bg-red-400 rounded-md">
             {e.direction === TX_TYPE.OUT
               ? "OUT"
               : e.direction === TX_TYPE.IN

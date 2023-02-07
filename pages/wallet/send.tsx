@@ -311,7 +311,7 @@ export default function SendWalletPage() {
         </h1>
       </div>
 
-      <div className="flex flex-col gap-3 px-3">
+      <div className="flex flex-col gap-3 px-3 pb-3">
         <div className="flex flex-col relative gap-0.5">
           <label className="font-semibold">Select Currency</label>
           <button
@@ -354,21 +354,23 @@ export default function SendWalletPage() {
         </div>
 
         <div
-          className={`flex flex-col relative gap-0.5 group ${
-            !addressValid.value ? "error" : ""
+          className={`flex flex-col relative gap-0.5 ${
+            !addressValid.value ? "grouperror" : ""
           }`}
         >
-          <label>Address</label>
+          <label className="font-semibold">Address</label>
           <AddressInput address={details.address} setDetails={setDetails} />
         </div>
-        {!addressValid.value && <span>{addressValid.msg}</span>}
+        {!addressValid.value && (
+          <span className="text-red-500">{addressValid.msg}</span>
+        )}
 
         <div>
-          <h6 className="font-semibold text-base">Transfer fee</h6>
-          <div className="flex justify-between my-2 font-semibold">
+          <h6 className="font-semibold">Transfer fee</h6>
+          <div className="flex flex-col my-2 font-semibold">
             <div className="flex items-center">
-              <div className="bg-neutral-300 flex items-center rounded-lg px-3 py-2 mr-3">
-                <span className="text-base">Bal: {account.balance}</span>
+              <div className="bg-neutral-300 flex items-center rounded-lg px-3 py-1 mr-3">
+                <span>Bal: {account.balance}</span>
                 <span className="flex items-center text-blue-500">
                   <span className="w-5 h-5 mr-1 ml-4 inline-flex text-blue-500">
                     <ClockFillIcon />
@@ -376,7 +378,7 @@ export default function SendWalletPage() {
                   {gasPriority?.time}
                 </span>
                 <button
-                  className="ml-2 text-blue-600 flex w-10 p-2 bg-transparent outline-none"
+                  className="ml-2 text-blue-600 flex w-8 p-2 bg-transparent outline-none"
                   onClick={() => setTransFee(true)}
                 >
                   <CaretDownOutline />
@@ -384,7 +386,7 @@ export default function SendWalletPage() {
               </div>
               {gasPrice}
             </div>
-            <div className="py-3">Total: {+details.amount + +gasPrice}</div>
+            <div className="mt-3">Total: {+details.amount + +gasPrice}</div>
           </div>
           <button
             className="text-blue-500 bg-transparent"
@@ -407,15 +409,16 @@ export default function SendWalletPage() {
           <h6>Advanced</h6>
         </SendAdvancedSection>
 
-        <div className="flex justify-center mt-6 mb-1 gap-4">
+        <div className="flex flex-col gap-4">
           <button
-            className={`bg-transparent text-blue-600 border-2 border-current rounded-md py-2 px-6 font-semibold w-60 disabled:!ring-0 active:ring-2 ring-offset-1 ring-blue-600`}
             onClick={resetDetails}
+            className="p-2 bg-slate-100 rounded-lg text-blue-600 text-center font-semibold shadow-md shadow-blue-200"
           >
             Clear All
           </button>
           <button
-            className={`bg-blue-600 text-white border-2 border-blue-600 rounded-md py-2 px-6 font-semibold w-60 disabled:cursor-not-allowed disabled:!ring-0 active:ring-2 ring-offset-1 ring-blue-600`}
+            type="submit"
+            className="p-2 bg-blue-600 rounded-lg text-white text-center font-semibold shadow-lg shadow-blue-200 disabled:cursor-not-allowed disabled:bg-blue-400"
             onClick={() => setTransConfirmModalActive(true)}
             disabled={
               !(
@@ -425,7 +428,6 @@ export default function SendWalletPage() {
                 details.address
               )
             }
-            // disabled={true}
           >
             Next
           </button>
@@ -434,14 +436,13 @@ export default function SendWalletPage() {
           notification={notification}
           pushNotification={pushNotification}
         />
-        <div>
-          <NetworkSelector click={networkClick} setClick={setNetworkClick} />
-        </div>
-        <div>
-          <TokenValue />
-        </div>
-        <div>
-          <TransactionHistory network={network.chainName} />
+        <div className="flex flex-col gap-4 mt-8">
+          <div>
+            <NetworkSelector click={networkClick} setClick={setNetworkClick} />
+          </div>
+          <div>
+            <TransactionHistory network={network.chainName} />
+          </div>
         </div>
       </div>
     </div>
@@ -458,12 +459,12 @@ function SendAdvancedSection({
   const [active, setActive] = useState(false);
 
   return (
-    <div className={`px-4 py-2 bg-white shadow-a rounded-md my-3`}>
+    <div className={`p-2 bg-white shadow-a rounded-md`}>
       <div className="flex">
         <div className="flex items-center flex-grow flex-shrink w-full">
           {children}
         </div>
-        <div className="flex items-center mr-8">
+        <div className="flex items-center flex-grow flex-shrink w-full">
           <span>Gas limit and Data</span>
           <button
             className={`flex w-8 h-8 p-2 bg-transparent flex-shrink-0 transition ${
@@ -499,8 +500,10 @@ function GasAndDataForm({
 }) {
   return (
     <div className="py-4 gap-4 flex flex-col">
-      <div className="p-5 bg-neutral-300">
-        <h6 className="text-base mb-1">For Advanced Users Only</h6>
+      <div className="p-5 bg-neutral-300 rounded-lg">
+        <h6 className="text-base font-semibold mb-1">
+          For Advanced Users Only
+        </h6>
         <p>
           Please don’t edit these fields unless you are an expert user & know
           what you’re doing. Entering the wrong information could result in your
@@ -508,7 +511,7 @@ function GasAndDataForm({
         </p>
       </div>
 
-      <div className="flex flex-col relative gap-0.5">
+      <div className="flex flex-col relative gap-0.5 px-1">
         <label className="font-semibold">Gas limit</label>
         <button
           className="text-blue-500 absolute right-2"
@@ -517,8 +520,8 @@ function GasAndDataForm({
           Reset to default: 21000
         </button>
         <input
-          className={`px-4 py-1.5 rounded-lg border border-neutral-500 flex items-center outline-none ${
-            !gasLimitValid.value ? "ring-2 ring-offset-1 ring-red" : ""
+          className={`px-4 py-1.5 rounded-lg border border-neutral-500 flex items-center outline-none ring-2 ring-offset-1 ring-transparent focus:ring-blue-500 ${
+            !gasLimitValid.value ? "!ring-red-400" : ""
           }`}
           value={gasLimit}
           type="number"
@@ -529,13 +532,15 @@ function GasAndDataForm({
             }))
           }
         />
-        {!gasLimitValid.value && <span>{gasLimitValid.msg}</span>}
+        {!gasLimitValid.value && (
+          <span className="text-red-500">{gasLimitValid.msg}</span>
+        )}
       </div>
 
-      <div className="flex flex-col relative gap-0.5">
+      <div className="flex flex-col relative gap-0.5 px-1">
         <label className="font-semibold">Add Data</label>
         <input
-          className={`px-4 rounded-lg border border-neutral-500 flex items-center`}
+          className={`px-4 py-1.5 rounded-lg outline-none border border-neutral-500 flex items-center focus:ring-2 ring-offset-1 ring-blue-500`}
           value={addData}
           onChange={(e) =>
             setDetails((prev) => ({ ...prev, addData: e.target.value }))
@@ -559,17 +564,20 @@ function AddressInput({
   return (
     <div
       className={`rounded-md flex flex-col mt-1 border border-neutral-500 ${
-        active ? "ring-2 ring-blue-500 group-[error]:ring-red-400" : ""
+        active
+          ? "ring-2 ring-blue-500 group-[error]:ring-red-400 ring-offset-1"
+          : ""
       }`}
       onFocusCapture={() => setActive(true)}
       onBlur={() => setActive(false)}
     >
-      <div>
+      <div className="w-full py-1 px-2">
         <input
           value={address}
           onChange={(e) =>
             setDetails((prev) => ({ ...prev, address: e.target.value }))
           }
+          className="outline-none flex w-full py-1"
         />
       </div>
       {!!account.addressList?.length && (
@@ -578,7 +586,7 @@ function AddressInput({
             active ? "max-h-[50rem] duration-800" : "max-h-0"
           }`}
         >
-          <div style={{ padding: ".5rem" }}>
+          <div className="p-1">
             {account.addressList?.map((e, i) => (
               <button
                 key={i}
@@ -586,6 +594,7 @@ function AddressInput({
                   setDetails((prev) => ({ ...prev, address: e.address }));
                   setActive(false);
                 }}
+                className="flex w-full bg-neutral-200 p-1 px-1.5 rounded-full items-center gap-2"
               >
                 <Address address={e.address} nickname={e.nickname} />
               </button>
@@ -604,7 +613,7 @@ function Address({ address, nickname }: { address: string; nickname: string }) {
     imageRef.current?.lastChild &&
       imageRef.current.removeChild(imageRef.current.lastChild);
     imageRef.current?.appendChild(
-      blockies.create({ seed: address, size: 10, scale: 3 })
+      blockies.create({ seed: address, size: 10, scale: 4 })
     );
   }, [address]);
 
@@ -612,13 +621,11 @@ function Address({ address, nickname }: { address: string; nickname: string }) {
     <>
       <span
         ref={imageRef}
-        className="rounded-full overflow-hidden w-7 h-7 flex-shrink-0 mr-2"
+        className="rounded-full overflow-hidden w-10 h-10 flex-shrink-0 mr-2"
       ></span>
-      <span className="flex-shrink-0 w-40 inline-flex">
-        {shorten(nickname, 8, 0, 10)}
-      </span>
-      <span className="w-full flex-grow flex-shrink">
-        {shorten(address, 15, 6, 24)}
+      <span className="flex flex-col items-start gap-1">
+        <span>{shorten(nickname, 14, 0, 17)}</span>
+        <span className="text-base">{shorten(address, 15, 6, 24)}</span>
       </span>
     </>
   );
@@ -697,7 +704,7 @@ function TransConfirmModal({
             </span>
           </div>
           <div className="bg-neutral-200 w-full flex-grow flex-shrink p-3">
-            <h6>TO ADDRESS</h6>
+            <h6 className="font-semibold">TO ADDRESS</h6>
             <div className="my-2 flex font-semibold">
               <span
                 className="bg-white rounded-full w-7 h-7 flex-shrink-0 flex items-center flex-center mr-2 overflow-hidden"
@@ -725,15 +732,16 @@ function TransConfirmModal({
         <div className="text-base border-t border-b border-neutral-400">
           Transaction Details
         </div>
-        <div className="flex justify-center mt-6 mb-1 gap-4">
+        <div className="flex flex-col gap-4 mt-4">
           <button
-            className={`bg-transparent text-blue-600 border-2 border-current rounded-md py-2 px-6 font-semibold w-60`}
+            className="p-2 bg-slate-100 rounded-lg text-blue-600 text-center font-semibold shadow-md shadow-blue-200"
             onClick={() => setActive(false)}
           >
             Cancel
           </button>
           <button
-            className={`bg-blue-600 text-white border-2 border-blue-600 rounded-md py-2 px-6 font-semibold w-60`}
+            type="submit"
+            className="p-2 bg-blue-600 rounded-lg text-white text-center font-semibold shadow-lg shadow-blue-200 disabled:cursor-not-allowed disabled:bg-blue-400"
             onClick={sendToken}
           >
             Confirm & Send
@@ -774,7 +782,7 @@ function TransInitModal({
           TRANSACTION INITIATED
         </h4>
 
-        <div className="mx-auto w-60 text-blue-500">
+        <div className="mx-auto w-32 my-8 text-blue-500">
           <TickHeavyIcon />
         </div>
 
