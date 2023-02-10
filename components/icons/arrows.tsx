@@ -23,14 +23,14 @@ export function ArrowForward() {
     <svg
       width="100%"
       height="100%"
-      viewBox="0 0 18 16"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M1.5 8H16.5M16.5 8L9.75 1.25M16.5 8L9.75 14.75"
+        d="M9 5L16 12L9 19"
         stroke="currentcolor"
-        strokeWidth="1.5"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
