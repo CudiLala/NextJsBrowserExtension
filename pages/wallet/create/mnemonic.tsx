@@ -82,7 +82,7 @@ function _1({
       <Link
         href="?step=2"
         shallow={true}
-        className="p-2 bg-blue-600 rounded-lg text-white text-center font-semibold shadow-md shadow-blue-200"
+        className="p-2 bg-blue-700 rounded-lg text-white text-center font-semibold shadow-md shadow-blue-200"
       >
         Next
       </Link>
@@ -228,7 +228,7 @@ function _2({
         <Link
           href="?step=3"
           shallow={true}
-          className="p-2 bg-blue-600 rounded-lg text-white text-center font-semibold shadow-md shadow-blue-200"
+          className="p-2 bg-blue-700 rounded-lg text-white text-center font-semibold shadow-md shadow-blue-200"
           onClick={(e) => validateSelectedAndContinue(e)}
         >
           Next
@@ -255,7 +255,7 @@ function _3() {
       </p>
       <Link
         href="/wallet/access/mnemonic"
-        className="w-full flex py-2 px-6 bg-blue-600 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
+        className="w-full flex py-2 px-6 bg-blue-700 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
       >
         Access Wallet
       </Link>

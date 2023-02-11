@@ -18,7 +18,7 @@ export default function NotFoundPage() {
           </span>
           <button
             onClick={() => router.back()}
-            className="text-white bg-blue-600 flex justify-center items-center rounded-lg py-2 shadow-lg shadow-blue-200"
+            className="text-white bg-blue-700 flex justify-center items-center rounded-lg py-2 shadow-lg shadow-blue-200"
           >
             Back
           </button>

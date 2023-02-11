@@ -53,7 +53,7 @@ export default function WalletPage() {
         </h1>
       </div>
       <div className="flex flex-col gap-4 p-4 text-white">
-        <div className="flex flex-col gap-2 rounded-xl p-3 bg-blue-600">
+        <div className="flex flex-col gap-2 rounded-xl p-3 bg-blue-700">
           <div className="flex items-start justify-between">
             <div className="flex items-center">
               <p>Personal Account</p>

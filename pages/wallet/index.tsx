@@ -110,13 +110,13 @@ export default function WalletPage() {
 
         <div className="py-4 flex gap-6">
           <div className="flex items-center flex-col">
-            <button className="py-2.5 px-6 h-10 rounded-lg bg-blue-600 text-white">
+            <button className="py-2.5 px-6 h-10 rounded-lg bg-blue-700 text-white">
               <SendArrow />
             </button>
             <p className="font-semibold text-base text-blue-600">Send</p>
           </div>
           <div className="flex items-center flex-col">
-            <button className="py-2.5 px-6 h-10 rounded-lg bg-blue-600 text-white">
+            <button className="py-2.5 px-6 h-10 rounded-lg bg-blue-700 text-white">
               <SwapArrow />
             </button>
             <p className="font-semibold text-base text-blue-600">Swap</p>

@@ -126,7 +126,7 @@ function _1({
           />
         </div>
         <div className="flex flex-col">
-          <button className="p-2 bg-blue-600 rounded-lg text-white font-semibold shadow-md shadow-blue-200">
+          <button className="p-2 bg-blue-700 rounded-lg text-white font-semibold shadow-md shadow-blue-200">
             Create Wallet
           </button>
         </div>
@@ -202,7 +202,7 @@ function _2({ success, password }: { success: boolean; password: string }) {
       </div>
 
       <button
-        className="w-full flex py-2 px-6 bg-blue-600 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
+        className="w-full flex py-2 px-6 bg-blue-700 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
         onClick={async () => {
           startLoader();
           const keyFile = await generateWalletUsingKeyStore(password);
@@ -231,7 +231,7 @@ function _3() {
       </p>
       <Link
         href="/wallet/access/keystore"
-        className="w-full flex py-2 px-6 bg-blue-600 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
+        className="w-full flex py-2 px-6 bg-blue-700 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
       >
         Access Wallet
       </Link>

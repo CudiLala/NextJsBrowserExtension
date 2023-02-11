@@ -99,7 +99,7 @@ function _1({
         onInput={async () => await afterUploadHandler()}
       />
       <button
-        className="w-full flex py-2 px-6 bg-blue-600 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
+        className="w-full flex py-2 px-6 bg-blue-700 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
         onClick={selectFile}
       >
         Select file
@@ -264,7 +264,7 @@ function _2({
 
         <button
           type="submit"
-          className="p-2 bg-blue-600 rounded-lg text-white font-semibold shadow-md shadow-blue-200"
+          className="p-2 bg-blue-700 rounded-lg text-white font-semibold shadow-md shadow-blue-200"
         >
           Access wallet
         </button>

@@ -70,7 +70,7 @@ function WelcomeScreen() {
         ))}
       </div>
       <button
-        className="cursor-pointer py-3 px-6 w-40 text-center bg-blue-600 mt-1 leading-none rounded-full font-semibold text-white"
+        className="cursor-pointer py-3 px-6 w-40 text-center bg-blue-700 mt-1 leading-none rounded-full font-semibold text-white"
         onClick={() =>
           welcomeState < 2
             ? setWelcomeState((p) => p + 1)

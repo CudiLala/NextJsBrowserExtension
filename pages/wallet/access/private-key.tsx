@@ -166,7 +166,7 @@ export default function PrivateKey() {
 
           <button
             type="submit"
-            className="p-2 bg-blue-600 rounded-lg text-white font-semibold shadow-md shadow-blue-200"
+            className="p-2 bg-blue-700 rounded-lg text-white font-semibold shadow-md shadow-blue-200"
           >
             Access wallet
           </button>

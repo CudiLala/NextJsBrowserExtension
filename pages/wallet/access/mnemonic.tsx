@@ -208,7 +208,7 @@ export default function MnemonicAccessWallet() {
           </button>
           <button
             type="submit"
-            className="p-2 bg-blue-600 rounded-lg text-white text-center font-semibold shadow-md shadow-blue-200 -mt-1"
+            className="p-2 bg-blue-700 rounded-lg text-white text-center font-semibold shadow-md shadow-blue-200 -mt-1"
           >
             Access wallet
           </button>

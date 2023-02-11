@@ -17,7 +17,7 @@ export default function Notification({ notification, pushNotification }: args) {
 
   const notificationTypeToStyleMap = {
     success: "bg-green-600",
-    info: "bg-blue-600",
+    info: "bg-blue-700",
     error: "bg-red-600",
   };
 

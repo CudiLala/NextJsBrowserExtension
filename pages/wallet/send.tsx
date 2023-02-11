@@ -418,7 +418,7 @@ export default function SendWalletPage() {
           </button>
           <button
             type="submit"
-            className="p-2 bg-blue-600 rounded-lg text-white text-center font-semibold shadow-lg shadow-blue-200 disabled:cursor-not-allowed disabled:bg-blue-400"
+            className="p-2 bg-blue-700 rounded-lg text-white text-center font-semibold shadow-lg shadow-blue-200 disabled:cursor-not-allowed disabled:bg-blue-400"
             onClick={() => setTransConfirmModalActive(true)}
             disabled={
               !(
@@ -741,7 +741,7 @@ function TransConfirmModal({
           </button>
           <button
             type="submit"
-            className="p-2 bg-blue-600 rounded-lg text-white text-center font-semibold shadow-lg shadow-blue-200 disabled:cursor-not-allowed disabled:bg-blue-400"
+            className="p-2 bg-blue-700 rounded-lg text-white text-center font-semibold shadow-lg shadow-blue-200 disabled:cursor-not-allowed disabled:bg-blue-400"
             onClick={sendToken}
           >
             Confirm & Send
@@ -803,7 +803,7 @@ function TransInitModal({
         </div>
         <div className="flex justify-center mt-6 mb-1 gap-4">
           <button
-            className={`bg-blue-600 text-white border-2 border-blue-600 rounded-md py-2 px-6 font-semibold w-60`}
+            className={`bg-blue-700 text-white border-2 border-blue-600 rounded-md py-2 px-6 font-semibold w-60`}
             onClick={() => setActive(false)}
           >
             Close
