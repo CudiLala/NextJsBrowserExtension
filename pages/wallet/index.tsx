@@ -1,6 +1,5 @@
 import {
   AvatarScanIcon,
-  CaretDown,
   ConnectedNode,
   DownloadIcon,
   ExpandIcon,
@@ -11,7 +10,12 @@ import {
 } from "@/components/icons/accessibility";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import { SendArrow, SwapArrow, ArrowForward } from "@/components/icons/arrows";
+import {
+  SendArrow,
+  SwapArrow,
+  ArrowForward,
+  ArrowDown,
+} from "@/components/icons/arrows";
 import Link from "next/link";
 
 export default function WalletPage() {
@@ -59,13 +63,13 @@ export default function WalletPage() {
             }`}
             tabIndex={-1}
           >
-            <UserModal />
+            <UserNavModal />
           </div>
         </div>
         <div className="flex items-center justify-end gap-2">
           <span className="font-semibold">Network</span>
           <span className="w-6 h-6 p-1 flex border border-current rounded-full text-sky-700">
-            <CaretDown />
+            <ArrowDown />
           </span>
         </div>
       </div>
@@ -228,7 +232,7 @@ function AccModal() {
   );
 }
 
-function UserModal() {
+export function UserNavModal() {
   return (
     <>
       <div className="border-b border-gray-400 py-2 px-4 flex justify-between items-center">
@@ -264,12 +268,15 @@ function UserModal() {
           </span>
           Create Account
         </button>
-        <button className="flex items-center justify-start p-2">
+        <Link
+          href="/wallet/import-account"
+          className="flex items-center justify-start p-2"
+        >
           <span className="w-5 h-5 flex mr-3">
             <DownloadIcon />
           </span>
           Import Account
-        </button>
+        </Link>
         <button className="flex items-center justify-start p-2">
           <span className="w-5 h-5 flex mr-3">
             <MessageIcon />
