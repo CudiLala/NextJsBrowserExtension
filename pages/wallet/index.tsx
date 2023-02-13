@@ -283,12 +283,15 @@ export function UserNavModal() {
           </span>
           Support
         </button>
-        <button className="flex items-center justify-start p-2">
+        <Link
+          href="/wallet/settings"
+          className="flex items-center justify-start p-2"
+        >
           <span className="w-5 h-5 flex mr-3">
             <SettingsIcon />
           </span>
           Settings
-        </button>
+        </Link>
       </div>
     </>
   );

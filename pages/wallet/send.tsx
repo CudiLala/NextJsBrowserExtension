@@ -12,13 +12,12 @@ import { convertToWei, getGasPrice } from "utils/tools";
 import { getWalletBalanceEth } from "utils/wallet";
 import { ProviderContext } from "context/web3";
 import {
-  CaretDownOutline,
   ClockFillIcon,
   ClockIcon,
   CloseIcon,
   TickHeavyIcon,
 } from "@/components/icons/accessibility";
-import { ArrowBack, ArrowForward } from "@/components/icons/arrows";
+import { ArrowBack, ArrowForward, ArrowDown } from "@/components/icons/arrows";
 import React, {
   ReactNode,
   useContext,
@@ -381,7 +380,7 @@ export default function SendWalletPage() {
                   className="ml-2 text-blue-600 flex w-8 p-2 bg-transparent outline-none"
                   onClick={() => setTransFee(true)}
                 >
-                  <CaretDownOutline />
+                  <ArrowDown />
                 </button>
               </div>
               {gasPrice}
@@ -472,7 +471,7 @@ function SendAdvancedSection({
             }`}
             onClick={() => setActive((prev) => !prev)}
           >
-            <CaretDownOutline />
+            <ArrowDown />
           </button>
         </div>
       </div>
