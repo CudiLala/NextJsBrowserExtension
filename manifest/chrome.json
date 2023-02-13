@@ -15,5 +15,5 @@
     { "matches": ["https://*/*", "http://*/*"], "js": ["inject.js"] }
   ],
   "host_permissions": ["<all_urls>"],
-  "action": { "default_popup": "index.html" }
+  "action": { "default_popup": "wallet.html" }
 }

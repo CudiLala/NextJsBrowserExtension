@@ -2,14 +2,16 @@ import BackButton from "@/components/button/back";
 import Link from "next/link";
 import {
   CardIcon,
-  CaretDownOutline,
-  CaretDownSolidSmall,
   ClockFillIcon,
   CopyIcon,
   ScanIcon,
   SendIcon,
   TickHeavyIcon,
 } from "@/components/icons/accessibility";
+import {
+  CaretDownOutline,
+  CaretDownSolidSmall,
+} from "@/components/icons/arrows";
 import Image from "next/image";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AccountContext } from "@/context/account";

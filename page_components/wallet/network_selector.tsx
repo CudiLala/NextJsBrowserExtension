@@ -1,9 +1,6 @@
 import { BNBIcon, EthereumIcon, PolygonIcon } from "@/components/icons/crypto";
-import {
-  SearchIcon,
-  CaretRight,
-  CloseIcon,
-} from "@/components/icons/accessibility";
+import { SearchIcon, CloseIcon } from "@/components/icons/accessibility";
+import { ArrowForward } from "@/components/icons/arrows";
 import React, { useContext, useEffect, useState } from "react";
 import { NetworkContext } from "@/context/network";
 import { NETWORKS } from "interfaces/IRpc";
@@ -205,7 +202,7 @@ export default function NetworkSelector({
           >
             Network
             <span className="flex w-4 h-4 text-neutral-500 border border-current rounded-full p-px ml-2">
-              <CaretRight />
+              <ArrowForward />
             </span>
           </div>
           <div className="w-10 h-10 bg-white rounded-full flex-shrink-0 flex justify-center items-center mr-2">

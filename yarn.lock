@@ -1257,6 +1257,11 @@ chownr@^1.1.4:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
   integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
 
+chrome-types@^0.1.171:
+  version "0.1.171"
+  resolved "https://registry.yarnpkg.com/chrome-types/-/chrome-types-0.1.171.tgz#7a755d57e91a4212ffb06d36afaff71b788ee9e8"
+  integrity sha512-F0fR9qCaNGN/mUKwMBduLR2N4QGxgsH5pzISIcUk2oKvpMTkdgszVjxGA+wfgGaW6fw4PxWkq2/YHtT78gI5xA==
+
 cids@^0.7.1:
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/cids/-/cids-0.7.5.tgz#60a08138a99bfb69b6be4ceb63bfef7a396b28b2"
