@@ -13,7 +13,7 @@ export default function Home() {
     if (introState === "showLogo")
       setTimeout(() => {
         setIntroState("showWelcome");
-      }, 2000);
+      }, 1000);
     router.prefetch("/on-board");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
