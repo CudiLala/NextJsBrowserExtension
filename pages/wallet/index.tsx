@@ -1,5 +1,6 @@
 import {
   AvatarScanIcon,
+  CloseIcon,
   ConnectedNode,
   DownloadIcon,
   ExpandIcon,
@@ -27,6 +28,10 @@ export default function WalletPage() {
   const [userModal, setUserModal] = useState<"visible" | "invisible">(
     "invisible"
   );
+  const [accDetailsModal, setAccDetailsModal] = useState<
+    "visible" | "invisible"
+  >("invisible");
+
   const copyRef = useRef<HTMLTextAreaElement>(null);
 
   function copyAddress() {
@@ -99,14 +104,17 @@ export default function WalletPage() {
                 : "opacity-0 -z-10 invisible"
             }`}
           >
-            <AccModal />
+            <AccModal
+              setAccModal={setAccModal}
+              setAccDetailsModal={setAccDetailsModal}
+            />
           </div>
         </div>
       </div>
 
       <div className="px-8 py-10 w-full flex flex-col items-center gap-2">
         <p className="font-semibold text-2xl">10 MOL</p>
-        <p className="text-base">$100 USD</p>
+        <p className="text-base font-semibold">0.5 ETH</p>
 
         <div className="py-4 flex gap-6">
           <div className="flex items-center flex-col">
@@ -197,11 +205,23 @@ export default function WalletPage() {
           Mola Support
         </Link>
       </p>
+      <AccountDetailsModal
+        modal={accDetailsModal}
+        setModal={setAccDetailsModal}
+      />
     </div>
   );
 }
 
-function AccModal() {
+function AccModal({
+  setAccModal,
+  setAccDetailsModal,
+}: {
+  setAccModal: React.Dispatch<React.SetStateAction<"visible" | "invisible">>;
+  setAccDetailsModal: React.Dispatch<
+    React.SetStateAction<"visible" | "invisible">
+  >;
+}) {
   return (
     <>
       <button className="flex items-center justify-start p-2">
@@ -210,7 +230,13 @@ function AccModal() {
         </span>
         View on account etherscan
       </button>
-      <button className="flex items-center justify-start p-2">
+      <button
+        className="flex items-center justify-start p-2"
+        onClick={() => {
+          setAccDetailsModal("visible");
+          setAccModal("invisible");
+        }}
+      >
         <span className="w-5 h-5 flex mr-3">
           <AvatarScanIcon />
         </span>
@@ -294,5 +320,74 @@ export function UserNavModal() {
         </Link>
       </div>
     </>
+  );
+}
+
+function AccountDetailsModal({
+  modal,
+  setModal,
+}: {
+  modal: "visible" | "invisible";
+  setModal: React.Dispatch<React.SetStateAction<"visible" | "invisible">>;
+}) {
+  return (
+    <div
+      className={`text-neutral-800 fixed top-0 left-0 bg-white bg-opacity-70 transition w-full h-full flex flex-col items-center p-2 ${
+        modal === "visible" ? "opacity-1 z-40" : "-z-10 opacity-0"
+      }`}
+    >
+      <div
+        className={`bg-white shadow-b shadow-neutral-500 px-2 py-4 flex flex-col gap-4 max-w-[22rem] w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
+      >
+        <button
+          className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
+          onClick={() => setModal("invisible")}
+        >
+          <CloseIcon />
+        </button>
+        <div className="flex justify-center">
+          <span className="flex w-20 h-20 p-0.5 border border-gray-500 rounded-full">
+            <span className="flex w-full h-full relative">
+              <Image fill alt="dp" src="/dp.png" className="rounded-full" />
+            </span>
+          </span>
+        </div>
+
+        <p className="font-semibold text-base text-center">Account 1</p>
+
+        <div className="flex justify-center">
+          <span className="flex w-28 h-28">
+            <svg
+              width="100%"
+              height="100%"
+              viewBox="0 0 111 111"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18.375 18.375H45.9375V45.9375H18.375V18.375ZM91.875 18.375V45.9375H64.3125V18.375H91.875ZM64.3125 68.9062H73.5V59.7188H64.3125V50.5312H73.5V59.7188H82.6875V50.5312H91.875V59.7188H82.6875V68.9062H91.875V82.6875H82.6875V91.875H73.5V82.6875H59.7188V91.875H50.5312V73.5H64.3125V68.9062ZM73.5 68.9062V82.6875H82.6875V68.9062H73.5ZM18.375 91.875V64.3125H45.9375V91.875H18.375ZM27.5625 27.5625V36.75H36.75V27.5625H27.5625ZM73.5 27.5625V36.75H82.6875V27.5625H73.5ZM27.5625 73.5V82.6875H36.75V73.5H27.5625ZM18.375 50.5312H27.5625V59.7188H18.375V50.5312ZM41.3438 50.5312H59.7188V68.9062H50.5312V59.7188H41.3438V50.5312ZM50.5312 27.5625H59.7188V45.9375H50.5312V27.5625ZM9.1875 9.1875V27.5625H0V9.1875C0 6.75082 0.967966 4.41395 2.69096 2.69096C4.41395 0.967966 6.75082 0 9.1875 0L27.5625 0V9.1875H9.1875ZM101.062 0C103.499 0 105.836 0.967966 107.559 2.69096C109.282 4.41395 110.25 6.75082 110.25 9.1875V27.5625H101.062V9.1875H82.6875V0H101.062ZM9.1875 82.6875V101.062H27.5625V110.25H9.1875C6.75082 110.25 4.41395 109.282 2.69096 107.559C0.967966 105.836 0 103.499 0 101.062V82.6875H9.1875ZM101.062 101.062V82.6875H110.25V101.062C110.25 103.499 109.282 105.836 107.559 107.559C105.836 109.282 103.499 110.25 101.062 110.25H82.6875V101.062H101.062Z"
+                fill="#858CA0"
+              />
+            </svg>
+          </span>
+        </div>
+
+        <div className="bg-gray-300 border border-gray-500 max-w-[16rem] rounded-lg self-center p-2">
+          <p className="text-center break-words">
+            0x1bD394d604159804d8740F73644480A10cD1C184
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-2 p-2">
+          <button className="p-2 bg-blue-700 rounded-lg text-white text-center font-semibold shadow-lg shadow-blue-200 disabled:cursor-not-allowed disabled:bg-blue-400">
+            View on etherscan
+          </button>
+
+          <button className="p-2 bg-blue-700 rounded-lg text-white text-center font-semibold shadow-lg shadow-blue-200 disabled:cursor-not-allowed disabled:bg-blue-400">
+            Export private key
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
