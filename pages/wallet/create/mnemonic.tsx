@@ -32,16 +32,36 @@ export default function MnemonicCreateWallet() {
           Create With Mnemonic
         </h1>
       </div>
-      {step === 1 && (
-        <_1 words={words} generateAndSetWords={generateAndSetWords} />
+      {step === 1 && <_1 />}
+      {step === 2 && (
+        <_2 words={words} generateAndSetWords={generateAndSetWords} />
       )}
-      {step === 2 && <_2 words={words} setSuccess={setSuccess} />}
-      {step === 3 && <_3 />}
+      {step === 3 && <_3 words={words} setSuccess={setSuccess} />}
+      {step === 4 && <_4 />}
     </div>
   );
 }
 
-function _1({
+function _1() {
+  return (
+    <div className="flex flex-col gap-4 p-4">
+      <h2 className="text-base">
+        <span className="mr-2">Step 1:</span>
+        <span>Create unlocking password</span>
+      </h2>
+
+      <Link
+        href="?step=2"
+        shallow={true}
+        className="p-2 bg-blue-700 rounded-lg text-white text-center font-semibold shadow-md shadow-blue-200"
+      >
+        Next
+      </Link>
+    </div>
+  );
+}
+
+function _2({
   words,
   generateAndSetWords,
 }: {
@@ -51,7 +71,7 @@ function _1({
   return (
     <div className="flex flex-col gap-4 p-4">
       <h2 className="text-base">
-        <span className="mr-2">Step 1:</span>
+        <span className="mr-2">Step 2:</span>
         <span>Write down these words</span>
       </h2>
       <div className="w-full flex justify-end">
@@ -90,7 +110,7 @@ function _1({
   );
 }
 
-function _2({
+function _3({
   words: _words,
   setSuccess,
 }: {
@@ -173,7 +193,7 @@ function _2({
   return (
     <div className="p-4 flex flex-col gap-4">
       <h2 className="text-base">
-        <span className="mr-2">Step 2:</span>
+        <span className="mr-2">Step 3:</span>
         <span className="mr-2">Verification</span>
       </h2>
       <div className="w-full flex flex-col gap-4 justify-center">
@@ -242,11 +262,11 @@ function _2({
   );
 }
 
-function _3() {
+function _4() {
   return (
     <div className="p-4 flex flex-col gap-4">
       <h2 className="text-base">
-        <span className="mr-2">Step 3:</span>
+        <span className="mr-2">Step 4:</span>
         <span className="mr-2">Congratulations</span>
       </h2>
       <p className="text-neutral-800">

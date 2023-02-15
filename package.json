@@ -2,18 +2,35 @@
   "name": "mola-wallet-chrome-extension",
   "version": "0.1.0",
   "private": true,
+  "watch": {
+    "build-chrome-osx": {
+      "ignore": [
+        "build",
+        "node_modules",
+        "out",
+        ".next",
+        "yarn.lock"
+      ],
+      "quiet": false,
+      "patterns": [
+        "*"
+      ],
+      "extensions": "ts,tsx,js,jsx,json"
+    }
+  },
   "scripts": {
     "dev": "next dev",
-    "prepare-chrome": "cp ./manifest/chrome.json ./public/manifest.json",
-    "prepare-firefox": "cp ./manifest/firefox.json ./public/manifest.json",
-    "lint:build": "mv ./out/_next ./out/next && cd ./out && grep -rl '/_next' * | xargs sed -i 's|/_next|/next|g'",
-    "lint:build-osx": "mv ./out/_next ./out/next && cd ./out && grep -rli '_next' * | xargs -I@ sed -i '' 's|/_next|/next|g' @;",
+    "dev-chrome": "npm-watch build-chrome-osx",
+    "prepare-chrome": "cp ./manifest/chrome.json ./out/manifest.json",
+    "prepare-firefox": "cp ./manifest/firefox.json ./out/manifest.json",
+    "lint:build": "mv ./out/_next ./out/next && cd ./out && grep -rl '/_next' * | xargs sed -i 's|/_next|/next|g' && cd ..",
+    "lint:build-osx": "mv ./out/_next ./out/next && cd ./out && grep -rli '_next' * | xargs -I@ sed -i '' 's|/_next|/next|g' @ && cd ..;",
     "build": "next build && next export && npm run lint:build",
     "build-osx": "next build && next export && npm run lint:build-osx",
-    "build-chrome": "npm run prepare-chrome && npm run build",
-    "build-chrome-osx": "npm run prepare-chrome && npm run build-osx",
-    "build-firefox": "npm run prepare-firefox && npm run build",
-    "build-firefox-osx": "npm run prepare-firefox && npm run build-osx",
+    "build-chrome": "npm run build && npm run prepare-chrome",
+    "build-chrome-osx": "npm run build-osx && npm run prepare-chrome",
+    "build-firefox": "npm run build && npm run prepare-firefox",
+    "build-firefox-osx": "npm run build-osx && npm run prepare-firefox",
     "start": "next start",
     "lint": "next lint"
   },
@@ -43,6 +60,7 @@
   "devDependencies": {
     "@types/chrome": "^0.0.213",
     "autoprefixer": "^10.4.13",
+    "npm-watch": "^0.11.0",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.4"
   }

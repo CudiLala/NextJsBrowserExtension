@@ -14,9 +14,9 @@ export default function CreateWalletPage() {
       <div className="flex flex-col h-full gap-4 p-4">
         <Link
           href="/wallet/create/mnemonic"
-          className="p-4 flex flex-col text-neutral-900 rounded-2xl border border-neutral-300"
+          className="p-4 flex flex-col text-neutral-900 rounded-2xl border border-blue-400"
         >
-          <h2 className="text-lg font-semibold mb-2">
+          <h2 className="text-lg text-blue-800 font-semibold mb-2">
             Create Wallet Using Mnemonic Phrase
           </h2>
           <div className="flex justify-between items-start">
@@ -37,9 +37,9 @@ export default function CreateWalletPage() {
 
         <Link
           href="/wallet/create/keystore"
-          className="p-4 flex flex-col text-neutral-900 rounded-2xl border border-neutral-300"
+          className="p-4 flex flex-col text-neutral-900 rounded-2xl border border-blue-400"
         >
-          <h2 className="text-lg font-semibold mb-2">
+          <h2 className="text-lg text-blue-800 font-semibold mb-2">
             Create Wallet Using Key Store File
           </h2>
           <div className="flex justify-between items-start">
