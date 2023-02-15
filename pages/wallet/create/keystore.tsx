@@ -154,7 +154,11 @@ function _2({ success, password }: { success: boolean; password: string }) {
         <div className="rounded-lg p-4 shadow-a">
           <div className="w-full flex justify-center px-4 py-2">
             <span className="relative inline-block w-10 h-10">
-              <Image src="/keystore_img_1.svg" alt="careful image" fill />
+              <Image
+                src="/images/keystore-img-1.svg"
+                alt="careful image"
+                fill
+              />
             </span>
           </div>
           <div>
@@ -170,7 +174,11 @@ function _2({ success, password }: { success: boolean; password: string }) {
         <div className="rounded-lg p-4 shadow-a">
           <div className="w-full flex justify-center px-4 py-2">
             <span className="relative inline-block w-10 h-10">
-              <Image src="/keystore_img_2.svg" alt="dont'share img" fill />
+              <Image
+                src="/images/keystore-img-2.svg"
+                alt="dont'share img"
+                fill
+              />
             </span>
           </div>
           <div>
@@ -187,7 +195,11 @@ function _2({ success, password }: { success: boolean; password: string }) {
         <div className="rounded-lg p-4 shadow-a">
           <div className="w-full flex justify-center px-4 py-2">
             <span className="relative inline-block w-10 h-10">
-              <Image src="/keystore_img_3.svg" alt="dont'share img" fill />
+              <Image
+                src="/images/keystore-img-3.svg"
+                alt="dont'share img"
+                fill
+              />
             </span>
           </div>
           <div>

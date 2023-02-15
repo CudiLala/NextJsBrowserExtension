@@ -23,7 +23,11 @@ export default function CreateWalletPage() {
               to login
             </p>
             <span className="inline-flex flex-shrink-0 ml-5 w-10 h-10 relative">
-              <Image fill src="/icon_key_store.svg" alt="key store icon" />
+              <Image
+                fill
+                src="/images/icon-key-store.svg"
+                alt="key store icon"
+              />
             </span>
           </div>
         </Link>
@@ -38,7 +42,11 @@ export default function CreateWalletPage() {
               generated when you created your account
             </p>
             <span className="inline-flex ml-5 flex-shrink-0 w-10 h-10 relative">
-              <Image fill src="/icon_mnemonic.svg" alt="key store icon" />
+              <Image
+                fill
+                src="/images/icon-mnemonic.svg"
+                alt="key store icon"
+              />
             </span>
           </div>
         </Link>

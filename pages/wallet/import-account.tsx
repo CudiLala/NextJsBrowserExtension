@@ -26,7 +26,12 @@ export default function ImportAccountPage() {
             }
           >
             <span className="flex w-full h-full relative">
-              <Image fill alt="dp" src="/dp.png" className="rounded-full" />
+              <Image
+                fill
+                alt="dp"
+                src="/images/dp.png"
+                className="rounded-full"
+              />
             </span>
           </button>
           <div

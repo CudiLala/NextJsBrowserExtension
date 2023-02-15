@@ -1,5 +1,5 @@
 import Image from "next/image";
-import molaLogo from "@/public/mola-logo-1.png";
+import molaLogo from "@/public/mola-logo.png";
 
 export default function Index() {
   return (

@@ -57,7 +57,12 @@ export default function WalletPage() {
             }
           >
             <span className="flex w-full h-full relative">
-              <Image fill alt="dp" src="/dp.png" className="rounded-full" />
+              <Image
+                fill
+                alt="dp"
+                src="/images/dp.png"
+                className="rounded-full"
+              />
             </span>
           </button>
           <div
@@ -166,7 +171,7 @@ export default function WalletPage() {
           <button className="p-3 text-start bg-gray-100 flex gap-4 items-center border-b border-gray-300">
             <span className="w-10 h-10 p-1 flex border border-current rounded-full justify-center items-center">
               <Image
-                src="/ethereum.png"
+                src="/images/ethereum.png"
                 width={32}
                 height={32}
                 className="w-auto h-8"
@@ -274,7 +279,12 @@ export function UserNavModal() {
             <span>432ygh2u2h....23k</span>
           </span>
           <span className="flex w-8 h-8 relative flex-shrink-0">
-            <Image fill alt="dp" src="/dp.png" className="rounded-full" />
+            <Image
+              fill
+              alt="dp"
+              src="/images/dp.png"
+              className="rounded-full"
+            />
           </span>
         </button>
         <button className="px-3 py-1 flex gap-2 justify-between items-center w-full">
@@ -283,7 +293,12 @@ export function UserNavModal() {
             <span>432ygh2u2h....23k</span>
           </span>
           <span className="flex w-8 h-8 relative flex-shrink-0">
-            <Image fill alt="dp" src="/dp.png" className="rounded-full" />
+            <Image
+              fill
+              alt="dp"
+              src="/images/dp.png"
+              className="rounded-full"
+            />
           </span>
         </button>
       </div>
@@ -348,7 +363,12 @@ function AccountDetailsModal({
         <div className="flex justify-center">
           <span className="flex w-20 h-20 p-0.5 border border-gray-500 rounded-full">
             <span className="flex w-full h-full relative">
-              <Image fill alt="dp" src="/dp.png" className="rounded-full" />
+              <Image
+                fill
+                alt="dp"
+                src="/images/dp.png"
+                className="rounded-full"
+              />
             </span>
           </span>
         </div>
