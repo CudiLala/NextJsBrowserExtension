@@ -44,6 +44,12 @@ export default function WalletPage() {
     if (copied) setTimeout(() => setCopied(false), 2000);
   }, [copied]);
 
+  useEffect(() => {
+    chrome.storage.local.get(["key"]).then((result) => {
+      console.log("Tsx value currently is " + result.key);
+    });
+  }, []);
+
   return (
     <div className="flex flex-col">
       <div className="bg-gray-200 px-2 py-1 flex gap-3 justify-between items-center sticky top-0 left-0 z-30">
