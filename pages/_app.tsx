@@ -9,8 +9,11 @@ import LoaderContextComponent from "context/loader";
 import { useEffect } from "react";
 import { initAssetEngine } from "utils/assetEngine";
 import { NetworkContextComponent } from "@/context/network";
+import { useRouter } from "next/router";
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+
   useEffect(() => {
     (async () => {
       await initAssetEngine();

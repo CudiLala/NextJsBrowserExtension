@@ -19,7 +19,7 @@
   },
   "host_permissions": ["<all_urls>"],
   "action": {
-    "default_popup": "wallet.html",
+    "default_popup": "index.html",
     "default_icon": "icons/mola-logo.png"
   }
 }
