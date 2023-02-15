@@ -9,7 +9,7 @@ import Image from "next/image";
 import { LoaderContext } from "@/context/loader";
 
 export default function KeystoreCreateWalllet() {
-  const [step] = useStep(3);
+  const [step] = useStep();
   const [success, setSuccess] = useState(false);
   const [password, setPassword] = useState("");
 

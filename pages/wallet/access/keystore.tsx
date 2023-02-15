@@ -22,7 +22,7 @@ import { EncryptedKeystoreV3Json } from "web3-core";
 import NET_CONFIG from "@/config/allNet";
 
 export default function KeystoreAccessWallet() {
-  const [step] = useStep(3);
+  const [step] = useStep();
   const [success, setSuccess] = useState(false);
   const [passwordedWalletFile, setPasswordedWalletFile] = useState(
     {} as EncryptedKeystoreV3Json

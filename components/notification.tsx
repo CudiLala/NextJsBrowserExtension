@@ -38,7 +38,7 @@ export default function Notification({ notification, pushNotification }: args) {
   return (
     <div
       ref={notificationRef}
-      className="w-full z-20 flex justify-center absolute bottom-full left-0 px-4 transition-all"
+      className="w-full z-20 flex justify-center fixed bottom-full left-0 px-4 transition-all"
     >
       <div className="w-full max-w-[20rem] bg-white rounded-xl border border-neutral-300 p-3">
         {notification?.element || prevNotification?.element}

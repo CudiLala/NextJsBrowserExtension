@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-export function useStep(steps: number): [number] {
+export function useStep(): [number] {
   const [step, setStep] = useState(1);
   const router = useRouter();
 
   function setStepByQuery() {
     let step = Number(new URLSearchParams(window.location.search).get("step"));
 
-    if (typeof !isNaN(step) && step <= steps && step >= 1) setStep(step);
+    if (typeof !isNaN(step) && step >= 1) setStep(step);
     else setStep(1);
   }
 

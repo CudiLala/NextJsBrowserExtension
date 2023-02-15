@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { MouseEvent, useEffect, useState } from "react";
+import React, { MouseEvent, useEffect, useRef, useState } from "react";
 import { createMnemonic } from "@/utils/wallet";
 
 import { useStep } from "@/hooks/step";
@@ -9,7 +9,7 @@ import Notification, { useNotification } from "@/components/notification";
 import BackButton from "@/components/button/back";
 
 export default function MnemonicCreateWallet() {
-  const [step] = useStep(3);
+  const [step] = useStep();
   const [words, setWords] = useState<string[]>(new Array(12).fill(""));
   const [success, setSuccess] = useState(false);
 
@@ -43,6 +43,17 @@ export default function MnemonicCreateWallet() {
 }
 
 function _1() {
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const confirmPasswordRef = useRef<HTMLInputElement>(null);
+
+  const router = useRouter();
+
+  function handleFormSubmit(ev: any) {
+    ev.preventDefault();
+
+    router.push("?step=2");
+  }
+
   return (
     <div className="flex flex-col gap-4 p-4">
       <h2 className="text-base">
@@ -50,13 +61,45 @@ function _1() {
         <span>Create unlocking password</span>
       </h2>
 
-      <Link
-        href="?step=2"
-        shallow={true}
-        className="p-2 bg-blue-700 rounded-lg text-white text-center font-semibold shadow-md shadow-blue-200"
-      >
-        Next
-      </Link>
+      <p className="text-base py-2">
+        This password will unlock your wallet only on this device. This password
+        cannot be recovered
+      </p>
+
+      <form className="flex flex-col gap-4" onSubmit={handleFormSubmit}>
+        <div className="flex flex-col">
+          <label className="mb-px">Enter a password</label>
+          <input
+            ref={passwordRef}
+            type="password"
+            className="border border-neutral-400 p-2 rounded-lg focus:outline-none focus:ring-2 ring-offset-1 ring-blue-500 tracking-wider transition"
+            required
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-px">Confirm password</label>
+          <input
+            ref={confirmPasswordRef}
+            type="password"
+            className="border border-neutral-400 p-2 rounded-lg focus:outline-none focus:ring-2 ring-offset-1 ring-blue-500 tracking-wider transition"
+            required
+          />
+        </div>
+
+        <div className="flex gap-3 items-center">
+          <input type="checkbox" required id="agree135" />
+          <label htmlFor="agree135">
+            I agree that Mola wallet cannot recover this password
+          </label>
+        </div>
+
+        <div className="flex flex-col">
+          <button className="p-2 bg-blue-700 rounded-lg text-white font-semibold shadow-md shadow-blue-200">
+            Create password
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
@@ -100,7 +143,7 @@ function _2({
       </div>
 
       <Link
-        href="?step=2"
+        href="?step=3"
         shallow={true}
         className="p-2 bg-blue-700 rounded-lg text-white text-center font-semibold shadow-md shadow-blue-200"
       >
@@ -172,7 +215,7 @@ function _3({
     ev.preventDefault();
     if (selectedWords.every((e, i) => e[0] === _words[i])) {
       setSuccess(true);
-      router.replace("?step=3", undefined, { shallow: true });
+      router.replace("?step=4", undefined, { shallow: true });
     } else {
       pushNotification({
         element: (
@@ -198,7 +241,10 @@ function _3({
       </h2>
       <div className="w-full flex flex-col gap-4 justify-center">
         <div className="w-full flex justify-end">
-          <button className="flex items-center font-semibold text-blue-600">
+          <button
+            className="flex items-center font-semibold text-blue-600"
+            onClick={clearSelectedWords}
+          >
             <span className="flex mr-1 w-6 h-6">
               <PenOnLineIcon />
             </span>
@@ -246,7 +292,7 @@ function _3({
         </div>
 
         <Link
-          href="?step=3"
+          href="?step=4"
           shallow={true}
           className="p-2 bg-blue-700 rounded-lg text-white text-center font-semibold shadow-md shadow-blue-200"
           onClick={(e) => validateSelectedAndContinue(e)}
