@@ -1,4 +1,4 @@
-import molaLogo from "@/public/mola-logo.png";
+import molaLogo from "@/public/images/mola-logo.png";
 import Image from "next/image";
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
