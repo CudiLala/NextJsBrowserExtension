@@ -11,13 +11,21 @@ export default function Home() {
 
   return (
     <div className="h-full flex justify-center items-center">
-      {introState === "showWelcome" && <WelcomeScreen />}
+      {introState === "showWelcome" && (
+        <WelcomeScreen setIntroState={setIntroState} />
+      )}
       {introState === "getStarted" && <OnBoardingScreen />}
     </div>
   );
 }
 
-function WelcomeScreen() {
+function WelcomeScreen({
+  setIntroState,
+}: {
+  setIntroState: React.Dispatch<
+    React.SetStateAction<"showWelcome" | "getStarted">
+  >;
+}) {
   const [welcomeState, setWelcomeState] = useState<number>(0);
   const router = useRouter();
 
@@ -63,7 +71,7 @@ function WelcomeScreen() {
         onClick={() =>
           welcomeState < 2
             ? setWelcomeState((p) => p + 1)
-            : router.push("/on-board")
+            : setIntroState("getStarted")
         }
       >
         {welcomeMessages[welcomeState].actionText}
@@ -81,29 +89,31 @@ export function OnBoardingScreen() {
         </h1>
       </div>
 
-      <p>
-        Get started with mola wallet for storing your mola tokens and managing
-        transactions
-      </p>
+      <div className="flex flex-col gap-2 px-3">
+        <p>
+          Get started with mola wallet for storing your mola tokens and managing
+          transactions
+        </p>
 
-      <Image
-        src={molaLogo}
-        alt="Welcome Image"
-        className="w-36 h-36 flex mx-auto my-6"
-      />
+        <Image
+          src={molaLogo}
+          alt="Welcome Image"
+          className="w-36 h-36 flex mx-auto my-6"
+        />
 
-      <Link
-        href="/wallet/create"
-        className="text-white bg-blue-700 flex justify-center items-center font-semibold rounded-lg py-2 shadow-md shadow-blue-200"
-      >
-        Create New Wallet
-      </Link>
-      <Link
-        href="/wallet/import"
-        className="text-white bg-blue-700 flex justify-center items-center font-semibold rounded-lg py-2 shadow-md shadow-blue-200"
-      >
-        Import existing wallet
-      </Link>
+        <Link
+          href="/wallet/create"
+          className="text-white bg-blue-700 flex justify-center items-center font-semibold rounded-lg py-2 shadow-md shadow-blue-200"
+        >
+          Create a new wallet
+        </Link>
+        <Link
+          href="/wallet/import"
+          className="text-white bg-blue-700 flex justify-center items-center font-semibold rounded-lg py-2 shadow-md shadow-blue-200"
+        >
+          Import your existing wallet
+        </Link>
+      </div>
     </div>
   );
 }

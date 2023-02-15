@@ -13,38 +13,45 @@ export default function CreateWalletPage() {
       </div>
       <div className="flex flex-col h-full gap-4 p-4">
         <Link
-          href="/wallet/create/keystore"
+          href="/wallet/create/mnemonic"
           className="p-4 flex flex-col text-neutral-900 rounded-2xl border border-neutral-300"
         >
-          <h2 className="text-base font-medium mb-1">Key Store File</h2>
+          <h2 className="text-lg font-semibold mb-2">
+            Create Wallet Using Mnemonic Phrase
+          </h2>
           <div className="flex justify-between items-start">
             <p>
-              Access wallet using your keystore file. You will need to upload it
-              to login
+              Create your wallet using a mnemonic phrase. This mnemonic phrase
+              will be used to restore your account if your unlocking password is
+              forgotten
             </p>
-            <span className="inline-flex flex-shrink-0 ml-5 w-10 h-10 relative">
+            <span className="inline-flex ml-3 flex-shrink-0 w-12 h-12 relative">
               <Image
                 fill
-                src="/images/icon-key-store.svg"
+                src="/images/icon-mnemonic.svg"
                 alt="key store icon"
               />
             </span>
           </div>
         </Link>
+
         <Link
-          href="/wallet/create/mnemonic"
+          href="/wallet/create/keystore"
           className="p-4 flex flex-col text-neutral-900 rounded-2xl border border-neutral-300"
         >
-          <h2 className="text-base font-medium mb-1">Mnemonic Phrase</h2>
+          <h2 className="text-lg font-semibold mb-2">
+            Create Wallet Using Key Store File
+          </h2>
           <div className="flex justify-between items-start">
             <p>
-              Access wallet using a mnemonic phrase. Type in the mnemonic phrase
-              generated when you created your account
+              Create wallet using your keystore file. The keystore file you
+              downloaded, together your decryption password will be used to
+              recover your account if your unlocking password is forgotten
             </p>
-            <span className="inline-flex ml-5 flex-shrink-0 w-10 h-10 relative">
+            <span className="inline-flex flex-shrink-0 ml-3 w-12 h-12 relative">
               <Image
                 fill
-                src="/images/icon-mnemonic.svg"
+                src="/images/icon-key-store.svg"
                 alt="key store icon"
               />
             </span>

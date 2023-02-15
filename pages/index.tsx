@@ -19,16 +19,5 @@ export default function Index() {
       });
   });
 
-  return (
-    <div className="flex flex-col h-full w-full justify-center items-center">
-      <button onClick={() => chrome.storage.session.clear()}>reset</button>
-      <Image
-        src={molaLogo}
-        alt="Welcome Image"
-        className="w-36 h-36 flex mx-auto my-6"
-      />
-      <Link href="/wallet/settings">Settings</Link>
-      <Link href="/wallet">Wallet</Link>
-    </div>
-  );
+  return <></>;
 }
