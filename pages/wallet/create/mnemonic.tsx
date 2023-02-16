@@ -11,6 +11,7 @@ import BackButton from "@/components/button/back";
 export default function MnemonicCreateWallet() {
   const [step] = useStep();
   const [words, setWords] = useState<string[]>(new Array(12).fill(""));
+  const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
 
   function generateWords(): string[] {
@@ -32,7 +33,7 @@ export default function MnemonicCreateWallet() {
           Create With Mnemonic
         </h1>
       </div>
-      {step === 1 && <_1 />}
+      {step === 1 && <_1 setPassword={setPassword} />}
       {step === 2 && (
         <_2 words={words} generateAndSetWords={generateAndSetWords} />
       )}
@@ -42,17 +43,71 @@ export default function MnemonicCreateWallet() {
   );
 }
 
-function _1() {
+function _1({
+  setPassword,
+}: {
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
+}) {
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
+  const checkboxRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter();
+  const [notification, pushNotification] = useNotification();
 
-  function handleFormSubmit(ev: any) {
-    ev.preventDefault();
-
-    router.push("?step=2");
+  function clearPasswords() {
+    passwordRef.current!.value = "";
+    confirmPasswordRef.current!.value = "";
+    passwordRef.current?.focus();
   }
+
+  function handleFormSubmit(e: any) {
+    e.preventDefault();
+
+    if (passwordRef.current!.value.length < 4) {
+      pushNotification({
+        element: "The password should be 4 or more characters",
+        type: "error",
+      });
+      clearPasswords();
+      return;
+    }
+
+    if (!/(\d+|\W+)/.test(passwordRef.current!.value)) {
+      pushNotification({
+        element:
+          "The password should at least a number or a non aphla-numeric character",
+        type: "error",
+      });
+
+      clearPasswords();
+      return;
+    }
+
+    if (passwordRef.current?.value !== confirmPasswordRef.current?.value) {
+      pushNotification({
+        element: "The passwords do not match",
+        type: "error",
+      });
+
+      clearPasswords();
+      return;
+    }
+
+    if (!checkboxRef.current?.checked) {
+      pushNotification({
+        element: "Please agree to the terms to proceed",
+        type: "error",
+      });
+    }
+
+    setPassword(passwordRef.current!.value);
+    router.push("?step=2", undefined, { shallow: true });
+  }
+
+  useEffect(() => {
+    passwordRef.current?.focus();
+  }, []);
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -88,7 +143,7 @@ function _1() {
         </div>
 
         <div className="flex gap-3 items-center">
-          <input type="checkbox" required id="agree135" />
+          <input type="checkbox" required id="agree135" ref={checkboxRef} />
           <label htmlFor="agree135">
             I agree that Mola wallet cannot recover this password
           </label>
@@ -100,6 +155,11 @@ function _1() {
           </button>
         </div>
       </form>
+
+      <Notification
+        notification={notification}
+        pushNotification={pushNotification}
+      />
     </div>
   );
 }
@@ -316,14 +376,14 @@ function _4() {
         <span className="mr-2">Congratulations</span>
       </h2>
       <p className="text-neutral-800">
-        You are now ready to take advantage of all that Mola Digital has to
+        You are now ready to take advantage of all that Mola wallet has to
         offer!
       </p>
       <Link
-        href="/wallet/access/mnemonic"
+        href="/wallet"
         className="w-full flex py-2 px-6 bg-blue-700 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
       >
-        Access Wallet
+        Go to your wallet
       </Link>
     </div>
   );
