@@ -11,7 +11,8 @@ import { LoaderContext } from "@/context/loader";
 export default function KeystoreCreateWalllet() {
   const [step] = useStep();
   const [success, setSuccess] = useState(false);
-  const [password, setPassword] = useState("");
+  const [decryptionPassword, setDecryptionPassword] = useState("");
+  const [unlockingPassword, setUnlockingPassword] = useState("");
 
   return (
     <div className="flex flex-col">
@@ -21,19 +22,167 @@ export default function KeystoreCreateWalllet() {
           Create With Keystore
         </h1>
       </div>
-      {step === 1 && <_1 setSuccess={setSuccess} setPassword={setPassword} />}
-      {step === 2 && <_2 success={success} password={password} />}
-      {step === 3 && <_3 />}
+      {step === 1 && <_1 setUnlockingPassword={setUnlockingPassword} />}
+      {step === 2 && (
+        <_2
+          setSuccess={setSuccess}
+          setDecryptionPassword={setDecryptionPassword}
+        />
+      )}
+      {step === 3 && (
+        <_3 success={success} decryptionPassword={decryptionPassword} />
+      )}
+      {step === 4 && <_4 />}
     </div>
   );
 }
 
 function _1({
+  setUnlockingPassword,
+}: {
+  setUnlockingPassword: React.Dispatch<React.SetStateAction<string>>;
+}) {
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const confirmPasswordRef = useRef<HTMLInputElement>(null);
+  const agreeCheckboxRef = useRef<HTMLInputElement>(null);
+  const decryptCheckboxRef = useRef<HTMLInputElement>(null);
+
+  const router = useRouter();
+  const [notification, pushNotification] = useNotification();
+
+  function clearPasswords() {
+    passwordRef.current!.value = "";
+    confirmPasswordRef.current!.value = "";
+    passwordRef.current?.focus();
+  }
+
+  function handleFormSubmit(e: any) {
+    e.preventDefault();
+
+    if (passwordRef.current!.value.length < 4) {
+      pushNotification({
+        element: "The password should be 4 or more characters",
+        type: "error",
+      });
+      clearPasswords();
+      return;
+    }
+
+    if (!/(\d+|\W+)/.test(passwordRef.current!.value)) {
+      pushNotification({
+        element:
+          "The password should at least a number or a non aphla-numeric character",
+        type: "error",
+      });
+
+      clearPasswords();
+      return;
+    }
+
+    if (passwordRef.current?.value !== confirmPasswordRef.current?.value) {
+      pushNotification({
+        element: "The passwords do not match",
+        type: "error",
+      });
+
+      clearPasswords();
+      return;
+    }
+
+    if (!agreeCheckboxRef.current?.checked) {
+      pushNotification({
+        element: "Please agree to the terms to proceed",
+        type: "error",
+      });
+    }
+
+    setUnlockingPassword(passwordRef.current!.value);
+
+    if (!decryptCheckboxRef.current?.value)
+      router.push("?step=2", undefined, { shallow: true });
+    else router.push("?step=3", undefined, { shallow: true });
+  }
+
+  useEffect(() => {
+    passwordRef.current?.focus();
+  }, []);
+
+  return (
+    <div className="flex flex-col gap-4 p-4">
+      <h2 className="text-base">
+        <span className="mr-2">Step 1:</span>
+        <span>Create unlocking password</span>
+      </h2>
+
+      <p className="text-base py-2">
+        This password will unlock your wallet only on this device. This password
+        cannot be recovered
+      </p>
+
+      <form className="flex flex-col gap-4" onSubmit={handleFormSubmit}>
+        <div className="flex flex-col">
+          <label className="mb-px">Enter a password</label>
+          <input
+            ref={passwordRef}
+            type="password"
+            className="border border-neutral-400 p-2 rounded-lg focus:outline-none focus:ring-2 ring-offset-1 ring-blue-500 tracking-wider transition"
+            required
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="mb-px">Confirm password</label>
+          <input
+            ref={confirmPasswordRef}
+            type="password"
+            className="border border-neutral-400 p-2 rounded-lg focus:outline-none focus:ring-2 ring-offset-1 ring-blue-500 tracking-wider transition"
+            required
+          />
+        </div>
+
+        <div className="flex gap-3 items-center">
+          <input
+            type="checkbox"
+            required
+            id="decrypt135"
+            ref={decryptCheckboxRef}
+          />
+          <label htmlFor="decrypt135">Use as decryption password</label>
+        </div>
+
+        <div className="flex gap-3 items-center">
+          <input
+            type="checkbox"
+            required
+            id="agree135"
+            ref={agreeCheckboxRef}
+          />
+          <label htmlFor="agree135">
+            I agree that Mola wallet cannot recover this password
+          </label>
+        </div>
+
+        <div className="flex flex-col">
+          <button className="p-2 bg-blue-700 rounded-lg text-white font-semibold shadow-md shadow-blue-200">
+            Create unlocking password
+          </button>
+        </div>
+      </form>
+
+      <Notification
+        notification={notification}
+        pushNotification={pushNotification}
+      />
+    </div>
+  );
+}
+
+function _2({
   setSuccess,
-  setPassword,
+  setDecryptionPassword,
 }: {
   setSuccess: React.Dispatch<React.SetStateAction<boolean>>;
-  setPassword: React.Dispatch<React.SetStateAction<string>>;
+  setDecryptionPassword: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
@@ -87,9 +236,9 @@ function _1({
       return;
     }
 
-    setPassword(passwordRef.current!.value);
+    setDecryptionPassword(passwordRef.current!.value);
     setSuccess(true);
-    router.push("?step=2", undefined, { shallow: true });
+    router.push("?step=3", undefined, { shallow: true });
   }
 
   useEffect(() => {
@@ -103,7 +252,7 @@ function _1({
         pushNotification={pushNotification}
       />
       <h2 className="text-base">
-        <span className="mr-2">Step 1:</span>
+        <span className="mr-2">Step 2:</span>
         <span>Create password</span>
       </h2>
       <form className="flex flex-col gap-4 py-4" onSubmit={handleFormSubmit}>
@@ -127,7 +276,7 @@ function _1({
         </div>
         <div className="flex flex-col">
           <button className="p-2 bg-blue-700 rounded-lg text-white font-semibold shadow-md shadow-blue-200">
-            Create Wallet
+            Create decryption password for wallet
           </button>
         </div>
       </form>
@@ -135,7 +284,13 @@ function _1({
   );
 }
 
-function _2({ success, password }: { success: boolean; password: string }) {
+function _3({
+  success,
+  decryptionPassword,
+}: {
+  success: boolean;
+  decryptionPassword: string;
+}) {
   const router = useRouter();
   const [startLoader, stopLoader] = useContext(LoaderContext);
 
@@ -147,7 +302,7 @@ function _2({ success, password }: { success: boolean; password: string }) {
   return (
     <div className="p-4 flex flex-col gap-4">
       <h2 className="text-base">
-        <span className="mr-2">Step 2:</span>
+        <span className="mr-2">Step 3:</span>
         <span className="mr-2">Download your keystore file</span>
       </h2>
       <div className="w-full flex flex-col gap-4 justify-center">
@@ -217,10 +372,10 @@ function _2({ success, password }: { success: boolean; password: string }) {
         className="w-full flex py-2 px-6 bg-blue-700 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
         onClick={async () => {
           startLoader();
-          const keyFile = await generateWalletUsingKeyStore(password);
+          const keyFile = await generateWalletUsingKeyStore(decryptionPassword);
 
           storeWalletKey(keyFile, `${new Date(Date.now()).toISOString()}.json`);
-          router.push("?step=3", undefined, { shallow: true });
+          router.push("?step=4", undefined, { shallow: true });
           stopLoader();
         }}
       >
@@ -230,7 +385,7 @@ function _2({ success, password }: { success: boolean; password: string }) {
   );
 }
 
-function _3() {
+function _4() {
   return (
     <div className="p-4 flex flex-col gap-4">
       <h2 className="text-base">
