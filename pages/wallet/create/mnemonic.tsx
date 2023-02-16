@@ -64,9 +64,9 @@ function _1({
   function handleFormSubmit(e: any) {
     e.preventDefault();
 
-    if (passwordRef.current!.value.length < 4) {
+    if (passwordRef.current!.value.length < 6) {
       pushNotification({
-        element: "The password should be 4 or more characters",
+        element: "The password should contain 6 or more characters",
         type: "error",
       });
       clearPasswords();

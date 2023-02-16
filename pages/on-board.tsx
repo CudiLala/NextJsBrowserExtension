@@ -1,7 +1,7 @@
 import molaLogo from "@/public/images/mola-logo.png";
 import Image from "next/image";
 import Link from "next/link";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function Home() {

@@ -22,7 +22,13 @@ export default function KeystoreCreateWalllet() {
           Create With Keystore
         </h1>
       </div>
-      {step === 1 && <_1 setUnlockingPassword={setUnlockingPassword} />}
+      {step === 1 && (
+        <_1
+          setUnlockingPassword={setUnlockingPassword}
+          setDecryptionPassword={setDecryptionPassword}
+          setSuccess={setSuccess}
+        />
+      )}
       {step === 2 && (
         <_2
           setSuccess={setSuccess}
@@ -39,8 +45,12 @@ export default function KeystoreCreateWalllet() {
 
 function _1({
   setUnlockingPassword,
+  setDecryptionPassword,
+  setSuccess,
 }: {
   setUnlockingPassword: React.Dispatch<React.SetStateAction<string>>;
+  setDecryptionPassword: React.Dispatch<React.SetStateAction<string>>;
+  setSuccess: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
@@ -59,9 +69,9 @@ function _1({
   function handleFormSubmit(e: any) {
     e.preventDefault();
 
-    if (passwordRef.current!.value.length < 4) {
+    if (passwordRef.current!.value.length < 6) {
       pushNotification({
-        element: "The password should be 4 or more characters",
+        element: "The password should contain 6 or more characters",
         type: "error",
       });
       clearPasswords();
@@ -98,9 +108,13 @@ function _1({
 
     setUnlockingPassword(passwordRef.current!.value);
 
-    if (!decryptCheckboxRef.current?.value)
+    if (!decryptCheckboxRef.current?.checked)
       router.push("?step=2", undefined, { shallow: true });
-    else router.push("?step=3", undefined, { shallow: true });
+    else {
+      setSuccess(true);
+      setDecryptionPassword(passwordRef.current!.value);
+      router.push("?step=3", undefined, { shallow: true });
+    }
   }
 
   useEffect(() => {
@@ -141,12 +155,7 @@ function _1({
         </div>
 
         <div className="flex gap-3 items-center">
-          <input
-            type="checkbox"
-            required
-            id="decrypt135"
-            ref={decryptCheckboxRef}
-          />
+          <input type="checkbox" id="decrypt135" ref={decryptCheckboxRef} />
           <label htmlFor="decrypt135">Use as decryption password</label>
         </div>
 
@@ -199,26 +208,17 @@ function _2({
     e.preventDefault();
     if (passwordRef.current!.value.length < 6) {
       pushNotification({
-        element: "The password should not be less than 6 characters",
+        element: "The password should containe 6 or more characters",
         type: "error",
       });
       clearPasswords();
       return;
     }
 
-    if (!/\d+/.test(passwordRef.current!.value)) {
+    if (!/(\d+|\W+)/.test(passwordRef.current!.value)) {
       pushNotification({
-        element: "The password should contain numbers",
-        type: "error",
-      });
-
-      clearPasswords();
-      return;
-    }
-
-    if (!/\W+/.test(passwordRef.current!.value)) {
-      pushNotification({
-        element: "The password should contain special characters",
+        element:
+          "The password should at least a number or a non aphla-numeric character",
         type: "error",
       });
 
