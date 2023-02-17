@@ -51,6 +51,7 @@ export default function Notification({ notification, pushNotification }: args) {
               ]
             }`}
             onClick={() => pushNotification(null)}
+            type="button"
           >
             Okay
           </button>

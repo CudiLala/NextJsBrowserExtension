@@ -1,0 +1,335 @@
+import BackButton from "@/components/button/back";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useContext, useState } from "react";
+import { LoaderContext } from "context/loader";
+import { AccountContext } from "context/account";
+import { ProviderContext } from "context/web3";
+import { AssetProviderContext } from "context/web3/assets";
+import {
+  getWeb3Connection,
+  generateWalletUsingPKey,
+  getWalletBalanceEth,
+} from "utils/wallet";
+import { fetchWalletAssets } from "utils/assetEngine";
+import { NETWORKS } from "interfaces/IRpc";
+import { IAccount } from "interfaces/IAccount";
+import Notification, { useNotification } from "components/notification";
+import { GAS_PRIORITY, primaryFixedValue } from "constants/digits";
+import { getCoinUSD } from "utils/priceFeed";
+import NET_CONFIG from "config/allNet";
+import { SocketProviderContext } from "context/web3/socket";
+import { useStep } from "@/hooks/step";
+
+export default function PrivateKey() {
+  const router = useRouter();
+  const [step] = useStep();
+  const [notification, pushNotification] = useNotification();
+  const [privateKey, setPrivateKey] = useState("");
+
+  const [account, setAccount] = useContext(AccountContext);
+  const [, setProvider] = useContext(ProviderContext);
+  const [, setAssetProvider] = useContext(AssetProviderContext);
+  const [startLoader, stopLoader] = useContext(LoaderContext);
+  const [prevSocketProvider, setSocketProvider] = useContext(
+    SocketProviderContext
+  );
+
+  async function importWallet(privateKey: string) {
+    startLoader();
+
+    try {
+      const wallet = await generateWalletUsingPKey(privateKey);
+
+      const provider = getWeb3Connection(NETWORKS.ETHEREUM);
+
+      const walletAssets = await fetchWalletAssets(
+        wallet.address,
+        NET_CONFIG.ETHEREUM.chainId
+      );
+
+      const balance = Number(
+        await getWalletBalanceEth(provider, wallet.address)
+      );
+
+      const balanceFiat = Number(
+        (balance <= 0
+          ? 0
+          : (await getCoinUSD(NET_CONFIG.ETHEREUM.nativeCurrency.symbol))
+              .value! * balance
+        ).toFixed(primaryFixedValue)
+      );
+
+      setAccount((prev: IAccount) => ({
+        ...prev,
+
+        address: wallet.address,
+
+        balance: balance,
+
+        balanceFiat,
+
+        privateKey: wallet.privateKey,
+
+        addressList: [{ nickname: "my address", address: wallet.address }],
+
+        gasPriority: GAS_PRIORITY.NORMAL,
+      }));
+
+      setProvider(provider);
+      setAssetProvider(walletAssets);
+      router.push("?step=2");
+    } catch (error: any) {
+      stopLoader();
+      console.error(error);
+
+      pushNotification({
+        element: <p style={{ textAlign: "center" }}>{error?.message}</p>,
+        type: "error",
+      });
+    }
+
+    stopLoader();
+  }
+
+  useEffect(() => {
+    if (account.address) {
+      if (prevSocketProvider.version) {
+        prevSocketProvider.eth.clearSubscriptions((err, res) => {
+          return console.log(err, res);
+        });
+
+        setSocketProvider(null);
+      }
+      const socketProvider = getWeb3Connection(NETWORKS.ETHEREUM, true);
+      socketProvider.eth.subscribe("newBlockHeaders", async (err) => {
+        if (err) {
+          console.log(err);
+        } else {
+          const balance = Number(
+            await getWalletBalanceEth(socketProvider, account.address)
+          );
+          if (balance !== account.balance) {
+            const balanceFiat = Number(
+              (balance <= 0
+                ? 0
+                : (await getCoinUSD(NET_CONFIG.ETHEREUM.nativeCurrency.symbol))
+                    .value! * balance
+              ).toFixed(primaryFixedValue)
+            );
+
+            setAccount((prev: IAccount) => ({
+              ...prev,
+
+              balance: balance,
+
+              balanceFiat,
+            }));
+          }
+        }
+      });
+
+      setSocketProvider(socketProvider);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <>
+      {step === 1 && (
+        <_1
+          privateKey={privateKey}
+          setPrivateKey={setPrivateKey}
+          importWallet={importWallet}
+        />
+      )}
+      {step === 2 && <_2 />}
+      <Notification
+        notification={notification}
+        pushNotification={pushNotification}
+      />
+    </>
+  );
+}
+
+function _1({
+  privateKey,
+  setPrivateKey,
+  importWallet,
+}: {
+  privateKey: string;
+  setPrivateKey: React.Dispatch<React.SetStateAction<string>>;
+  importWallet: (privateKey: string) => Promise<void>;
+}) {
+  const [notification, pushNotification] = useNotification();
+  const privateKeyRef = useRef<HTMLInputElement>(null);
+
+  function handleSubmit(e: any) {
+    e.preventDefault();
+    importWallet(privateKey);
+  }
+
+  return (
+    <div className="flex flex-col">
+      <div className="py-2 px-4 sticky top-0 z-20 border-b border-neutral-300 bg-white">
+        <h1 className="text-base text-center font-medium relative">
+          <BackButton />
+          Import Wallet With Private Key
+        </h1>
+      </div>
+      <form className="flex flex-col gap-4 p-4" onClick={handleSubmit}>
+        <h2 className="text-base">
+          <span className="mr-2">Step 1:</span>
+          <span>Enter your private key</span>
+        </h2>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col">
+            <label className="mb-px">Enter your private key</label>
+            <input
+              ref={privateKeyRef}
+              value={privateKey}
+              onChange={(e) => setPrivateKey(e.target.value)}
+              type="password"
+              className="border border-neutral-400 p-2 rounded-lg focus:outline-none focus:ring-2 ring-offset-1 ring-blue-500 tracking-wider transition"
+              required
+              autoFocus={true}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="p-2 bg-blue-700 rounded-lg text-white font-semibold shadow-md shadow-blue-200"
+          >
+            Next
+          </button>
+        </div>
+      </form>
+      <Notification
+        notification={notification}
+        pushNotification={pushNotification}
+      />
+    </div>
+  );
+}
+
+function _2() {
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const confirmPasswordRef = useRef<HTMLInputElement>(null);
+  const checkboxRef = useRef<HTMLInputElement>(null);
+
+  const router = useRouter();
+  const [notification, pushNotification] = useNotification();
+
+  function clearPasswords() {
+    passwordRef.current!.value = "";
+    confirmPasswordRef.current!.value = "";
+    passwordRef.current?.focus();
+  }
+
+  function handleFormSubmit(e: any) {
+    e.preventDefault();
+
+    if (passwordRef.current!.value.length < 6) {
+      pushNotification({
+        element: "The password should contain 6 or more characters",
+        type: "error",
+      });
+      clearPasswords();
+      return;
+    }
+
+    if (!/(\d+|\W+)/.test(passwordRef.current!.value)) {
+      pushNotification({
+        element:
+          "The password should at least a number or a non aphla-numeric character",
+        type: "error",
+      });
+
+      clearPasswords();
+      return;
+    }
+
+    if (passwordRef.current?.value !== confirmPasswordRef.current?.value) {
+      pushNotification({
+        element: "The passwords do not match",
+        type: "error",
+      });
+
+      clearPasswords();
+      return;
+    }
+
+    if (!checkboxRef.current?.checked) {
+      pushNotification({
+        element: "Please agree to the terms to proceed",
+        type: "error",
+      });
+    }
+
+    router.push("/wallet", undefined, { shallow: true });
+  }
+
+  useEffect(() => {
+    passwordRef.current?.focus();
+  }, []);
+
+  return (
+    <div className="flex flex-col">
+      <div className="py-2 px-4 sticky top-0 z-20 border-b border-neutral-300 bg-white">
+        <h1 className="text-base text-center font-medium relative">
+          <BackButton />
+          Import Wallet With Private Key
+        </h1>
+      </div>
+      <div className="flex flex-col gap-4 p-4">
+        <h2 className="text-base">
+          <span className="mr-2">Step 2:</span>
+          <span>Create unlocking password</span>
+        </h2>
+
+        <p className="text-base py-2">
+          This password will unlock your wallet only on this device. This
+          password cannot be recovered
+        </p>
+
+        <form className="flex flex-col gap-4" onSubmit={handleFormSubmit}>
+          <div className="flex flex-col">
+            <label className="mb-px">Enter a password</label>
+            <input
+              ref={passwordRef}
+              type="password"
+              className="border border-neutral-400 p-2 rounded-lg focus:outline-none focus:ring-2 ring-offset-1 ring-blue-500 tracking-wider transition"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="mb-px">Confirm password</label>
+            <input
+              ref={confirmPasswordRef}
+              type="password"
+              className="border border-neutral-400 p-2 rounded-lg focus:outline-none focus:ring-2 ring-offset-1 ring-blue-500 tracking-wider transition"
+              required
+            />
+          </div>
+
+          <div className="flex gap-3 items-center">
+            <input type="checkbox" required id="agree135" ref={checkboxRef} />
+            <label htmlFor="agree135">
+              I agree that Mola wallet cannot recover this password
+            </label>
+          </div>
+
+          <div className="flex flex-col">
+            <button className="p-2 bg-blue-700 rounded-lg text-white font-semibold shadow-md shadow-blue-200">
+              Create password
+            </button>
+          </div>
+        </form>
+      </div>
+      <Notification
+        notification={notification}
+        pushNotification={pushNotification}
+      />
+    </div>
+  );
+}
