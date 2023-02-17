@@ -1,6 +1,6 @@
 import BackButton from "@/components/button/back";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useContext, useState } from "react";
+import React, { useEffect, useRef, useContext, useState } from "react";
 import { LoaderContext } from "context/loader";
 import { AccountContext } from "context/account";
 import { ProviderContext } from "context/web3";
@@ -9,6 +9,7 @@ import {
   getWeb3Connection,
   generateWalletUsingPKey,
   getWalletBalanceEth,
+  encryptWallet,
 } from "utils/wallet";
 import { fetchWalletAssets } from "utils/assetEngine";
 import { NETWORKS } from "interfaces/IRpc";
@@ -19,12 +20,12 @@ import { getCoinUSD } from "utils/priceFeed";
 import NET_CONFIG from "config/allNet";
 import { SocketProviderContext } from "context/web3/socket";
 import { useStep } from "@/hooks/step";
+import { decryptWallet } from "utils/wallet";
 
 export default function PrivateKey() {
   const router = useRouter();
   const [step] = useStep();
   const [notification, pushNotification] = useNotification();
-  const [privateKey, setPrivateKey] = useState("");
 
   const [account, setAccount] = useContext(AccountContext);
   const [, setProvider] = useContext(ProviderContext);
@@ -33,6 +34,8 @@ export default function PrivateKey() {
   const [prevSocketProvider, setSocketProvider] = useContext(
     SocketProviderContext
   );
+
+  const [wallet, setWallet] = useState<any>();
 
   async function importWallet(privateKey: string) {
     startLoader();
@@ -77,6 +80,7 @@ export default function PrivateKey() {
 
       setProvider(provider);
       setAssetProvider(walletAssets);
+
       router.push("?step=2");
     } catch (error: any) {
       stopLoader();
@@ -135,14 +139,8 @@ export default function PrivateKey() {
 
   return (
     <>
-      {step === 1 && (
-        <_1
-          privateKey={privateKey}
-          setPrivateKey={setPrivateKey}
-          importWallet={importWallet}
-        />
-      )}
-      {step === 2 && <_2 />}
+      {step === 1 && <_1 wallet={wallet} setWallet={setWallet} />}
+      {step === 2 && <_2 wallet={wallet} />}
       <Notification
         notification={notification}
         pushNotification={pushNotification}
@@ -152,21 +150,44 @@ export default function PrivateKey() {
 }
 
 function _1({
-  privateKey,
-  setPrivateKey,
-  importWallet,
+  wallet,
+  setWallet,
 }: {
-  privateKey: string;
-  setPrivateKey: React.Dispatch<React.SetStateAction<string>>;
-  importWallet: (privateKey: string) => Promise<void>;
+  wallet: any;
+  setWallet: React.Dispatch<React.SetStateAction<any>>;
 }) {
   const [notification, pushNotification] = useNotification();
   const privateKeyRef = useRef<HTMLInputElement>(null);
+  const [startLoader, stopLoader] = useContext(LoaderContext);
+  const router = useRouter();
 
-  function handleSubmit(e: any) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
-    importWallet(privateKey);
+    try {
+      startLoader();
+
+      const wallet = await generateWalletUsingPKey(
+        privateKeyRef.current?.value || ""
+      );
+
+      setWallet(wallet);
+
+      router.push("?step=2");
+    } catch (error: any) {
+      stopLoader();
+      console.error(error);
+
+      pushNotification({
+        element: <p style={{ textAlign: "center" }}>{error?.message}</p>,
+        type: "error",
+      });
+    }
   }
+
+  useEffect(() => {
+    privateKeyRef.current!.value = wallet?.privateKey || "";
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -176,7 +197,7 @@ function _1({
           Import Wallet With Private Key
         </h1>
       </div>
-      <form className="flex flex-col gap-4 p-4" onClick={handleSubmit}>
+      <form className="flex flex-col gap-4 p-4" onSubmit={handleSubmit}>
         <h2 className="text-base">
           <span className="mr-2">Step 1:</span>
           <span>Enter your private key</span>
@@ -186,8 +207,6 @@ function _1({
             <label className="mb-px">Enter your private key</label>
             <input
               ref={privateKeyRef}
-              value={privateKey}
-              onChange={(e) => setPrivateKey(e.target.value)}
               type="password"
               className="border border-neutral-400 p-2 rounded-lg focus:outline-none focus:ring-2 ring-offset-1 ring-blue-500 tracking-wider transition"
               required
@@ -211,7 +230,7 @@ function _1({
   );
 }
 
-function _2() {
+function _2({ wallet }: { wallet: any }) {
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
   const checkboxRef = useRef<HTMLInputElement>(null);
@@ -219,58 +238,74 @@ function _2() {
   const router = useRouter();
   const [notification, pushNotification] = useNotification();
 
+  const [startLoader, stopLoader] = useContext(LoaderContext);
+
   function clearPasswords() {
     passwordRef.current!.value = "";
     confirmPasswordRef.current!.value = "";
     passwordRef.current?.focus();
   }
 
-  function handleFormSubmit(e: any) {
-    e.preventDefault();
-
+  function handleValidation() {
     if (passwordRef.current!.value.length < 6) {
-      pushNotification({
-        element: "The password should contain 6 or more characters",
-        type: "error",
-      });
       clearPasswords();
-      return;
+      throw { message: "The password should contain 6 or more characters" };
     }
 
     if (!/(\d+|\W+)/.test(passwordRef.current!.value)) {
-      pushNotification({
-        element:
-          "The password should at least a number or a non aphla-numeric character",
-        type: "error",
-      });
-
       clearPasswords();
-      return;
+      throw {
+        message:
+          "The password should at least a number or a non aphla-numeric character",
+      };
     }
 
     if (passwordRef.current?.value !== confirmPasswordRef.current?.value) {
-      pushNotification({
-        element: "The passwords do not match",
-        type: "error",
-      });
-
       clearPasswords();
-      return;
+      throw { message: "The passwords do not match" };
     }
 
     if (!checkboxRef.current?.checked) {
+      clearPasswords();
+      throw { message: "Please agree to the terms to proceed" };
+    }
+  }
+
+  async function handleFormSubmit(e: any) {
+    e.preventDefault();
+
+    try {
+      startLoader();
+
+      handleValidation();
+
+      await handleWalletEncryption();
+
+      router.push("/wallet", undefined, { shallow: true });
+    } catch (error: any) {
+      stopLoader();
+
       pushNotification({
-        element: "Please agree to the terms to proceed",
+        element: error?.message || "Unknown error",
         type: "error",
       });
     }
-
-    router.push("/wallet", undefined, { shallow: true });
   }
 
-  useEffect(() => {
-    passwordRef.current?.focus();
-  }, []);
+  async function handleWalletEncryption() {
+    let encryptedWallet = await encryptWallet(
+      wallet.privateKey,
+      passwordRef.current!.value
+    );
+
+    let result = await chrome.storage.local.get("encryptedWallets");
+    await chrome.storage.local.set({
+      encryptedWallets: [...(result.encryptedWallets || []), encryptedWallet],
+    });
+    await chrome.storage.session.set({
+      unlockPassword: passwordRef.current!.value,
+    });
+  }
 
   return (
     <div className="flex flex-col">
@@ -299,6 +334,7 @@ function _2() {
               type="password"
               className="border border-neutral-400 p-2 rounded-lg focus:outline-none focus:ring-2 ring-offset-1 ring-blue-500 tracking-wider transition"
               required
+              autoFocus={true}
             />
           </div>
 

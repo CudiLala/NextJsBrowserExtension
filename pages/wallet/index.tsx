@@ -18,6 +18,7 @@ import {
   ArrowDown,
 } from "@/components/icons/arrows";
 import Link from "next/link";
+import { decryptWallet } from "@/utils/wallet";
 
 export default function WalletPage() {
   const [copied, setCopied] = useState(false);
@@ -43,6 +44,17 @@ export default function WalletPage() {
   useEffect(() => {
     if (copied) setTimeout(() => setCopied(false), 2000);
   }, [copied]);
+
+  useEffect(() => {
+    chrome.storage.local.get("encryptedWallets").then((result) =>
+      chrome.storage.session.get("unlockPassword").then((res) => {
+        console.log(result.encryptedWallets);
+        console.log(
+          decryptWallet(result.encryptedWallets[0], res.unlockPassword)
+        );
+      })
+    );
+  }, []);
 
   useEffect(() => {
     chrome.storage.local.get(["key"]).then((result) => {

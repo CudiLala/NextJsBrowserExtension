@@ -8,6 +8,11 @@ export default function Home() {
   const [introState, setIntroState] = useState<"showWelcome" | "getStarted">(
     "showWelcome"
   );
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.query.onboard == "1") setIntroState("getStarted");
+  }, [router]);
 
   return (
     <div className="h-full flex justify-center items-center">
@@ -71,7 +76,7 @@ function WelcomeScreen({
         onClick={() =>
           welcomeState < 2
             ? setWelcomeState((p) => p + 1)
-            : setIntroState("getStarted")
+            : router.push("?onboard=1")
         }
       >
         {welcomeMessages[welcomeState].actionText}

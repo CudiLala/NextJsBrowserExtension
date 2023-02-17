@@ -20,7 +20,8 @@
   },
   "scripts": {
     "dev": "next dev",
-    "dev-chrome": "npm-watch build-chrome-osx",
+    "dev-chrome": "npm-watch build-chrome",
+    "dev-chrome-osx": "npm-watch build-chrome-osx",
     "prepare-chrome": "cp ./manifest/chrome.json ./out/manifest.json",
     "prepare-firefox": "cp ./manifest/firefox.json ./out/manifest.json",
     "lint:build": "mv ./out/_next ./out/next && cd ./out && grep -rl '/_next' * | xargs sed -i 's|/_next|/next|g' && cd ..",

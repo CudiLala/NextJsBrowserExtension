@@ -45,7 +45,10 @@ export const accessWalletUsingMnemonic = async (mnemonics: string) => {
   return createdWallet;
 };
 
-const encryptWallet = async (privateKey: string, walletPassword: string) => {
+export const encryptWallet = async (
+  privateKey: string,
+  walletPassword: string
+) => {
   const encryptedWallet = web3.eth.accounts.encrypt(privateKey, walletPassword);
   return encryptedWallet;
 };
