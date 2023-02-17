@@ -62,7 +62,12 @@ export const generateWalletUsingKeyStore = async (password: string) => {
 
   const encryptedWallet = await encryptWallet(wallet.privateKey, password);
 
-  return Buffer.from(JSON.stringify(encryptedWallet)).toString("base64");
+  return {
+    wallet,
+    keystoreFile: Buffer.from(JSON.stringify(encryptedWallet)).toString(
+      "base64"
+    ),
+  };
 };
 
 export const generateWalletUsingPKey = async (pKey: string) => {
@@ -96,3 +101,16 @@ export const getWalletBalanceEth = async (
   Number(
     provider.utils.fromWei(await provider.eth.getBalance(address), "ether")
   ).toFixed(primaryFixedValue);
+
+export async function encyrptWithLockAndStoreWallet(
+  wallet: any,
+  unlockPassword: string
+) {
+  let encryptedWallet = await encryptWallet(wallet.privateKey, unlockPassword);
+
+  let result = await chrome.storage.local.get("encryptedWallets");
+  await chrome.storage.local.set({
+    encryptedWallets: [...(result.encryptedWallets || []), encryptedWallet],
+  });
+  await chrome.storage.session.set({ unlockPassword });
+}

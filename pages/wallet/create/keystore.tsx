@@ -3,7 +3,11 @@ import { useStep } from "@/hooks/step";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
 import Notification, { useNotification } from "@/components/notification";
-import { generateWalletUsingKeyStore, storeWalletKey } from "@/utils/wallet";
+import {
+  encyrptWithLockAndStoreWallet,
+  generateWalletUsingKeyStore,
+  storeWalletKey,
+} from "@/utils/wallet";
 import Link from "next/link";
 import Image from "next/image";
 import { LoaderContext } from "@/context/loader";
@@ -36,9 +40,12 @@ export default function KeystoreCreateWalllet() {
         />
       )}
       {step === 3 && (
-        <_3 success={success} decryptionPassword={decryptionPassword} />
+        <_3
+          success={success}
+          decryptionPassword={decryptionPassword}
+          unlockingPassword={unlockingPassword}
+        />
       )}
-      {step === 4 && <_4 />}
     </div>
   );
 }
@@ -287,9 +294,11 @@ function _2({
 function _3({
   success,
   decryptionPassword,
+  unlockingPassword,
 }: {
   success: boolean;
   decryptionPassword: string;
+  unlockingPassword: string;
 }) {
   const router = useRouter();
   const [startLoader, stopLoader] = useContext(LoaderContext);
@@ -370,38 +379,27 @@ function _3({
 
       <button
         className="w-full flex py-2 px-6 bg-blue-700 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
-        onClick={async () => {
-          startLoader();
-          const keyFile = await generateWalletUsingKeyStore(decryptionPassword);
+        onClick={async (e) => {
+          e.preventDefault();
 
-          storeWalletKey(keyFile, `${new Date(Date.now()).toISOString()}.json`);
-          router.push("?step=4", undefined, { shallow: true });
+          startLoader();
+
+          const { wallet, keystoreFile } = await generateWalletUsingKeyStore(
+            decryptionPassword
+          );
+
+          await encyrptWithLockAndStoreWallet(wallet, unlockingPassword);
+
+          storeWalletKey(
+            keystoreFile,
+            `${new Date(Date.now()).toISOString()}.json`
+          );
+          router.push("/wallet", undefined, { shallow: true });
           stopLoader();
         }}
       >
         Download
       </button>
-    </div>
-  );
-}
-
-function _4() {
-  return (
-    <div className="p-4 flex flex-col gap-4">
-      <h2 className="text-base">
-        <span className="mr-2">Step 3:</span>
-        <span className="mr-2">Congratulations</span>
-      </h2>
-      <p className="text-neutral-800">
-        You are now ready to take advantage of all that Mola Digital has to
-        offer!
-      </p>
-      <Link
-        href="/wallet/access/keystore"
-        className="w-full flex py-2 px-6 bg-blue-700 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
-      >
-        Access Wallet
-      </Link>
     </div>
   );
 }

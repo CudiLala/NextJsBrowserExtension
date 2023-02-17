@@ -10,6 +10,7 @@ import {
   generateWalletUsingPKey,
   getWalletBalanceEth,
   encryptWallet,
+  encyrptWithLockAndStoreWallet,
 } from "utils/wallet";
 import { fetchWalletAssets } from "utils/assetEngine";
 import { NETWORKS } from "interfaces/IRpc";
@@ -279,7 +280,7 @@ function _2({ wallet }: { wallet: any }) {
 
       handleValidation();
 
-      await handleWalletEncryption();
+      await encyrptWithLockAndStoreWallet(wallet, passwordRef.current!.value);
 
       router.push("/wallet", undefined, { shallow: true });
     } catch (error: any) {
@@ -290,21 +291,6 @@ function _2({ wallet }: { wallet: any }) {
         type: "error",
       });
     }
-  }
-
-  async function handleWalletEncryption() {
-    let encryptedWallet = await encryptWallet(
-      wallet.privateKey,
-      passwordRef.current!.value
-    );
-
-    let result = await chrome.storage.local.get("encryptedWallets");
-    await chrome.storage.local.set({
-      encryptedWallets: [...(result.encryptedWallets || []), encryptedWallet],
-    });
-    await chrome.storage.session.set({
-      unlockPassword: passwordRef.current!.value,
-    });
   }
 
   return (
