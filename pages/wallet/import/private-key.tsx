@@ -282,7 +282,7 @@ function _2({ wallet }: { wallet: any }) {
 
       await encyrptWithLockAndStoreWallet(wallet, passwordRef.current!.value);
 
-      router.push("/wallet", undefined, { shallow: true });
+      router.push("/wallet");
     } catch (error: any) {
       stopLoader();
 

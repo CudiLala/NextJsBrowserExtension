@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { MouseEvent, useEffect, useRef, useState } from "react";
-import { createMnemonic } from "@/utils/wallet";
+import {
+  accessWalletUsingMnemonic,
+  createMnemonic,
+  encyrptWithLockAndStoreWallet,
+} from "@/utils/wallet";
 
 import { useStep } from "@/hooks/step";
 import { PenOnLineIcon, ReloadIcon } from "@/components/icons/accessibility";
@@ -37,8 +41,9 @@ export default function MnemonicCreateWallet() {
       {step === 2 && (
         <_2 words={words} generateAndSetWords={generateAndSetWords} />
       )}
-      {step === 3 && <_3 words={words} setSuccess={setSuccess} />}
-      {step === 4 && <_4 />}
+      {step === 3 && (
+        <_3 words={words} setSuccess={setSuccess} unlockPassword={password} />
+      )}
     </div>
   );
 }
@@ -215,9 +220,11 @@ function _2({
 
 function _3({
   words: _words,
+  unlockPassword,
   setSuccess,
 }: {
   words: string[];
+  unlockPassword: string;
   setSuccess: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [words, setWords] = useState<string[]>(
@@ -271,10 +278,24 @@ function _3({
     });
   }
 
-  function validateSelectedAndContinue(ev: MouseEvent) {
+  async function validateSelectedAndContinue(ev: MouseEvent) {
     ev.preventDefault();
     if (selectedWords.every((e, i) => e[0] === _words[i])) {
       setSuccess(true);
+
+      try {
+        const wallet = await accessWalletUsingMnemonic(_words.join(" "));
+
+        await encyrptWithLockAndStoreWallet(wallet, unlockPassword);
+
+        router.push("/wallet");
+      } catch (error: any) {
+        pushNotification({
+          element: error.message || "Unknown error",
+          type: "error",
+        });
+      }
+
       router.replace("?step=4", undefined, { shallow: true });
     } else {
       pushNotification({
@@ -364,27 +385,6 @@ function _3({
         notification={notification}
         pushNotification={pushNotification}
       />
-    </div>
-  );
-}
-
-function _4() {
-  return (
-    <div className="p-4 flex flex-col gap-4">
-      <h2 className="text-base">
-        <span className="mr-2">Step 4:</span>
-        <span className="mr-2">Congratulations</span>
-      </h2>
-      <p className="text-neutral-800">
-        You are now ready to take advantage of all that Mola wallet has to
-        offer!
-      </p>
-      <Link
-        href="/wallet"
-        className="w-full flex py-2 px-6 bg-blue-700 rounded-lg shadow-md shadow-blue-200 justify-center items-center text-center font-semibold text-white"
-      >
-        Go to your wallet
-      </Link>
     </div>
   );
 }
