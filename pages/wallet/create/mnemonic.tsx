@@ -295,8 +295,6 @@ function _3({
           type: "error",
         });
       }
-
-      router.replace("?step=4", undefined, { shallow: true });
     } else {
       pushNotification({
         element: (
