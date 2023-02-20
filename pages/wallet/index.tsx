@@ -19,6 +19,7 @@ import {
 } from "@/components/icons/arrows";
 import Link from "next/link";
 import { decryptWallet } from "@/utils/wallet";
+import { shorten } from "@/utils/string";
 
 export default function WalletPage() {
   const [copied, setCopied] = useState(false);
@@ -35,6 +36,8 @@ export default function WalletPage() {
 
   const copyRef = useRef<HTMLTextAreaElement>(null);
 
+  const [wallet, setWallet] = useState<any>();
+
   function copyAddress() {
     copyRef.current?.select();
     document.execCommand("copy");
@@ -48,18 +51,11 @@ export default function WalletPage() {
   useEffect(() => {
     chrome.storage.local.get("encryptedWallets").then((result) =>
       chrome.storage.session.get("unlockPassword").then((res) => {
-        console.log(result.encryptedWallets);
-        console.log(
+        setWallet(
           decryptWallet(result.encryptedWallets[0], res.unlockPassword)
         );
       })
     );
-  }, []);
-
-  useEffect(() => {
-    chrome.storage.local.get(["key"]).then((result) => {
-      console.log("Tsx value currently is " + result.key);
-    });
   }, []);
 
   return (
@@ -105,7 +101,7 @@ export default function WalletPage() {
       <div className="py-1.5 flex justify-between items-center border-b border-sky-200">
         <div className="px-3 flex flex-col gap-0.5 justify-start">
           <p>Account 1</p>
-          <p>432ygh2u2h....23k</p>
+          <p title={wallet.address}>{shorten(wallet?.address, 10, 8, 20)}</p>
         </div>
         <div className="relative">
           <button

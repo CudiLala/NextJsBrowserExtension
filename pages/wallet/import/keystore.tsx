@@ -1,6 +1,6 @@
 import BackButton from "@/components/button/back";
 
-export function ImportWithKesystore() {
+export default function ImportWithKesystore() {
   return (
     <div className="flex flex-col">
       <div className="py-2 px-4 sticky top-0 z-20 border-b border-neutral-300 bg-white">

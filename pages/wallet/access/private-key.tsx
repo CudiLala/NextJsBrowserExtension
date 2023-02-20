@@ -30,7 +30,9 @@ export default function PrivateKey() {
   const [prevSocketProvider, setSocketProvider] = useContext(
     SocketProviderContext
   );
+
   useEffect(() => {}, [account]);
+
   async function handleFormSubmit(e: any, privateKey: string) {
     e.preventDefault();
 
