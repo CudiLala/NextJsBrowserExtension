@@ -101,7 +101,7 @@ export default function WalletPage() {
       <div className="py-1.5 flex justify-between items-center border-b border-sky-200">
         <div className="px-3 flex flex-col gap-0.5 justify-start">
           <p>Account 1</p>
-          <p title={wallet.address}>{shorten(wallet?.address, 10, 8, 20)}</p>
+          <p title={wallet?.address}>{shorten(wallet?.address, 10, 8, 20)}</p>
         </div>
         <div className="relative">
           <button
