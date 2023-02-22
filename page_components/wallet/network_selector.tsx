@@ -222,7 +222,7 @@ export default function NetworkSelector({
         }`}
       >
         <div
-          className={`bg-white shadow-b shadow-neutral-500 p-2 max-w-[22rem] w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
+          className={`bg-white shadow-b shadow-neutral-500 p-2 max-w-[20rem] w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
         >
           <h4 className="font-semibold p-2 text-base text-center w-full text-blue-600">
             Select Network

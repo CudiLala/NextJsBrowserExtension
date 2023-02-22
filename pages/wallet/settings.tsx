@@ -33,7 +33,7 @@ export default function SettingsPage() {
             </span>
           </button>
           <div
-            className={`absolute top-full left-0 my-1 bg-gray-50 w-80 shadow-a rounded-md flex flex-col cursor-default transition ${
+            className={`absolute top-full left-0 my-1 bg-gray-50 w-72 shadow-a rounded-md flex flex-col cursor-default transition ${
               userModal === "visible"
                 ? "opacity-1 z-10 visible"
                 : "opacity-0 -z-10 invisible"

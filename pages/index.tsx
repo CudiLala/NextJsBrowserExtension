@@ -19,8 +19,9 @@ export default function Index() {
 
   useEffect(() => {
     startLoader();
+
     chrome.storage.local.get("encryptedWallets").then((result) => {
-      if (!result.encryptedWallets) router.push("/on-board");
+      if (!result.encryptedWallets) return router.push("/on-board");
 
       chrome.storage.session
         .get("unlockPassword")

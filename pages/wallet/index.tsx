@@ -80,7 +80,7 @@ export default function WalletPage() {
             </span>
           </button>
           <div
-            className={`absolute top-full left-0 my-1 bg-gray-50 w-80 shadow-a rounded-md flex flex-col cursor-default transition ${
+            className={`absolute top-full left-0 my-1 bg-gray-50 w-72 shadow-a rounded-md flex flex-col cursor-default transition ${
               userModal === "visible"
                 ? "opacity-1 z-10 visible"
                 : "opacity-0 -z-10 invisible"
@@ -101,7 +101,9 @@ export default function WalletPage() {
       <div className="py-1.5 flex justify-between items-center border-b border-sky-200">
         <div className="px-3 flex flex-col gap-0.5 justify-start">
           <p>Account 1</p>
-          <p title={wallet?.address}>{shorten(wallet?.address, 10, 8, 20)}</p>
+          <p className="font-mono" title={wallet?.address}>
+            {shorten(wallet?.address, 10, 8, 20)}
+          </p>
         </div>
         <div className="relative">
           <button
@@ -117,7 +119,7 @@ export default function WalletPage() {
             <span className="bg-slate-900 rounded-full w-1 h-1"></span>
           </button>
           <div
-            className={`absolute top-full right-0 my-2 mx-2 bg-gray-50 w-60 shadow-a rounded-md flex flex-col cursor-default transition p-2 ${
+            className={`absolute top-full right-0 my-2 mx-2 bg-gray-50 w-64 shadow-a rounded-md flex flex-col cursor-default transition p-2 ${
               accModal === "visible"
                 ? "opacity-1 z-10 visible"
                 : "opacity-0 -z-10 invisible"
@@ -243,32 +245,32 @@ function AccModal({
 }) {
   return (
     <>
-      <button className="flex items-center justify-start p-2">
-        <span className="w-5 h-5 flex mr-3">
+      <button className="flex items-center justify-start p-1 py-2">
+        <span className="w-5 h-5 flex mr-2">
           <EyeIcon />
         </span>
         View on account etherscan
       </button>
       <button
-        className="flex items-center justify-start p-2"
+        className="flex items-center justify-start p-1 py-2"
         onClick={() => {
           setAccDetailsModal("visible");
           setAccModal("invisible");
         }}
       >
-        <span className="w-5 h-5 flex mr-3">
+        <span className="w-5 h-5 flex mr-2">
           <AvatarScanIcon />
         </span>
         Account details
       </button>
-      <button className="flex items-center justify-start p-2">
-        <span className="w-5 h-5 flex mr-3">
+      <button className="flex items-center justify-start p-1 py-2">
+        <span className="w-5 h-5 flex mr-2">
           <ExpandIcon />
         </span>
         Expand view
       </button>
-      <button className="flex items-center justify-start p-2">
-        <span className="w-5 h-5 flex mr-3">
+      <button className="flex items-center justify-start p-1 py-2">
+        <span className="w-5 h-5 flex mr-2">
           <ConnectedNode />
         </span>
         Connected site
@@ -366,7 +368,7 @@ function AccountDetailsModal({
       }`}
     >
       <div
-        className={`bg-white shadow-b shadow-neutral-500 px-2 py-4 flex flex-col gap-4 max-w-[22rem] w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
+        className={`bg-white shadow-b shadow-neutral-500 px-2 py-4 flex flex-col gap-4 max-w-[20rem] w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
       >
         <button
           className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
@@ -407,7 +409,7 @@ function AccountDetailsModal({
         </div>
 
         <div className="bg-gray-300 border border-gray-500 max-w-[16rem] rounded-lg self-center p-2">
-          <p className="text-center break-words">
+          <p className="text-center break-words font-mono">
             0x1bD394d604159804d8740F73644480A10cD1C184
           </p>
         </div>

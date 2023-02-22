@@ -662,7 +662,7 @@ function TransConfirmModal({
       }`}
     >
       <div
-        className={`bg-white shadow-b p-3 max-w-[22rem] max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
+        className={`bg-white shadow-b p-3 max-w-[20rem] max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
       >
         <button
           className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
@@ -767,7 +767,7 @@ function TransInitModal({
       }`}
     >
       <div
-        className={`bg-white shadow-b shadow-neutral-500 p-2 max-w-[22rem] w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
+        className={`bg-white shadow-b shadow-neutral-500 p-2 max-w-[20rem] w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
       >
         <button
           className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
@@ -833,7 +833,7 @@ function TransFee({
       }`}
     >
       <div
-        className={`bg-white shadow-b p-3 max-w-[22rem] max-h-[95%] overflow-x-hidden overflow-y-auto rounded-xl c-scroll relative`}
+        className={`bg-white shadow-b p-3 max-w-[20rem] max-h-[95%] overflow-x-hidden overflow-y-auto rounded-xl c-scroll relative`}
       >
         <button
           className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
@@ -902,7 +902,7 @@ function InfoModal({
       }`}
     >
       <div
-        className={`bg-white shadow-b p-3 max-w-[22rem] max-h-[95%] overflow-x-hidden overflow-y-auto c-scroll relative rounded-xl`}
+        className={`bg-white shadow-b p-3 max-w-[20rem] max-h-[95%] overflow-x-hidden overflow-y-auto c-scroll relative rounded-xl`}
       >
         <button
           className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"

@@ -22,7 +22,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <div className="w-full flex justify-center">
-      <div className="relative w-96 h-[38rem] overflow-auto c-scroll">
+      <div className="relative w-[22rem] h-[36rem] overflow-auto c-scroll">
         <LoaderContextComponent>
           <NetworkContextComponent>
             <ProviderContextComponent>
