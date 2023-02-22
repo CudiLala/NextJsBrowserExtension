@@ -71,7 +71,6 @@ export default function Unlock() {
     <div className="flex flex-col gap-3">
       <div className="py-2 px-4 sticky top-0 z-20 border-b border-neutral-300 bg-white">
         <h1 className="text-base text-center font-medium relative">
-          <BackButton />
           Welcome back
         </h1>
       </div>

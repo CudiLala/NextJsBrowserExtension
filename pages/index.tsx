@@ -63,7 +63,8 @@ export default function Index() {
           router.push("/unlock");
         });
     });
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <></>;
 }
