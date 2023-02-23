@@ -435,7 +435,10 @@ export function UserNavModal({
               account.address == e.address ? "bg-sky-100" : "bg-white"
             }`}
             key={i}
-            onClick={() => switchAccount(e.address)}
+            onClick={() => {
+              switchAccount(e.address);
+              router.push("/wallet");
+            }}
           >
             <span className="flex flex-col gap-0.5 items-start flex-shrink-0">
               <span>{e.name}</span>
@@ -453,12 +456,15 @@ export function UserNavModal({
         ))}
       </div>
       <div className="p-1">
-        <button className="flex items-center justify-start p-2">
+        <Link
+          href="/wallet/create-account"
+          className="flex items-center justify-start p-2"
+        >
           <span className="w-5 h-5 flex mr-3 p-0.5">
             <PlusIcon />
           </span>
           Create Account
-        </button>
+        </Link>
         <Link
           href="/wallet/import-account"
           className="flex items-center justify-start p-2"

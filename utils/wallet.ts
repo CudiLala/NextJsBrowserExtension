@@ -104,7 +104,8 @@ export const getWalletBalanceEth = async (
 
 export async function encyrptWithLockAndStoreWallet(
   wallet: any,
-  unlockPassword: string
+  unlockPassword: string,
+  accountName?: string
 ) {
   let encryptedWallet = await encryptWallet(wallet.privateKey, unlockPassword);
 
@@ -127,7 +128,10 @@ export async function encyrptWithLockAndStoreWallet(
   await chrome.storage.local.set({
     accounts: [
       ...(accounts || []),
-      { name: `Account ${lastNum + 1}`, address: wallet.address },
+      {
+        name: `${accountName || `Account ${lastNum + 1}`}`,
+        address: wallet.address,
+      },
     ],
   });
 
