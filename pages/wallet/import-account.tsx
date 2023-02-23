@@ -42,7 +42,7 @@ export default function ImportAccountPage() {
             }`}
             tabIndex={-1}
           >
-            <UserNavModal />
+            <UserNavModal setVisibility={setUserModal} />
           </div>
         </div>
         <div className="flex items-center justify-end gap-2">

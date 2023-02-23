@@ -113,4 +113,21 @@ export async function encyrptWithLockAndStoreWallet(
     encryptedWallets: [...(result.encryptedWallets || []), encryptedWallet],
   });
   await chrome.storage.session.set({ unlockPassword });
+
+  let accounts = (await chrome.storage.local.get("accounts")).accounts;
+  let lastUnamedAccount = accounts
+    ?.filter((e: any) => /^Account \d+$/.test(e.name))
+    .sort((a: any, b: any) => a.name - b.name)
+    .pop();
+
+  let lastNum = !!lastUnamedAccount?.name
+    ? Number(lastUnamedAccount.name.split(" ")[1])
+    : 0;
+
+  await chrome.storage.local.set({
+    accounts: [
+      ...(accounts || []),
+      { name: `Account ${lastNum + 1}`, address: wallet.address },
+    ],
+  });
 }

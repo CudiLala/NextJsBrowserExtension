@@ -10,7 +10,7 @@ import {
   SettingsIcon,
 } from "@/components/icons/accessibility";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   SendArrow,
   SwapArrow,
@@ -18,8 +18,22 @@ import {
   ArrowDown,
 } from "@/components/icons/arrows";
 import Link from "next/link";
-import { decryptWallet } from "@/utils/wallet";
+import {
+  decryptWallet,
+  getWalletBalanceEth,
+  getWeb3Connection,
+} from "@/utils/wallet";
 import { shorten } from "@/utils/string";
+import { useRouter } from "next/router";
+import { fetchWalletAssets } from "@/utils/assetEngine";
+import { NETWORKS } from "@/interfaces/IRpc";
+import { AccountContext } from "@/context/account";
+import { ProviderContext } from "@/context/web3";
+import { getCoinUSD } from "@/utils/priceFeed";
+import { IAccount } from "@/interfaces/IAccount";
+import { GAS_PRIORITY, primaryFixedValue } from "@/constants/digits";
+import NET_CONFIG from "config/allNet";
+import { LoaderContext } from "@/context/loader";
 
 export default function WalletPage() {
   const [copied, setCopied] = useState(false);
@@ -36,7 +50,9 @@ export default function WalletPage() {
 
   const copyRef = useRef<HTMLTextAreaElement>(null);
 
-  const [wallet, setWallet] = useState<any>();
+  const [account, setAccount] = useContext(AccountContext);
+  const [, setProvider] = useContext(ProviderContext);
+  const [accountName, setAccountName] = useState<string>();
 
   function copyAddress() {
     copyRef.current?.select();
@@ -44,18 +60,69 @@ export default function WalletPage() {
     setCopied(true);
   }
 
+  async function setWalletAccount() {
+    try {
+      (async () => {
+        let $ = await chrome.storage.local.get("encryptedWallets");
+        let $$ = await chrome.storage.session.get("unlockPassword");
+        let $$$ = await chrome.storage.local.get("lastWalletAddress");
+
+        const wallets = $.encryptedWallets.map((e: any) =>
+          decryptWallet(e, $$.unlockPassword)
+        );
+
+        let wallet =
+          wallets?.find((e: any) => e.address == $$$.lastWalletAddress) ||
+          wallets[0];
+
+        const provider = getWeb3Connection(NETWORKS.ETHEREUM);
+
+        const balance = Number(
+          await getWalletBalanceEth(provider, wallet.address)
+        );
+
+        const balanceFiat = Number(
+          (balance <= 0
+            ? 0
+            : (await getCoinUSD(NET_CONFIG.ETHEREUM.nativeCurrency.symbol))
+                .value! * balance
+          ).toFixed(primaryFixedValue)
+        );
+
+        setAccount((prev) => ({
+          ...prev,
+          address: wallet.address,
+          privateKey: wallet.privateKey,
+          addressList: [{ nickname: "my address", address: wallet.address }],
+          gasPriority: GAS_PRIORITY.NORMAL,
+          balance,
+          balanceFiat,
+        }));
+      })();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     if (copied) setTimeout(() => setCopied(false), 2000);
   }, [copied]);
 
   useEffect(() => {
-    chrome.storage.local.get("encryptedWallets").then((result) =>
-      chrome.storage.session.get("unlockPassword").then((res) => {
-        setWallet(
-          decryptWallet(result.encryptedWallets[0], res.unlockPassword)
-        );
-      })
-    );
+    (async () => {
+      let $ = await chrome.storage.local.get("accounts");
+
+      let _account =
+        $.accounts?.find((e: any) => e.address == account.address) ||
+        $.accounts[0];
+
+      setAccountName(_account.name);
+    })();
+  }, [account]);
+
+  useEffect(() => {
+    setWalletAccount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -87,7 +154,7 @@ export default function WalletPage() {
             }`}
             tabIndex={-1}
           >
-            <UserNavModal />
+            <UserNavModal setVisibility={setUserModal} />
           </div>
         </div>
         <div className="flex items-center justify-end gap-2">
@@ -100,9 +167,9 @@ export default function WalletPage() {
 
       <div className="py-1.5 flex justify-between items-center border-b border-sky-200">
         <div className="px-3 flex flex-col gap-0.5 justify-start">
-          <p>Account 1</p>
-          <p className="font-mono" title={wallet?.address}>
-            {shorten(wallet?.address, 10, 8, 20)}
+          <p>{accountName}</p>
+          <p className="font-mono" title={account?.address}>
+            {shorten(account?.address || "", 10, 8, 20)}
           </p>
         </div>
         <div className="relative">
@@ -279,44 +346,111 @@ function AccModal({
   );
 }
 
-export function UserNavModal() {
+export function UserNavModal({
+  setVisibility,
+}: {
+  setVisibility: React.Dispatch<React.SetStateAction<"visible" | "invisible">>;
+}) {
+  const router = useRouter();
+
+  const [account, setAccount] = useContext(AccountContext);
+  const [, setProvider] = useContext(ProviderContext);
+  const [startLoader, stopLoader] = useContext(LoaderContext);
+
+  async function switchAccount(address: string) {
+    const provider = getWeb3Connection(NETWORKS.ETHEREUM);
+
+    startLoader();
+
+    let $ = await chrome.storage.local.get("encryptedWallets");
+    let $$ = await chrome.storage.session.get("unlockPassword");
+
+    let wallets = $.encryptedWallets?.map((e: any) =>
+      decryptWallet(e, $$.unlockPassword)
+    );
+
+    let wallet = wallets?.find((e: any) => e.address == address);
+
+    const balance = Number(await getWalletBalanceEth(provider, address));
+
+    const balanceFiat = Number(
+      (balance <= 0
+        ? 0
+        : (await getCoinUSD(NET_CONFIG.ETHEREUM.nativeCurrency.symbol)).value! *
+          balance
+      ).toFixed(primaryFixedValue)
+    );
+
+    setAccount((prev: IAccount) => ({
+      ...prev,
+
+      address: wallet.address,
+
+      balance: balance,
+
+      balanceFiat,
+
+      privateKey: wallet.privateKey,
+
+      addressList: [{ nickname: "my address", address: wallet.address }],
+
+      gasPriority: GAS_PRIORITY.NORMAL,
+    }));
+
+    setProvider(provider);
+
+    setVisibility("invisible");
+
+    stopLoader();
+  }
+
+  type Account = {
+    name: string;
+    address: string;
+  };
+
+  const [accounts, setAccounts] = useState<Account[]>([]);
+
+  useEffect(() => {
+    chrome.storage.local.get("accounts").then((e) => setAccounts(e.accounts));
+  }, [router]);
+
   return (
     <>
       <div className="border-b border-gray-400 py-2 px-4 flex justify-between items-center">
         <p>My Accounts</p>
-        <button className="bg-gray-200 border border-gray-400 px-4 py-0.5 rounded-full">
+        <button
+          className="bg-gray-200 border border-gray-400 px-4 py-0.5 rounded-full"
+          onClick={() => {
+            chrome.storage.session.clear().then(() => router.push("/unlock"));
+          }}
+        >
           Lock
         </button>
       </div>
       <div className="border-b border-gray-400 w-full overflow-auto no-scroll">
-        <button className="px-3 py-1 flex gap-2 justify-between items-center w-full bg-sky-100">
-          <span className="flex flex-col gap-0.5 items-start flex-shrink-0">
-            <span>Account 1</span>
-            <span>432ygh2u2h....23k</span>
-          </span>
-          <span className="flex w-8 h-8 relative flex-shrink-0">
-            <Image
-              fill
-              alt="dp"
-              src="/images/dp.png"
-              className="rounded-full"
-            />
-          </span>
-        </button>
-        <button className="px-3 py-1 flex gap-2 justify-between items-center w-full">
-          <span className="flex flex-col gap-0.5 items-start flex-shrink-0">
-            <span>Account 2</span>
-            <span>432ygh2u2h....23k</span>
-          </span>
-          <span className="flex w-8 h-8 relative flex-shrink-0">
-            <Image
-              fill
-              alt="dp"
-              src="/images/dp.png"
-              className="rounded-full"
-            />
-          </span>
-        </button>
+        {accounts.map((e, i) => (
+          <button
+            className={`px-3 py-1 flex gap-2 justify-between items-center w-full ${
+              account.address == e.address ? "bg-sky-100" : "bg-white"
+            }`}
+            key={i}
+            onClick={() => switchAccount(e.address)}
+          >
+            <span className="flex flex-col gap-0.5 items-start flex-shrink-0">
+              <span>{e.name}</span>
+              <span className="font-mono">{shorten(e.address, 10, 8, 20)}</span>
+            </span>
+            <span className="flex w-8 h-8 relative flex-shrink-0">
+              <Image
+                fill
+                alt="dp"
+                src="/images/dp.png"
+                className="rounded-full"
+              />
+            </span>
+          </button>
+        ))}
       </div>
       <div className="p-1">
         <button className="flex items-center justify-start p-2">

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IAccount } from "interfaces/IAccount";
+import { decryptWallet } from "@/utils/wallet";
 
 export const AccountContext = React.createContext<
   [IAccount, React.Dispatch<React.SetStateAction<IAccount>>]
@@ -24,6 +25,8 @@ export function AcoountContextComponent({
   const [account, setAccount] = useState<IAccount>(defaultAccount as IAccount);
 
   useEffect(() => {
+    if (account.address)
+      chrome.storage.local.set({ lastWalletAddress: account.address });
   }, [account]);
 
   return (
