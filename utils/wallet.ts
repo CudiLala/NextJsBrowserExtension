@@ -130,4 +130,6 @@ export async function encyrptWithLockAndStoreWallet(
       { name: `Account ${lastNum + 1}`, address: wallet.address },
     ],
   });
+
+  await chrome.storage.local.set({ lastWalletAddress: wallet.address });
 }

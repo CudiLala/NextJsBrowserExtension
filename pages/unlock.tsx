@@ -23,48 +23,56 @@ export default function Unlock() {
   const router = useRouter();
   const [startLoader, stopLoader] = useContext(LoaderContext);
 
-  function handleFormSubmit(e: any) {
+  async function handleFormSubmit(e: any) {
     e.preventDefault();
-    const password = passwordRef.current!.value;
 
-    chrome.storage.local
-      .get("encryptedWallets")
-      .then(async (result) => {
-        startLoader();
+    try {
+      const password = passwordRef.current!.value;
 
-        const wallet = decryptWallet(result.encryptedWallets[0], password);
-        chrome.storage.session.set({ unlockPassword: password });
+      startLoader();
 
-        const provider = getWeb3Connection(NETWORKS.ETHEREUM);
+      let $ = await chrome.storage.local.get("encryptedWallets");
+      let $$ = await chrome.storage.local.get("lastWalletAddress");
 
-        const balance = Number(
-          await getWalletBalanceEth(provider, wallet.address)
-        );
+      const wallets = $.encryptedWallets.map((e: any) =>
+        decryptWallet(e, password)
+      );
 
-        const balanceFiat = Number(
-          (balance <= 0
-            ? 0
-            : (await getCoinUSD(NET_CONFIG.ETHEREUM.nativeCurrency.symbol))
-                .value! * balance
-          ).toFixed(primaryFixedValue)
-        );
+      chrome.storage.session.set({ unlockPassword: password });
 
-        setAccount((prev) => ({
-          ...prev,
-          address: wallet.address,
-          privateKey: wallet.privateKey,
-          addressList: [{ nickname: "my address", address: wallet.address }],
-          gasPriority: GAS_PRIORITY.NORMAL,
-          balance,
-          balanceFiat,
-        }));
+      let wallet =
+        wallets?.find((e: any) => e.address == $$.lastWalletAddress) ||
+        wallets[0];
 
-        router.push("/wallet");
-      })
-      .catch(() => {
-        stopLoader();
-        pushNotification({ element: "Wrong password", type: "error" });
-      });
+      const provider = getWeb3Connection(NETWORKS.ETHEREUM);
+
+      const balance = Number(
+        await getWalletBalanceEth(provider, wallet.address)
+      );
+
+      const balanceFiat = Number(
+        (balance <= 0
+          ? 0
+          : (await getCoinUSD(NET_CONFIG.ETHEREUM.nativeCurrency.symbol))
+              .value! * balance
+        ).toFixed(primaryFixedValue)
+      );
+
+      setAccount((prev) => ({
+        ...prev,
+        address: wallet.address,
+        privateKey: wallet.privateKey,
+        addressList: [{ nickname: "my address", address: wallet.address }],
+        gasPriority: GAS_PRIORITY.NORMAL,
+        balance,
+        balanceFiat,
+      }));
+
+      router.push("/wallet");
+    } catch (error) {
+      stopLoader();
+      pushNotification({ element: "Wrong password", type: "error" });
+    }
   }
 
   return (
