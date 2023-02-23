@@ -36,6 +36,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dicebear/collection": "^5.3.4",
+    "@dicebear/core": "^5.3.4",
     "@ethersproject/units": "^5.7.0",
     "@moralisweb3/evm-utils": "^2.7.4",
     "@next/font": "13.1.6",

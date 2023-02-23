@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   AvatarScanIcon,
   CloseIcon,
@@ -34,6 +35,7 @@ import { IAccount } from "@/interfaces/IAccount";
 import { GAS_PRIORITY, primaryFixedValue } from "@/constants/digits";
 import NET_CONFIG from "config/allNet";
 import { LoaderContext } from "@/context/loader";
+import { addressAvatar } from "@/utils/avatar";
 
 export default function WalletPage() {
   const [copied, setCopied] = useState(false);
@@ -137,14 +139,12 @@ export default function WalletPage() {
               )
             }
           >
-            <span className="flex w-full h-full relative">
-              <Image
-                fill
-                alt="dp"
-                src="/images/dp.png"
-                className="rounded-full"
-              />
-            </span>
+            <span
+              className="flex w-full h-full relative rounded-full overflow-hidden"
+              dangerouslySetInnerHTML={{
+                __html: addressAvatar(account.address),
+              }}
+            ></span>
           </button>
           <div
             className={`absolute top-full left-0 my-1 bg-gray-50 w-72 shadow-a rounded-md flex flex-col cursor-default transition ${
@@ -428,7 +428,7 @@ export function UserNavModal({
           Lock
         </button>
       </div>
-      <div className="border-b border-gray-400 w-full overflow-auto no-scroll">
+      <div className="border-b border-gray-400 w-full max-h-32 overflow-auto c-scroll">
         {accounts.map((e, i) => (
           <button
             className={`px-3 py-1 flex gap-2 justify-between items-center w-full ${
@@ -444,14 +444,10 @@ export function UserNavModal({
               <span>{e.name}</span>
               <span className="font-mono">{shorten(e.address, 10, 8, 20)}</span>
             </span>
-            <span className="flex w-8 h-8 relative flex-shrink-0">
-              <Image
-                fill
-                alt="dp"
-                src="/images/dp.png"
-                className="rounded-full"
-              />
-            </span>
+            <span
+              className="flex w-8 h-8 relative flex-shrink-0 rounded-full overflow-hidden"
+              dangerouslySetInnerHTML={{ __html: addressAvatar(e.address) }}
+            ></span>
           </button>
         ))}
       </div>
@@ -501,6 +497,21 @@ function AccountDetailsModal({
   modal: "visible" | "invisible";
   setModal: React.Dispatch<React.SetStateAction<"visible" | "invisible">>;
 }) {
+  const [account] = useContext(AccountContext);
+  const [accountName, setAccountName] = useState<string>();
+
+  useEffect(() => {
+    (async () => {
+      let $ = await chrome.storage.local.get("accounts");
+
+      let _account =
+        $.accounts?.find((e: any) => e.address == account.address) ||
+        $.accounts[0];
+
+      setAccountName(_account.name);
+    })();
+  }, [account]);
+
   return (
     <div
       className={`text-neutral-800 fixed top-0 left-0 bg-white bg-opacity-70 transition w-full h-full flex flex-col items-center p-2 ${
@@ -518,18 +529,16 @@ function AccountDetailsModal({
         </button>
         <div className="flex justify-center">
           <span className="flex w-20 h-20 p-0.5 border border-gray-500 rounded-full">
-            <span className="flex w-full h-full relative">
-              <Image
-                fill
-                alt="dp"
-                src="/images/dp.png"
-                className="rounded-full"
-              />
-            </span>
+            <span
+              className="flex w-full h-full relative rounded-full overflow-hidden"
+              dangerouslySetInnerHTML={{
+                __html: addressAvatar(account.address),
+              }}
+            ></span>
           </span>
         </div>
 
-        <p className="font-semibold text-base text-center">Account 1</p>
+        <p className="font-semibold text-base text-center">{accountName}</p>
 
         <div className="flex justify-center">
           <span className="flex w-28 h-28">
@@ -549,9 +558,7 @@ function AccountDetailsModal({
         </div>
 
         <div className="bg-gray-300 border border-gray-500 max-w-[16rem] rounded-lg self-center p-2">
-          <p className="text-center break-words font-mono">
-            0x1bD394d604159804d8740F73644480A10cD1C184
-          </p>
+          <p className="text-center break-words font-mono">{account.address}</p>
         </div>
 
         <div className="flex flex-col gap-2 p-2">
