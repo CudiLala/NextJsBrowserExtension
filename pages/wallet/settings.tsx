@@ -1,9 +1,11 @@
 import { ArrowDown } from "@/components/icons/arrows";
 import { UserNavModal } from ".";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Image from "next/image";
 import { CloseIcon, SearchIcon } from "@/components/icons/accessibility";
 import { useRouter } from "next/router";
+import { AccountContext } from "@/context/account";
+import { addressAvatar } from "@/utils/avatar";
 
 export default function SettingsPage() {
   const [userModal, setUserModal] = useState<"visible" | "invisible">(
@@ -11,9 +13,11 @@ export default function SettingsPage() {
   );
   const router = useRouter();
 
+  const [account] = useContext(AccountContext);
+
   return (
     <div className="flex flex-col">
-      <div className="bg-gray-200 px-2 py-1 flex gap-3 justify-between items-center sticky top-0 left-0 z-30">
+      <div className="bg-gray-200 px-2 py-1 flex gap-3 justify-between items-center sticky top-0 left-0 z-20">
         <div className="w-10 h-10 relative">
           <button
             className="border rounded-full w-full h-full flex border-slate-500 p-0.5 relative"
@@ -23,14 +27,12 @@ export default function SettingsPage() {
               )
             }
           >
-            <span className="flex w-full h-full relative">
-              <Image
-                fill
-                alt="dp"
-                src="/images/dp.png"
-                className="rounded-full"
-              />
-            </span>
+            <span
+              className="flex w-full h-full relative rounded-full overflow-hidden"
+              dangerouslySetInnerHTML={{
+                __html: addressAvatar(account.address),
+              }}
+            ></span>
           </button>
           <div
             className={`absolute top-full left-0 my-1 bg-gray-50 w-72 shadow-a rounded-md flex flex-col cursor-default transition ${

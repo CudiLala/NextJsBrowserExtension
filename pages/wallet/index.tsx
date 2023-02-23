@@ -3,6 +3,7 @@ import {
   AvatarScanIcon,
   CloseIcon,
   ConnectedNode,
+  DeleteIcon,
   DownloadIcon,
   ExpandIcon,
   EyeIcon,
@@ -54,7 +55,7 @@ export default function WalletPage() {
 
   const [account, setAccount] = useContext(AccountContext);
   const [, setProvider] = useContext(ProviderContext);
-  const [accountName, setAccountName] = useState<string>();
+  const [accountName, setAccountName] = useState<string>("Loading...");
 
   function copyAddress() {
     copyRef.current?.select();
@@ -129,7 +130,7 @@ export default function WalletPage() {
 
   return (
     <div className="flex flex-col">
-      <div className="bg-gray-200 px-2 py-1 flex gap-3 justify-between items-center sticky top-0 left-0 z-30">
+      <div className="bg-gray-200 px-2 py-1 flex gap-3 justify-between items-center sticky top-0 left-0 z-20">
         <div className="w-10 h-10 relative">
           <button
             className="border rounded-full w-full h-full flex border-slate-500 p-0.5 relative"
@@ -204,7 +205,7 @@ export default function WalletPage() {
         <p className="font-semibold text-2xl">10 MOL</p>
         <p className="text-base font-semibold">0.5 ETH</p>
 
-        <div className="py-4 flex gap-6">
+        <div className="pt-4 flex gap-6">
           <div className="flex items-center flex-col">
             <button className="py-2.5 px-6 h-10 rounded-lg bg-blue-700 text-white">
               <SendArrow />
@@ -342,6 +343,15 @@ function AccModal({
         </span>
         Connected site
       </button>
+      <Link
+        href="/wallet/remove-account"
+        className="flex items-center justify-start p-1 py-2"
+      >
+        <span className="w-5 h-5 flex mr-2">
+          <DeleteIcon />
+        </span>
+        Remove Account
+      </Link>
     </>
   );
 }

@@ -26,7 +26,8 @@ export default function Index() {
         let $$ = await chrome.storage.session.get("unlockPassword");
         let $$$ = await chrome.storage.local.get("lastWalletAddress");
 
-        if (!$.encryptedWallets) return router.push("/on-board");
+        if (!$.encryptedWallets || !$.encryptedWallets.length)
+          return router.push("/on-board");
         if (!$$.unlockPassword) return router.push("/unlock");
 
         const wallets = $.encryptedWallets.map((e: any) =>

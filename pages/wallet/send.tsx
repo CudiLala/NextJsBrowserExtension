@@ -45,6 +45,7 @@ import { Notifier } from "utils/notifications";
 import { Priority, details, Priories } from "types/gas";
 import { priorities } from "constants/gas";
 import BackButton from "@/components/button/back";
+import { addressAvatar } from "@/utils/avatar";
 
 export default function SendWalletPage() {
   const [account, setAccount] = useContext(AccountContext);
