@@ -18,7 +18,7 @@ export const fetchWalletAssets = async (address: string, chain: number) => {
       chain,
     });
 
-    return assets.toJSON();
+    return assets.result.map((e) => e.toJSON());
   } catch (error: any) {
     throw new Error(error.message);
   }

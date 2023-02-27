@@ -27,14 +27,14 @@ export default function App({ Component, pageProps }: AppProps) {
           <NetworkContextComponent>
             <ProviderContextComponent>
               <SocketProviderContextComponent>
-                <AssetProviderContextComponent>
-                  <AcoountContextComponent>
+                <AcoountContextComponent>
+                  <AssetProviderContextComponent>
                     <Head>
                       <title>Mola Wallet</title>
                     </Head>
                     <Component {...pageProps} />
-                  </AcoountContextComponent>
-                </AssetProviderContextComponent>
+                  </AssetProviderContextComponent>
+                </AcoountContextComponent>
               </SocketProviderContextComponent>
             </ProviderContextComponent>
           </NetworkContextComponent>

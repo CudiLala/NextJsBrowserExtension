@@ -238,7 +238,7 @@ export default function NetworkSelector({
             <div className="flex rounded-full overflow-hidden">
               <button
                 className={`flex-grow h-9 px-3 transition capitalize font-semibold ${
-                  filter == "main" ? "bg-blue-500 text-white z-1" : "bg-sky-100"
+                  filter == "main" ? "bg-blue-600 text-white z-1" : "bg-sky-50"
                 }`}
                 onClick={() => setFilter("main")}
               >
@@ -246,7 +246,7 @@ export default function NetworkSelector({
               </button>
               <button
                 className={`flex-grow h-9 px-3 transition capitalize font-semibold ${
-                  filter == "test" ? "bg-blue-500 text-white z-1" : "bg-sky-100"
+                  filter == "test" ? "bg-blue-600 text-white z-1" : "bg-sky-50"
                 }`}
                 onClick={() => setFilter("test")}
               >
@@ -254,7 +254,7 @@ export default function NetworkSelector({
               </button>
               <button
                 className={`flex-grow h-9 px-3 transition capitalize font-semibold ${
-                  filter == "all" ? "bg-blue-500 text-white z-1" : "bg-sky-100"
+                  filter == "all" ? "bg-blue-600 text-white z-1" : "bg-sky-50"
                 }`}
                 onClick={() => setFilter("all")}
               >
@@ -263,7 +263,7 @@ export default function NetworkSelector({
             </div>
 
             <form
-              className="relative bg-sky-100 rounded-lg h-9 px-4 flex items-center mr-4 w-full"
+              className="relative bg-sky-50 rounded-lg h-9 px-4 flex items-center mr-4 w-full"
               onSubmit={handleSearch}
             >
               <button className="inline-flex h-4 w-4 mr-3" type="submit">
@@ -276,13 +276,13 @@ export default function NetworkSelector({
               />
             </form>
           </div>
-          <div className="table border border-sky-300 w-full rounded-lg">
+          <div className="table border border-sky-400 w-full rounded-lg">
             {Object.values(NET_CONFIG)
               .filter(networkFilterFunction)
               .map((e, i) => (
                 <div key={i} className="table-row group">
                   <button
-                    className="table-cell w-full py-2 border-b group-last:border-none border-sky-300 items-center text-left px-5"
+                    className="table-cell w-full py-2 border-b group-last:border-none border-sky-400 items-center text-left px-5"
                     onClick={() => chooseNetwork(e)}
                   >
                     <span className="flex items-center">
