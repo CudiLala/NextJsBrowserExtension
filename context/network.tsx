@@ -22,7 +22,8 @@ export function NetworkContextComponent({ children }: { children: ReactNode }) {
   const [rendered, setRendered] = useState(false);
 
   useEffect(() => {
-    if (rendered) chrome.storage.session.set({ lastNetwork: network });
+    if (rendered && network)
+      chrome.storage.session.set({ lastNetwork: network });
   }, [network, rendered]);
 
   useEffect(() => {

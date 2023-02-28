@@ -7,7 +7,7 @@ import { getWeb3Connection } from "@/utils/wallet";
 import { NETWORKS } from "@/interfaces/IRpc";
 import { ProviderContext } from ".";
 
-export const AssetProviderContext = React.createContext<[any, any]>([
+export const AssetProviderContext = React.createContext<[any[], any]>([
   [],
   () => {},
 ]);
@@ -29,7 +29,7 @@ export function AssetProviderContextComponent({
       fetchWalletAssets(account.address, network.chainId).then(
         (walletAssets) => {
           setAssetsProvider(walletAssets);
-          console.log(network.chainName);
+          // console.log(walletAssets);
         }
       );
 

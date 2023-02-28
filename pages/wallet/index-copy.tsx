@@ -136,7 +136,6 @@ export default function WalletPage() {
                 </tr>
               </thead>
               <tbody>
-                {console.log(assets)}
                 {!!assets.length &&
                   assets.map((e: any, i: number) => (
                     <tr key={i}>

@@ -24,6 +24,7 @@ import { GAS_PRIORITY, primaryFixedValue } from "@/constants/digits";
 import NET_CONFIG from "config/allNet";
 import { addressAvatar } from "@/utils/avatar";
 import WalletHeader from "@/page_components/wallet/header";
+import { AssetProviderContext } from "@/context/web3/assets";
 
 export default function WalletPage() {
   const [copied, setCopied] = useState(false);
@@ -37,6 +38,9 @@ export default function WalletPage() {
 
   const [account, setAccount] = useContext(AccountContext);
   const [accountName, setAccountName] = useState<string>("Loading...");
+  const [walletAssets] = useContext(AssetProviderContext);
+  const [assets, setAssets] = useState<any[]>();
+  const [molaAsset, setMolaAsset] = useState<any>();
 
   async function setWalletAccount() {
     try {
@@ -99,6 +103,32 @@ export default function WalletPage() {
   }, [account]);
 
   useEffect(() => {
+    (async () => {
+      let assets = [];
+
+      if (Array.isArray(walletAssets)) {
+        for (let i = 0; i < walletAssets.length; i++) {
+          assets.push({ ...walletAssets[i] });
+          assets[i].value = Number(walletAssets[i].value).toFixed(4);
+
+          assets[i].usdValue = (
+            (await getCoinUSD(walletAssets[i].token.symbol))!.value *
+            walletAssets[i].value
+          ).toFixed(2);
+        }
+      }
+
+      setAssets(assets);
+    })();
+  }, [walletAssets]);
+
+  useEffect(() => {
+    let molaAsset = assets?.find((e) => e.token.name.startsWith("MOL"));
+    if (!molaAsset) setMolaAsset(undefined);
+    else setMolaAsset(molaAsset);
+  }, [assets]);
+
+  useEffect(() => {
     setWalletAccount();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -142,8 +172,12 @@ export default function WalletPage() {
       </div>
 
       <div className="px-8 py-10 w-full flex flex-col items-center gap-2">
-        <p className="font-semibold text-2xl">10 MOL</p>
-        <p className="text-base font-semibold">0.5 ETH</p>
+        <p className="font-semibold text-2xl text-center">
+          {molaAsset ? `${molaAsset.value} ${molaAsset.token.symbol}` : `- -`}
+        </p>
+        <p className="text-base font-semibold">
+          {molaAsset ? `$${molaAsset.usdValue}` : `-`}
+        </p>
 
         <div className="pt-4 flex gap-6">
           <div className="flex items-center flex-col">
@@ -185,34 +219,39 @@ export default function WalletPage() {
 
       {view === "assets" && (
         <>
-          <button className="p-3 text-start bg-gray-100 flex gap-4 items-center border-b border-gray-300">
-            <span className="w-10 h-10 flex border border-current rounded-full"></span>
-            <div className="flex flex-col gap-1 flex-grow">
-              <p className="font-semibold text-base">10 MOL</p>
-              <p className="">$100.00</p>
-            </div>
-            <span className="flex h-6 w-6">
-              <ArrowForward />
-            </span>
-          </button>
-          <button className="p-3 text-start bg-gray-100 flex gap-4 items-center border-b border-gray-300">
-            <span className="w-10 h-10 p-1 flex border border-current rounded-full justify-center items-center">
-              <Image
-                src="/images/ethereum.png"
-                width={32}
-                height={32}
-                className="w-auto h-8"
-                alt=""
-              />
-            </span>
-            <div className="flex flex-col gap-1 flex-grow">
-              <p className="font-semibold text-base">0.5 ETH</p>
-              <p className="">$800.00</p>
-            </div>
-            <span className="flex h-6 w-6">
-              <ArrowForward />
-            </span>
-          </button>
+          {!assets ? (
+            <p className="flex justify-center p-4">Loading...</p>
+          ) : !assets.length ? (
+            <p className="flex justify-center p-4">
+              No assets in this current network, try switching networks
+            </p>
+          ) : (
+            assets?.map((e: any, i) => (
+              <button
+                className="p-3 text-start bg-gray-100 flex gap-4 items-center border-b border-gray-300"
+                key={e.token.contractAddress}
+              >
+                <Image
+                  unoptimized
+                  className="w-10 h-10 flex border border-current rounded-full"
+                  alt=""
+                  src={
+                    e.token.logo ||
+                    `https://api.dicebear.com/5.x/initials/svg?seed=${e.token.symbol}&backgroundColor=4287f5`
+                  }
+                />
+                <div className="flex flex-col gap-1 flex-grow">
+                  <p className="font-semibold text-base">
+                    {e.value} {e.token.symbol}
+                  </p>
+                  <p className="">${e.usdValue}</p>
+                </div>
+                <span className="flex h-6 w-6">
+                  <ArrowForward />
+                </span>
+              </button>
+            ))
+          )}
 
           <div className="pt-4">
             <p className="text-center p-3 font-semibold text-neutral-600">
