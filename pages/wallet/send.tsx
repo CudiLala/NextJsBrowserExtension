@@ -438,7 +438,10 @@ export default function SendWalletPage() {
         />
         <div className="flex flex-col gap-4 mt-8">
           <div>
-            <NetworkSelector click={networkClick} setClick={setNetworkClick} />
+            <NetworkSelector
+              active={networkClick}
+              setActive={setNetworkClick}
+            />
           </div>
           <div>
             <TransactionHistory network={network.chainName} />

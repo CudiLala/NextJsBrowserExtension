@@ -28,18 +28,16 @@ export const networkLogoMap: { [key: string]: JSX.Element } = {
 };
 
 export default function NetworkSelector({
-  click,
-  setClick,
+  active,
+  setActive,
 }: {
-  click?: boolean;
-  setClick?: React.Dispatch<React.SetStateAction<boolean>>;
+  active: boolean;
+  setActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [notification, pushNotification] = useNotification();
   const [network, setNetwork] = useContext(NetworkContext);
   const [account, setAccount] = useContext(AccountContext);
   const [provider, setProvider] = useContext(ProviderContext);
-  const [modalActive, setModalActive] = useState(false);
-  const [blockNumber, setBlockNumber] = useState("0");
   const [filter, setFilter] = useState("main");
   const [startLoader, stopLoader] = useContext(LoaderContext);
   const [, setAssetProvider] = useContext(AssetProviderContext);
@@ -81,10 +79,6 @@ export default function NetworkSelector({
       }));
 
       setNetwork(network);
-      setAccount((prev: IAccount) => ({
-        ...prev,
-        balance: Number(balance),
-      }));
 
       setProvider(provider);
 
@@ -102,7 +96,7 @@ export default function NetworkSelector({
       });
     }
 
-    setModalActive(false);
+    setActive(false);
     stopLoader();
   }
 
@@ -172,53 +166,11 @@ export default function NetworkSelector({
     e.preventDefault();
   }
 
-  useEffect(() => {
-    (async () => {
-      if (provider) {
-        const latesBlock = await provider.eth.getBlockNumber();
-
-        setBlockNumber(latesBlock.toLocaleString());
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    if (click === true && setClick !== undefined) {
-      setModalActive(true);
-      setClick(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [click]);
   return (
     <>
-      <button
-        className="rounded-lg p-4 font-semibold text-left w-full bg-neutral-200 capitalize text-neutral-800"
-        onClick={() => setModalActive(true)}
-      >
-        <div className="flex items-center">
-          <div
-            style={{ flex: "1 1 100%", display: "flex", alignItems: "center" }}
-            className="flex flex-grow flex-shrink w-full items-center"
-          >
-            Network
-            <span className="flex w-4 h-4 text-neutral-500 border border-current rounded-full p-px ml-2">
-              <ArrowForward />
-            </span>
-          </div>
-          <div className="w-10 h-10 bg-white rounded-full flex-shrink-0 flex justify-center items-center mr-2">
-            {networkLogoMap[network.chainName]}
-          </div>
-        </div>
-        <div className="mt-4">
-          <div>
-            {network.nativeCurrency.symbol} - {network.nativeCurrency.name}
-          </div>
-          <div>Last Block: {blockNumber}</div>
-        </div>
-      </button>
       <div
         className={`text-neutral-800 fixed top-0 left-0 bg-white bg-opacity-70 transition w-full h-full flex flex-col items-center p-2 ${
-          modalActive ? "opacity-1 z-40" : "-z-10 opacity-0"
+          active ? "opacity-1 z-40 visible" : "-z-10 opacity-0 invisible"
         }`}
       >
         <div
@@ -229,7 +181,7 @@ export default function NetworkSelector({
           </h4>
           <button
             className="w-8 h-8 flex-shrink-0 absolute right-2 top-2 bg-transparent"
-            onClick={() => setModalActive(false)}
+            onClick={() => setActive(false)}
           >
             <CloseIcon />
           </button>

@@ -4,7 +4,6 @@ import {
   MessageIcon,
   SettingsIcon,
 } from "@/components/icons/accessibility";
-import { ArrowDown } from "@/components/icons/arrows";
 import { primaryFixedValue, GAS_PRIORITY } from "@/constants/digits";
 import { AccountContext } from "@/context/account";
 import { LoaderContext } from "@/context/loader";
@@ -23,12 +22,17 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useState, useEffect } from "react";
 import NET_CONFIG from "config/allNet";
+import { NetworkContext } from "@/context/network";
+import { CaretDownOutline } from "@/components/icons/arrows";
+import NetworkSelector from "./network_selector";
 
 export default function WalletHeader() {
   const [account, setAccount] = useContext(AccountContext);
   const [userModal, setUserModal] = useState<"visible" | "invisible">(
     "invisible"
   );
+  const [network] = useContext(NetworkContext);
+  const [networkModal, setNetworkModal] = useState(false);
 
   return (
     <div className="bg-gray-200 px-2 py-1 flex gap-3 justify-between items-center sticky top-0 left-0 z-20">
@@ -59,12 +63,16 @@ export default function WalletHeader() {
           <UserNavModal setVisibility={setUserModal} />
         </div>
       </div>
-      <div className="flex items-center justify-end gap-2">
-        <span className="font-semibold">Network</span>
-        <span className="w-6 h-6 p-1 flex border border-current rounded-full text-sky-700">
-          <ArrowDown />
+      <button
+        className="flex items-center pl-4 pr-3 py-1 border-2 border-current rounded-full justify-end gap-4 text-neutral-700"
+        onClick={() => setNetworkModal(true)}
+      >
+        <span className="font-semibold">{network.chainName}</span>
+        <span className="w-4 h-4 flex rounded-full">
+          <CaretDownOutline />
         </span>
-      </div>
+      </button>
+      <NetworkSelector active={networkModal} setActive={setNetworkModal} />
     </div>
   );
 }
