@@ -69,7 +69,7 @@ export default function WalletHeader() {
   );
 }
 
-export function UserNavModal({
+function UserNavModal({
   setVisibility,
 }: {
   setVisibility: React.Dispatch<React.SetStateAction<"visible" | "invisible">>;
