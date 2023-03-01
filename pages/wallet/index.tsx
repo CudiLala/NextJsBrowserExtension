@@ -264,11 +264,14 @@ export default function WalletPage() {
         </>
       )}
 
-      {view === "activity" && (
-        <p className="text-center p-3 pt-6 font-semibold text-neutral-600">
-          You have no transaction
-        </p>
-      )}
+      {view === "activity" &&
+        (!activities?.length ? (
+          <p className="text-center p-3 pt-6 font-semibold text-neutral-600">
+            You have no transaction
+          </p>
+        ) : (
+          activities.map((e, i) => <p key={i}>{e.name}</p>)
+        ))}
 
       <p className="text-center p-3 font-semibold text-neutral-600">
         Need help? Contact{" "}
@@ -283,6 +286,22 @@ export default function WalletPage() {
     </div>
   );
 }
+
+const activities = [
+  {
+    name: "Mint",
+    date: "Feb 12",
+    from: "",
+    to: "",
+    status: "Confirmed",
+    nonce: 17,
+    token: "ETH",
+    amount: "0.002",
+    "gas limit": 21000,
+    "gas price": 27.7887,
+    total: "0.002056",
+  },
+];
 
 function AccModal({
   setAccModal,
@@ -299,7 +318,7 @@ function AccModal({
         <span className="w-5 h-5 flex mr-2">
           <EyeIcon />
         </span>
-        View on account etherscan
+        View on account block explorer
       </button>
       <button
         className="flex items-center justify-start p-1 py-2"

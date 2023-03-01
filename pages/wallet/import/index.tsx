@@ -36,29 +36,6 @@ export default function WalletImport() {
         </Link>
 
         <Link
-          href="/wallet/import/mnemonic"
-          className="p-4 flex flex-col text-neutral-900 rounded-2xl border border-neutral-300"
-        >
-          <h2 className="text-lg text-blue-800 font-semibold mb-2">
-            Import Your Wallet Using Mnemonic Phrase
-          </h2>
-          <div className="flex justify-between items-start">
-            <p>
-              Create your wallet using a mnemonic phrase. This mnemonic phrase
-              will be used to restore your account if your unlocking password is
-              forgotten
-            </p>
-            <span className="inline-flex ml-3 flex-shrink-0 w-12 h-12 relative">
-              <Image
-                fill
-                src="/images/icon-mnemonic.svg"
-                alt="key store icon"
-              />
-            </span>
-          </div>
-        </Link>
-
-        <Link
           href="/wallet/import/keystore"
           className="p-4 flex flex-col text-neutral-900 rounded-2xl border border-neutral-300"
         >

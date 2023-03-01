@@ -107,7 +107,7 @@ export function OnBoardingScreen() {
         />
 
         <Link
-          href="/wallet/create"
+          href="/wallet/create/keystore"
           className="text-white bg-blue-700 flex justify-center items-center font-semibold rounded-lg py-2 shadow-md shadow-blue-200"
         >
           Create a new wallet
