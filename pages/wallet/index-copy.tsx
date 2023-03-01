@@ -101,7 +101,7 @@ export default function WalletPage() {
           </div>
           <div className="flex justify-end gap-3">
             <a
-              className="bg-white border border-white text-blue-600 py-1 px-4 font-semibold rounded-md flex flex-shrink-0"
+              className="bg-white border border-white text-blue-700 py-1 px-4 font-semibold rounded-md flex flex-shrink-0"
               href="#"
             >
               <span className="flex mr-2 w-4 h-4">
@@ -164,7 +164,7 @@ export default function WalletPage() {
                       <td>
                         <Link
                           href={`/wallet/send?token=${e.symbol}`}
-                          className="text-blue-500"
+                          className="text-blue-700"
                         >
                           Send
                         </Link>

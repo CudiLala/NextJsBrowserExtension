@@ -47,54 +47,55 @@ export default function NetworkSelector({
 
   async function chooseNetwork(network: INET_CONFIG) {
     startLoader();
-    try {
-      const provider = getWeb3Connection(network.chainName as NETWORKS);
+    setNetwork(network);
+    // try {
+    //   const provider = getWeb3Connection(network.chainName as NETWORKS);
 
-      const walletAssets = await fetchWalletAssets(
-        account.address,
-        network.chainId
-      );
+    //   const walletAssets = await fetchWalletAssets(
+    //     account.address,
+    //     network.chainId
+    //   );
 
-      const balance = Number(
-        await getWalletBalanceEth(provider, account.address)
-      );
+    //   const balance = Number(
+    //     await getWalletBalanceEth(provider, account.address)
+    //   );
 
-      const balanceFiat = Number(
-        (balance <= 0
-          ? 0
-          : (
-              await getCoinUSD(
-                NET_CONFIG[network.chainName as NETWORKS].nativeCurrency.symbol
-              )
-            ).value! * balance
-        ).toFixed(primaryFixedValue)
-      );
+    //   const balanceFiat = Number(
+    //     (balance <= 0
+    //       ? 0
+    //       : (
+    //           await getCoinUSD(
+    //             NET_CONFIG[network.chainName as NETWORKS].nativeCurrency.symbol
+    //           )
+    //         ).value! * balance
+    //     ).toFixed(primaryFixedValue)
+    //   );
 
-      setAccount((prev: IAccount) => ({
-        ...prev,
+    //   setAccount((prev: IAccount) => ({
+    //     ...prev,
 
-        balance: balance,
+    //     balance: balance,
 
-        balanceFiat,
-      }));
+    //     balanceFiat,
+    //   }));
 
-      setNetwork(network);
+    //   setNetwork(network);
 
-      setProvider(provider);
+    //   setProvider(provider);
 
-      setAssetProvider(walletAssets);
-    } catch (error: any) {
-      stopLoader();
+    //   setAssetProvider(walletAssets);
+    // } catch (error: any) {
+    //   stopLoader();
 
-      pushNotification({
-        element: (
-          <p style={{ textAlign: "center" }}>
-            Error Connecting To {network.chainName} Network
-          </p>
-        ),
-        type: "error",
-      });
-    }
+    //   pushNotification({
+    //     element: (
+    //       <p style={{ textAlign: "center" }}>
+    //         Error Connecting To {network.chainName} Network
+    //       </p>
+    //     ),
+    //     type: "error",
+    //   });
+    // }
 
     setActive(false);
     stopLoader();
@@ -125,7 +126,7 @@ export default function NetworkSelector({
             await getWalletBalanceEth(provider, account.address)
           );
           if (balance !== account.balance) {
-            startLoader();
+            // startLoader();
 
             const balanceFiat = Number(
               (balance <= 0
@@ -148,7 +149,7 @@ export default function NetworkSelector({
             }));
           }
 
-          stopLoader();
+          // stopLoader();
         }
       });
 
@@ -176,7 +177,7 @@ export default function NetworkSelector({
         <div
           className={`bg-white shadow-b shadow-neutral-500 p-2 max-w-[20rem] w-full max-h-[95%] overflow-x-hidden overflow-y-auto relative rounded-xl c-scroll`}
         >
-          <h4 className="font-semibold p-2 text-base text-center w-full text-blue-600">
+          <h4 className="font-semibold p-2 text-base text-center w-full text-blue-700">
             Select Network
           </h4>
           <button
@@ -190,7 +191,7 @@ export default function NetworkSelector({
             <div className="flex rounded-full overflow-hidden">
               <button
                 className={`flex-grow h-9 px-3 transition capitalize font-semibold ${
-                  filter == "main" ? "bg-blue-600 text-white z-1" : "bg-sky-50"
+                  filter == "main" ? "bg-blue-700 text-white z-1" : "bg-sky-50"
                 }`}
                 onClick={() => setFilter("main")}
               >
@@ -198,7 +199,7 @@ export default function NetworkSelector({
               </button>
               <button
                 className={`flex-grow h-9 px-3 transition capitalize font-semibold ${
-                  filter == "test" ? "bg-blue-600 text-white z-1" : "bg-sky-50"
+                  filter == "test" ? "bg-blue-700 text-white z-1" : "bg-sky-50"
                 }`}
                 onClick={() => setFilter("test")}
               >
@@ -206,7 +207,7 @@ export default function NetworkSelector({
               </button>
               <button
                 className={`flex-grow h-9 px-3 transition capitalize font-semibold ${
-                  filter == "all" ? "bg-blue-600 text-white z-1" : "bg-sky-50"
+                  filter == "all" ? "bg-blue-700 text-white z-1" : "bg-sky-50"
                 }`}
                 onClick={() => setFilter("all")}
               >
@@ -228,13 +229,13 @@ export default function NetworkSelector({
               />
             </form>
           </div>
-          <div className="table border border-sky-400 w-full rounded-lg">
+          <div className="table border border-blue-700 w-full rounded-lg">
             {Object.values(NET_CONFIG)
               .filter(networkFilterFunction)
               .map((e, i) => (
                 <div key={i} className="table-row group">
                   <button
-                    className="table-cell w-full py-2 border-b group-last:border-none border-sky-400 items-center text-left px-5"
+                    className="table-cell w-full py-2 border-b group-last:border-none border-blue-700     items-center text-left px-5"
                     onClick={() => chooseNetwork(e)}
                   >
                     <span className="flex items-center">
@@ -247,13 +248,13 @@ export default function NetworkSelector({
                       <span
                         className={`inline-flex w-5 h-5 border rounded-full flex-shrink-0 items-center justify-center ${
                           network.chainId == e.chainId
-                            ? "border-sky-400"
+                            ? "border-blue-700    "
                             : "border-gray-400"
                         }`}
                       >
                         <span
                           className={`inline-flex w-4 h-4 rounded-full ${
-                            network.chainId === e.chainId ? "bg-sky-400" : ""
+                            network.chainId === e.chainId ? "bg-blue-700" : ""
                           }`}
                         ></span>
                       </span>

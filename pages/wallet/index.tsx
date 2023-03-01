@@ -136,7 +136,7 @@ export default function WalletPage() {
   return (
     <div className="flex flex-col">
       <WalletHeader />
-      <div className="py-1.5 flex justify-between items-center border-b border-sky-200">
+      <div className="py-1.5 flex justify-between items-center border-b border-slate-300">
         <div className="px-3 flex flex-col gap-0.5 justify-start">
           <p>{accountName}</p>
           <p className="font-mono" title={account?.address}>
@@ -187,13 +187,13 @@ export default function WalletPage() {
             >
               <SendArrow />
             </Link>
-            <p className="font-semibold text-base text-blue-600">Send</p>
+            <p className="font-semibold text-base text-blue-700">Send</p>
           </div>
           <div className="flex items-center flex-col">
             <button className="py-2.5 px-6 h-10 rounded-lg bg-blue-700 text-white">
               <SwapArrow />
             </button>
-            <p className="font-semibold text-base text-blue-600">Swap</p>
+            <p className="font-semibold text-base text-blue-700">Swap</p>
           </div>
         </div>
       </div>
@@ -201,7 +201,7 @@ export default function WalletPage() {
       <div className="flex border-b border-gray-300">
         <button
           className={`w-full p-3 text-center font-semibold ${
-            view === "assets" ? "border-blue-500 border-b-[3px]" : ""
+            view === "assets" ? "border-blue-700 border-b-[3px]" : ""
           }`}
           onClick={() => setView("assets")}
         >
@@ -209,7 +209,7 @@ export default function WalletPage() {
         </button>
         <button
           className={`w-full p-3 text-center font-semibold ${
-            view === "activity" ? "border-blue-500 border-b-[3px]" : ""
+            view === "activity" ? "border-blue-700 border-b-[3px]" : ""
           }`}
           onClick={() => setView("activity")}
         >
@@ -237,7 +237,7 @@ export default function WalletPage() {
                   alt=""
                   src={
                     e.token.logo ||
-                    `https://api.dicebear.com/5.x/initials/svg?seed=${e.token.symbol}&backgroundColor=4287f5`
+                    `https://api.dicebear.com/5.x/initials/svg?seed=${e.token.symbol}&backgroundColor=174F91`
                   }
                 />
                 <div className="flex flex-col gap-1 flex-grow">
@@ -255,8 +255,8 @@ export default function WalletPage() {
 
           <div className="pt-4">
             <p className="text-center p-3 font-semibold text-neutral-600">
-              <button className="text-blue-500">Refresh List</button> or{" "}
-              <Link href="#" className="text-blue-500">
+              <button className="text-blue-700">Refresh List</button> or{" "}
+              <Link href="#" className="text-blue-700">
                 import tokens
               </Link>
             </p>
@@ -272,7 +272,7 @@ export default function WalletPage() {
 
       <p className="text-center p-3 font-semibold text-neutral-600">
         Need help? Contact{" "}
-        <Link href="#" className="text-blue-500">
+        <Link href="#" className="text-blue-700">
           Mola Support
         </Link>
       </p>

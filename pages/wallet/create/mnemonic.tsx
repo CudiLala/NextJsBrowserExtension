@@ -185,7 +185,7 @@ function _2({
       <div className="w-full flex justify-end">
         <button
           onClick={generateAndSetWords}
-          className="flex items-center font-semibold text-blue-600"
+          className="flex items-center font-semibold text-blue-700"
         >
           <span className="flex mr-1 w-6 h-6">
             <ReloadIcon />
@@ -200,7 +200,7 @@ function _2({
             className="inline-flex items-center justify-center rounded-md h-9 bg-cyan-100 relative px-4"
           >
             {e}
-            <span className="absolute inline-flex items-center justify-center w-5 h-5 top-0 left-0 text-blue-600 text-[0.625rem] font-semibold">
+            <span className="absolute inline-flex items-center justify-center w-5 h-5 top-0 left-0 text-blue-700 text-[0.625rem] font-semibold">
               {i + 1}
             </span>
           </span>
@@ -321,7 +321,7 @@ function _3({
       <div className="w-full flex flex-col gap-4 justify-center">
         <div className="w-full flex justify-end">
           <button
-            className="flex items-center font-semibold text-blue-600"
+            className="flex items-center font-semibold text-blue-700"
             onClick={clearSelectedWords}
           >
             <span className="flex mr-1 w-6 h-6">
@@ -343,7 +343,7 @@ function _3({
                 removeFromSelectedWords(i);
               }}
             >
-              <span className="absolute inline-flex items-center justify-center w-5 h-5 top-0 left-0 text-blue-600 text-[0.625rem] font-semibold">
+              <span className="absolute inline-flex items-center justify-center w-5 h-5 top-0 left-0 text-blue-700 text-[0.625rem] font-semibold">
                 {i + 1}
               </span>
               {e[0]}
@@ -358,7 +358,7 @@ function _3({
           {words.map((e: string, i: number) => (
             <button
               key={i}
-              className={`inline-flex items-center justify-center rounded-md h-9 relative px-4 bg-transparent text-blue-600 transition`}
+              className={`inline-flex items-center justify-center rounded-md h-9 relative px-4 bg-transparent text-blue-700 transition`}
               onClick={() => {
                 if (e !== "") addToSelectedWords(e, i);
               }}

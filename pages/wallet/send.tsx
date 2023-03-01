@@ -371,14 +371,14 @@ export default function SendWalletPage() {
             <div className="flex items-center">
               <div className="bg-neutral-300 flex items-center rounded-lg px-3 py-1 mr-3">
                 <span>Bal: {account.balance}</span>
-                <span className="flex items-center text-blue-500">
-                  <span className="w-5 h-5 mr-1 ml-4 inline-flex text-blue-500">
+                <span className="flex items-center text-blue-700">
+                  <span className="w-5 h-5 mr-1 ml-4 inline-flex text-blue-700">
                     <ClockFillIcon />
                   </span>
                   {gasPriority?.time}
                 </span>
                 <button
-                  className="ml-2 text-blue-600 flex w-8 p-2 bg-transparent outline-none"
+                  className="ml-2 text-blue-700 flex w-8 p-2 bg-transparent outline-none"
                   onClick={() => setTransFee(true)}
                 >
                   <ArrowDown />
@@ -389,7 +389,7 @@ export default function SendWalletPage() {
             <div className="mt-3">Total: {+details.amount + +gasPrice}</div>
           </div>
           <button
-            className="text-blue-500 bg-transparent"
+            className="text-blue-700 bg-transparent"
             onClick={() => setInfoModal(true)}
           >
             How fees are determined?
@@ -412,7 +412,7 @@ export default function SendWalletPage() {
         <div className="flex flex-col gap-4">
           <button
             onClick={resetDetails}
-            className="p-2 bg-slate-100 rounded-lg text-blue-600 text-center font-semibold shadow-md shadow-blue-200"
+            className="p-2 bg-slate-100 rounded-lg text-blue-700 text-center font-semibold shadow-md shadow-blue-200"
           >
             Clear All
           </button>
@@ -517,7 +517,7 @@ function GasAndDataForm({
       <div className="flex flex-col relative gap-0.5 px-1">
         <label className="font-semibold">Gas limit</label>
         <button
-          className="text-blue-500 absolute right-2"
+          className="text-blue-700 absolute right-2"
           onClick={() => setDetails((prev) => ({ ...prev, gasLimit: "21000" }))}
         >
           Reset to default: 21000
@@ -676,7 +676,7 @@ function TransConfirmModal({
           <CloseIcon />
         </button>
 
-        <h4 className="font-semibold p-2 text-base text-center w-full text-blue-600">
+        <h4 className="font-semibold p-2 text-base text-center w-full text-blue-700">
           TRANSACTION CONFIRMATION
         </h4>
 
@@ -684,7 +684,7 @@ function TransConfirmModal({
           Please double check everything, mola team will not be able to reverse
           your transactions once it summited, you will still be charged gas fee
           even if the transaction fails.{" "}
-          <Link href="#" className="text-blue-500">
+          <Link href="#" className="text-blue-700">
             Learn More
           </Link>
         </p>
@@ -702,7 +702,7 @@ function TransConfirmModal({
             </div>
           </div>
           <div className="mx-4 flex items-center">
-            <span className="w-4 h-4 text-blue-500 flex flex-shrink-0">
+            <span className="w-4 h-4 text-blue-700 flex flex-shrink-0">
               <ArrowForward />
             </span>
           </div>
@@ -737,7 +737,7 @@ function TransConfirmModal({
         </div>
         <div className="flex flex-col gap-4 mt-4">
           <button
-            className="p-2 bg-slate-100 rounded-lg text-blue-600 text-center font-semibold shadow-md shadow-blue-200"
+            className="p-2 bg-slate-100 rounded-lg text-blue-700 text-center font-semibold shadow-md shadow-blue-200"
             onClick={() => setActive(false)}
           >
             Cancel
@@ -781,11 +781,11 @@ function TransInitModal({
           <CloseIcon />
         </button>
 
-        <h4 className="font-semibold p-2 text-base text-center w-full text-blue-600">
+        <h4 className="font-semibold p-2 text-base text-center w-full text-blue-700">
           TRANSACTION INITIATED
         </h4>
 
-        <div className="mx-auto w-32 my-8 text-blue-500">
+        <div className="mx-auto w-32 my-8 text-blue-700">
           <TickHeavyIcon />
         </div>
 
@@ -797,10 +797,10 @@ function TransInitModal({
           </p>
         </div>
         <div className="my-4 mx-auto w-4/5 justify-between flex">
-          <Link href={txHash} className="text-blue-500" target="_blank">
+          <Link href={txHash} className="text-blue-700" target="_blank">
             View On Explorer
           </Link>
-          <Link href="/wallet/notifications" className="text-blue-500">
+          <Link href="/wallet/notifications" className="text-blue-700">
             View Progress
           </Link>
         </div>
@@ -847,7 +847,7 @@ function TransFee({
           <CloseIcon />
         </button>
 
-        <h4 className="font-semibold p-2 text-base text-center w-full text-blue-600">
+        <h4 className="font-semibold p-2 text-base text-center w-full text-blue-700">
           SELECT TRANSACTION FEE
         </h4>
 
@@ -871,13 +871,13 @@ function TransFee({
                   setTimeout(() => setActive(false), 100);
                 }}
               >
-                <span className="w-5 h-5 flex-shrink-0 mr-5 inline-flex text-blue-500">
+                <span className="w-5 h-5 flex-shrink-0 mr-5 inline-flex text-blue-700">
                   <e.icon />
                 </span>
-                <span className="w-full transition font-semibold group-focus:text-blue-500">
+                <span className="w-full transition font-semibold group-focus:text-blue-700">
                   {e.text}
                 </span>
-                <span className="w-40 font-semibold text-blue-500 flex items-center">
+                <span className="w-40 font-semibold text-blue-700 flex items-center">
                   <span className="inline-flex w-4 h-4 mr-2">
                     <ClockIcon />
                   </span>

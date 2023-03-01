@@ -326,7 +326,7 @@ function _3({
             </span>
           </div>
           <div>
-            <h4 className="text-base text-blue-600 font-semibold text-center mb-4">
+            <h4 className="text-base text-blue-700 font-semibold text-center mb-4">
               {"Don't lose it"}
             </h4>
             <p className="text-center mb-4">
@@ -346,7 +346,7 @@ function _3({
             </span>
           </div>
           <div>
-            <h4 className="text-base text-blue-600 font-semibold text-center mb-4">
+            <h4 className="text-base text-blue-700 font-semibold text-center mb-4">
               {"Don't share it"}
             </h4>
             <p className="text-center mb-4">
@@ -367,7 +367,7 @@ function _3({
             </span>
           </div>
           <div>
-            <h4 className="text-base text-blue-600 font-semibold text-center mb-4">
+            <h4 className="text-base text-blue-700 font-semibold text-center mb-4">
               Make a backup
             </h4>
             <p className="text-center mb-4">

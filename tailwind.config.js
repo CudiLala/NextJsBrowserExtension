@@ -1,3 +1,5 @@
+const colors = require("tailwindcss/colors");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -15,6 +17,22 @@ module.exports = {
         a: "0 0 2px 0 rgb(0 0 0 / 0.5)",
         b: "0 0 24px 0 rgb(0 0 0 / 0.5)",
       },
+    },
+    colors: {
+      blue: { ...colors.blue, 700: "#174F91" },
+      transparent: "transparent",
+      current: "currentColor",
+      black: colors.black,
+      white: colors.white,
+      gray: colors.gray,
+      emerald: colors.emerald,
+      indigo: colors.indigo,
+      yellow: colors.yellow,
+      sky: colors.sky,
+      slate: colors.slate,
+      stone: colors.stone,
+      neutral: colors.neutral,
+      cyan: colors.cyan,
     },
   },
   plugins: [],

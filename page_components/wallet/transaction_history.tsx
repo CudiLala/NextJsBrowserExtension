@@ -88,7 +88,7 @@ export function List({ e }: { e: INotification }) {
           <div className="table-row">
             <span className="table-cell">Transaction Hash:</span>
             <a
-              className="table-cell items-start text-blue-500"
+              className="table-cell items-start text-blue-700"
               href={e.txLink}
               target="_blank"
               rel="noreferrer"

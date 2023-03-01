@@ -193,7 +193,7 @@ export default function MnemonicAccessWallet() {
                   autoComplete="off"
                   className="inline-flex w-full h-7 bg-transparent border-none outline-none focus:outline-none"
                 />
-                <span className="absolute inline-flex items-center justify-center w-5 h-5 top-0 left-0 text-blue-600 text-[0.625rem] font-semibold">
+                <span className="absolute inline-flex items-center justify-center w-5 h-5 top-0 left-0 text-blue-700 text-[0.625rem] font-semibold">
                   {i + 1}
                 </span>
               </span>
@@ -202,7 +202,7 @@ export default function MnemonicAccessWallet() {
 
           <button
             type="reset"
-            className="p-2 bg-slate-100 rounded-lg text-blue-600 text-center font-semibold shadow-md shadow-blue-200"
+            className="p-2 bg-slate-100 rounded-lg text-blue-700 text-center font-semibold shadow-md shadow-blue-200"
           >
             Clear All
           </button>
