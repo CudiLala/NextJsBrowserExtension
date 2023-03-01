@@ -414,9 +414,12 @@ function AccountDetailsModal({
             View on etherscan
           </button>
 
-          <button className="p-2 bg-blue-700 rounded-lg text-white text-center font-semibold shadow-lg shadow-blue-200 disabled:cursor-not-allowed disabled:bg-blue-400">
+          <Link
+            href="/wallet/export-private-key"
+            className="p-2 bg-blue-700 rounded-lg text-white text-center font-semibold shadow-lg shadow-blue-200 disabled:cursor-not-allowed disabled:bg-blue-400"
+          >
             Export private key
-          </button>
+          </Link>
         </div>
       </div>
     </div>
