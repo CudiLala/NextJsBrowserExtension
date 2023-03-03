@@ -17,9 +17,16 @@ injectScript(chrome.runtime.getURL("window.js"), "body");
 document.addEventListener(
   "confirm",
   (e) => {
-    chrome.runtime.sendMessage("msgggg", (response) => {
+    chrome.runtime.sendMessage({ name: "confirm" }, (response) => {
       console.log(response);
     });
   },
   false
 );
+
+document.addEventListener("open", (e) => {
+  chrome.runtime.sendMessage(
+    { name: "open", left: e.detail.left, top: e.detail.top },
+    () => {}
+  );
+});

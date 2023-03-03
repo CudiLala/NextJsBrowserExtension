@@ -1,8 +1,5 @@
 window.molaWallet = {
   name: "Mola Wallet",
-  events: {
-    confirm: new Event("confirm"),
-  },
   getTabId: async function () {
     let queryOptions = { active: true, lastFocusedWindow: true };
     // `tab` will either be a `tabs.Tab` instance or `undefined`.
@@ -10,6 +7,16 @@ window.molaWallet = {
     return tab.id;
   },
   confirm: function () {
-    document.dispatchEvent(this.events.confirm);
+    let ev = new Event("confirm");
+    document.dispatchEvent(ev);
+  },
+  open: function () {
+    let ev = new CustomEvent("open", {
+      detail: {
+        left: window.screenLeft + window.outerWidth - 320,
+        top: window.screenTop,
+      },
+    });
+    document.dispatchEvent(ev);
   },
 };

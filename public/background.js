@@ -1,9 +1,18 @@
 chrome.runtime.onMessage.addListener((msg, sender, response) => {
-  response(sender);
+  switch (msg.name) {
+    case "open": {
+      chrome.windows.create({
+        focused: true,
+        height: 600,
+        width: 320,
+        left: msg.left,
+        top: msg.top,
+        type: "popup",
+        url: "index.html",
+      });
+    }
+    default: {
+    }
+  }
+  response("e");
 });
-async function getCurrentTab() {
-  let queryOptions = { active: true, lastFocusedWindow: true };
-  // `tab` will either be a `tabs.Tab` instance or `undefined`.
-  let [tab] = await chrome.tabs.query(queryOptions);
-  console.log(tab.id);
-}
