@@ -57,14 +57,14 @@ export default function CreateAccountPage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="p-2 w-full bg-slate-100 rounded-lg text-blue-700 text-center font-semibold shadow-md shadow-blue-200"
+              className="p-2 w-full bg-slate-100 rounded-lg border-2 border-blue-700 text-blue-700 text-center font-semibold shadow-md shadow-blue-200"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="p-2 w-full bg-blue-700 rounded-lg text-white font-semibold shadow-md shadow-blue-200"
+              className="p-2 w-full bg-blue-700 border-2 border-blue-700 rounded-lg text-white font-semibold shadow-md shadow-blue-200"
             >
               Create Account
             </button>

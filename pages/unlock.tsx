@@ -109,7 +109,7 @@ export default function Unlock() {
           <div className="flex flex-col">
             <button
               type="submit"
-              className="p-2 bg-blue-700 rounded-lg text-white font-semibold shadow-md shadow-blue-200"
+              className="p-2 bg-blue-700 border-2 border-blue-700 rounded-lg text-white font-semibold shadow-md shadow-blue-200"
             >
               Unlock
             </button>
