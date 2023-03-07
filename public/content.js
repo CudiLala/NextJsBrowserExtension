@@ -26,6 +26,5 @@ document.addEventListener("__connect", (e) => {
     name: "connect",
     left: e.detail.left,
     top: e.detail.top,
-    obj: e.detail.obj,
   });
 });

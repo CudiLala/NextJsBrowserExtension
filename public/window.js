@@ -14,26 +14,37 @@ window.molaWallet = {
     document.dispatchEvent(ev);
   },
 
-  connect: function () {
+  connect: function (args) {
     let ev = new CustomEvent("__connect", {
       detail: {
         left: window.screenLeft + window.outerWidth - 352,
         top: window.screenTop,
-        obj: "a",
       },
     });
     document.dispatchEvent(ev);
+    window.__mola_details.connectCallbacks.push(args?.callback || (() => {}));
   },
+};
+
+window.__mola_details = {
+  connectCallbacks: [],
 };
 
 document.addEventListener("__molaWalletConnect", (e) => {
   window.molaWallet.isConnected = true;
   window.molaWallet.currentAddress = e.detail.selectedAddress;
+
+  try {
+    window.__mola_details.connectCallbacks.pop()?.();
+  } catch (error) {}
+
   let ev = new CustomEvent("molaWalletConnect");
+  document.dispatchEvent(ev);
 });
 
 document.addEventListener("__molaWalletAddressChange", (e) => {
   window.molaWallet.isConnected = true;
   window.molaWallet.currentAddress = e.detail.address;
-  let ev = new CustomEvent("molaWalletConnect");
+  let ev = new CustomEvent("molaWalletAddressChange");
+  document.dispatchEvent(ev);
 });
