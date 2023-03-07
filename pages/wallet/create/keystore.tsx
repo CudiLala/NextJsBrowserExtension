@@ -162,7 +162,12 @@ function _1({
         </div>
 
         <div className="flex gap-3 items-center">
-          <input type="checkbox" id="decrypt135" ref={decryptCheckboxRef} />
+          <input
+            type="checkbox"
+            id="decrypt135"
+            ref={decryptCheckboxRef}
+            checked
+          />
           <label htmlFor="decrypt135">Use as decryption password</label>
         </div>
 
@@ -394,7 +399,10 @@ function _3({
             keystoreFile,
             `${new Date(Date.now()).toISOString()}.json`
           );
-          router.push("/wallet", undefined, { shallow: true });
+
+          let callpageRes = await chrome.storage.session.get("callpage");
+
+          router.push(callpageRes.callpage || "/wallet");
           stopLoader();
         }}
       >

@@ -14,19 +14,19 @@ function injectScript(file_path, tag) {
 }
 injectScript(chrome.runtime.getURL("window.js"), "body");
 
-document.addEventListener(
-  "confirm",
-  (e) => {
-    chrome.runtime.sendMessage({ name: "confirm" }, (response) => {
-      console.log(response);
-    });
-  },
-  false
-);
-
 document.addEventListener("open", (e) => {
   chrome.runtime.sendMessage(
     { name: "open", left: e.detail.left, top: e.detail.top },
     () => {}
   );
+});
+
+document.addEventListener("connect", (e) => {
+  console.log(e);
+  chrome.runtime.sendMessage({
+    name: "connect",
+    left: e.detail.left,
+    top: e.detail.top,
+    obj: e.detail.obj,
+  });
 });

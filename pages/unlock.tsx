@@ -68,7 +68,9 @@ export default function Unlock() {
         balanceFiat,
       }));
 
-      router.push("/wallet");
+      let callpageRes = await chrome.storage.session.get("callpage");
+
+      router.push(callpageRes.callpage || "/wallet");
     } catch (error) {
       stopLoader();
       pushNotification({ element: "Wrong password", type: "error" });

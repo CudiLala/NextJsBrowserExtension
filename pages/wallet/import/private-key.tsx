@@ -282,7 +282,9 @@ function _2({ wallet }: { wallet: any }) {
 
       await encyrptWithLockAndStoreWallet(wallet, passwordRef.current!.value);
 
-      router.push("/wallet");
+      let callpageRes = await chrome.storage.session.get("callpage");
+
+      router.push(callpageRes.callpage || "/wallet");
     } catch (error: any) {
       stopLoader();
 

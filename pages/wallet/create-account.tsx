@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef } from "react";
 import router from "next/router";
 import { LoaderContext } from "@/context/loader";
 import {
@@ -6,7 +6,6 @@ import {
   createMnemonic,
   encyrptWithLockAndStoreWallet,
 } from "@/utils/wallet";
-import { AccountContext } from "@/context/account";
 import WalletHeader from "@/page_components/wallet/header";
 
 export default function CreateAccountPage() {
