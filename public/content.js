@@ -14,15 +14,14 @@ function injectScript(file_path, tag) {
 }
 injectScript(chrome.runtime.getURL("window.js"), "body");
 
-document.addEventListener("open", (e) => {
+document.addEventListener("__open", (e) => {
   chrome.runtime.sendMessage(
     { name: "open", left: e.detail.left, top: e.detail.top },
     () => {}
   );
 });
 
-document.addEventListener("connect", (e) => {
-  console.log(e);
+document.addEventListener("__connect", (e) => {
   chrome.runtime.sendMessage({
     name: "connect",
     left: e.detail.left,

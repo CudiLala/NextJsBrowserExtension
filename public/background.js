@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
         left: msg.left,
         top: msg.top,
         type: "popup",
-        url: "connect.html",
+        url: `connect.html?tabId=${sender.tab.id}`,
       });
       break;
     }

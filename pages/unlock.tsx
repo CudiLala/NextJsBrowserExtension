@@ -69,6 +69,7 @@ export default function Unlock() {
       }));
 
       let callpageRes = await chrome.storage.session.get("callpage");
+      console.log("aaa", callpageRes.callpage);
 
       router.push(callpageRes.callpage || "/wallet");
     } catch (error) {

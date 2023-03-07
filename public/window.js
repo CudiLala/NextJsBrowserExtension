@@ -4,15 +4,8 @@ window.molaWallet = {
   isConnected: false,
   currentAddress: null,
 
-  getTabId: async function () {
-    let queryOptions = { active: true, lastFocusedWindow: true };
-    // `tab` will either be a `tabs.Tab` instance or `undefined`.
-    let [tab] = await chrome.tabs.query(queryOptions);
-    return tab.id;
-  },
-
   open: function () {
-    let ev = new CustomEvent("open", {
+    let ev = new CustomEvent("__open", {
       detail: {
         left: window.screenLeft + window.outerWidth - 352,
         top: window.screenTop,
@@ -22,7 +15,7 @@ window.molaWallet = {
   },
 
   connect: function () {
-    let ev = new CustomEvent("connect", {
+    let ev = new CustomEvent("__connect", {
       detail: {
         left: window.screenLeft + window.outerWidth - 352,
         top: window.screenTop,
@@ -32,3 +25,15 @@ window.molaWallet = {
     document.dispatchEvent(ev);
   },
 };
+
+document.addEventListener("__molaWalletConnect", (e) => {
+  window.molaWallet.isConnected = true;
+  window.molaWallet.currentAddress = e.detail.selectedAddress;
+  let ev = new CustomEvent("molaWalletConnect");
+});
+
+document.addEventListener("__molaWalletAddressChange", (e) => {
+  window.molaWallet.isConnected = true;
+  window.molaWallet.currentAddress = e.detail.address;
+  let ev = new CustomEvent("molaWalletConnect");
+});
