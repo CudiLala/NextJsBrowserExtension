@@ -38,7 +38,6 @@ document.addEventListener("__sendTransaction", (e) => {
 });
 
 document.addEventListener("__presistDetails", (e) => {
-  console.log("presisting ...");
   chrome.runtime.sendMessage({
     name: "presistDetails",
   });
