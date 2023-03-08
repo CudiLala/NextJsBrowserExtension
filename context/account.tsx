@@ -38,6 +38,8 @@ export function AcoountContextComponent({
 
         let tabId = Number((await getCurrentTab()).id);
 
+        await chrome.storage.session.set({ currentAddress: account.address });
+
         await chrome.scripting.executeScript({
           func: (address) => {
             let ev = new CustomEvent("__molaWalletAddressChange", {

@@ -29,6 +29,14 @@ window.molaWallet = {
     let price = args?.price;
     let token = args?.token;
     let testNet = args?.testNet;
+
+    let ev = new CustomEvent("__sendTransaction", {
+      detail: {
+        left: window.screenLeft + window.outerWidth - 352,
+        top: window.screenTop,
+      },
+    });
+    document.dispatchEvent(ev);
   },
 };
 
@@ -58,3 +66,11 @@ document.addEventListener("__molaWalletAddressChange", (e) => {
   });
   document.dispatchEvent(ev);
 });
+
+document.addEventListener("__windowAddDetails", (e) => {
+  window.molaWallet.isConnected = !!e.detail.isConnected;
+  window.molaWallet.currentAddress = e.detail.currentAddress || null;
+});
+
+let ev = new CustomEvent("__presistDetails");
+document.dispatchEvent(ev);

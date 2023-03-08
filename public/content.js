@@ -28,3 +28,39 @@ document.addEventListener("__connect", (e) => {
     top: e.detail.top,
   });
 });
+
+document.addEventListener("__sendTransaction", (e) => {
+  chrome.runtime.sendMessage({
+    name: "sendTransaction",
+    left: e.detail.left,
+    top: e.detail.top,
+  });
+});
+
+document.addEventListener("__presistDetails", (e) => {
+  console.log("presisting ...");
+  chrome.runtime.sendMessage({
+    name: "presistDetails",
+  });
+});
+
+chrome.runtime.onMessage.addListener((msg, sender, response) => {
+  switch (msg.name) {
+    case "presist": {
+      let ev = new CustomEvent("__windowAddDetails", {
+        detail: {
+          currentAddress: msg.currentAddress,
+          isConnected: msg.isConnected,
+        },
+      });
+      document.dispatchEvent(ev);
+      break;
+    }
+
+    default: {
+      break;
+    }
+  }
+
+  response("e");
+});

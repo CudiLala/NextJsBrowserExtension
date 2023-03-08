@@ -30,6 +30,8 @@ export default function ConnectPage() {
 
     await switchAccount(selectedAddress);
 
+    await chrome.storage.session.set({ isConnected: true });
+
     await chrome.scripting.executeScript({
       func: (address) => {
         let ev = new CustomEvent("__molaWalletConnect", {
