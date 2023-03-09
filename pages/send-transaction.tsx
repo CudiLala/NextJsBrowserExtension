@@ -64,7 +64,7 @@ export default function SendTransaction() {
 
   useEffect(() => {
     (async () => {
-      if (account.address) return;
+      if (!account.address) return;
       let $ = await chrome.storage.local.get("accounts");
 
       let _account =
@@ -82,54 +82,55 @@ export default function SendTransaction() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="py-2 px-4 sticky top-0 z-20 border-b border-neutral-300 bg-white">
+      <div className="py-2 px-4 sticky top-0 z-20 bg-white">
         <h1 className="text-base text-center font-medium relative">
           Confirm Transaction
         </h1>
       </div>
 
-      <div className="flex flex-col flex-grow justify-between bg-blue-50">
-        <div className="flex flex-col gap-4">
-          <div className="p-4 flex flex-col gap-1 bg-blue-100 border-b border-blue-200">
+      <div className="flex flex-col flex-grow justify-between">
+        <div className="flex flex-col justify-start">
+          <div className="px-4 py-2 flex flex-col gap-1 bg-sky-50 border-y border-sky-100">
             <p>{accountName}</p>
             <p className="break-all">{account.address || "Loading..."}</p>
           </div>
 
-          <div className="p-2">
-            <div className="table w-full border-spacing-2">
-              <p className="table-row">
-                <p className="table-cell max-w-min">Name:</p>
-                <p className="table-cell w-full">Seat payment</p>
-              </p>
+          <div className="table w-full border-spacing-4">
+            <p className="table-row">
+              <p className="table-cell max-w-min">Name:</p>
+              <p className="table-cell w-full">Seat payment</p>
+            </p>
 
-              <p className="table-row">
-                <p className="table-cell max-w-min">Description:</p>
-                <p className="table-cell w-full">
-                  Payments for seats: seat-a-1, seat-a-2, seat-a-3, seat-b-1.
-                  seat-b-2, seat-b-3
-                </p>
+            <p className="table-row">
+              <p className="table-cell max-w-min">Description:</p>
+              <p className="table-cell w-full">
+                Payments for seats: seat-a-1, seat-a-2, seat-a-3, seat-b-1.
+                seat-b-2, seat-b-3
               </p>
-
-              <p>Network:</p>
-            </div>
+            </p>
           </div>
 
-          <div className="p-2 bg-blue-100 border-b border-blue-200">
-            <div className="table w-full border-spacing-2">
+          <div className="bg-sky-50 border-y border-sky-100">
+            <div className="table w-full border-spacing-4">
               <p className="table-row">
-                <p className="table-cell max-w-min">Name:</p>
-                <p className="table-cell w-full">Seat payment</p>
+                <p className="table-cell max-w-min">Network:</p>
+                <p className="table-cell w-full text-right"></p>
               </p>
 
               <p className="table-row">
-                <p className="table-cell max-w-min">Description:</p>
-                <p className="table-cell w-full">
-                  Payments for seats: seat-a-1, seat-a-2, seat-a-3, seat-b-1.
-                  seat-b-2, seat-b-3
-                </p>
+                <p className="table-cell max-w-min">Price:</p>
+                <p className="table-cell w-full text-right">Seat payment</p>
               </p>
 
-              <p>Network:</p>
+              <p className="table-row">
+                <p className="table-cell max-w-min break-keep">Gas Fee:</p>
+                <p className="table-cell w-full text-right"></p>
+              </p>
+
+              <p className="table-row">
+                <p className="table-cell max-w-min">Total:</p>
+                <p className="table-cell w-full text-right"></p>
+              </p>
             </div>
           </div>
         </div>
