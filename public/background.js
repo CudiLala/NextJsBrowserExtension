@@ -32,7 +32,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
         left: msg.left,
         top: msg.top,
         type: "popup",
-        url: `wallet/send-transaction.html`,
+        url: `send-transaction.html`,
       });
       break;
     }
