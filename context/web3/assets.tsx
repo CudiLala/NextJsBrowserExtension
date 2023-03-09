@@ -29,6 +29,7 @@ export function AssetProviderContextComponent({
       fetchWalletAssets(account.address, network.chainId).then(
         (walletAssets) => {
           setAssetsProvider(walletAssets);
+          console.log(walletAssets);
         }
       );
 

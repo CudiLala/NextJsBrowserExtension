@@ -1,14 +1,70 @@
+import { primaryFixedValue, GAS_PRIORITY } from "@/constants/digits";
 import { AccountContext } from "@/context/account";
+import { NETWORKS } from "@/interfaces/IRpc";
+import { getCoinUSD } from "@/utils/priceFeed";
+import {
+  decryptWallet,
+  getWalletBalanceEth,
+  getWeb3Connection,
+} from "@/utils/wallet";
 import { useContext, useEffect, useState } from "react";
+import NET_CONFIG from "config/allNet";
 
 export default function SendTransaction() {
-  const [account] = useContext(AccountContext);
+  const [account, setAccount] = useContext(AccountContext);
   const [accountName, setAccountName] = useState<string>("Loading...");
 
   async function confirmTransaction() {}
 
+  async function setWalletAccount() {
+    try {
+      (async () => {
+        let $ = await chrome.storage.local.get("encryptedWallets");
+        let $$ = await chrome.storage.session.get("unlockPassword");
+        let $$$ = await chrome.storage.local.get("lastWalletAddress");
+
+        const wallets = $.encryptedWallets.map((e: any) =>
+          decryptWallet(e, $$.unlockPassword)
+        );
+
+        let wallet =
+          wallets?.find((e: any) => e.address == $$$.lastWalletAddress) ||
+          wallets[0];
+
+        const provider = getWeb3Connection(NETWORKS.ETHEREUM);
+
+        const balance = Number(
+          await getWalletBalanceEth(provider, wallet.address)
+        );
+
+        const balanceFiat = Number(
+          (balance <= 0
+            ? 0
+            : (await getCoinUSD(NET_CONFIG.ETHEREUM.nativeCurrency.symbol))
+                .value! * balance
+          ).toFixed(primaryFixedValue)
+        );
+
+        setAccount((prev) => ({
+          ...prev,
+          address: wallet.address,
+          privateKey: wallet.privateKey,
+          addressList: [{ nickname: "my address", address: wallet.address }],
+          gasPriority: GAS_PRIORITY.NORMAL,
+          balance,
+          balanceFiat,
+        }));
+      })();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  console.log(account);
+
   useEffect(() => {
     (async () => {
+      if (account.address) return;
       let $ = await chrome.storage.local.get("accounts");
 
       let _account =
@@ -19,26 +75,66 @@ export default function SendTransaction() {
     })();
   }, [account]);
 
+  useEffect(() => {
+    setWalletAccount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col h-full">
       <div className="py-2 px-4 sticky top-0 z-20 border-b border-neutral-300 bg-white">
         <h1 className="text-base text-center font-medium relative">
           Confirm Transaction
         </h1>
       </div>
 
-      <div className="flex flex-col p-4 gap-4">
-        <div className="border border-neutral-400 table">
-          <div className="table-row">
-            <div className="table-cell">Price</div>
-            <div className="table-cell">100 MOLe</div>
+      <div className="flex flex-col flex-grow justify-between bg-blue-50">
+        <div className="flex flex-col gap-4">
+          <div className="p-4 flex flex-col gap-1 bg-blue-100 border-b border-blue-200">
+            <p>{accountName}</p>
+            <p className="break-all">{account.address || "Loading..."}</p>
           </div>
-          <div className="table-row">
-            <div className="table-cell">Address</div>
-            <div className="table-cell">{account.address}</div>
+
+          <div className="p-2">
+            <div className="table w-full border-spacing-2">
+              <p className="table-row">
+                <p className="table-cell max-w-min">Name:</p>
+                <p className="table-cell w-full">Seat payment</p>
+              </p>
+
+              <p className="table-row">
+                <p className="table-cell max-w-min">Description:</p>
+                <p className="table-cell w-full">
+                  Payments for seats: seat-a-1, seat-a-2, seat-a-3, seat-b-1.
+                  seat-b-2, seat-b-3
+                </p>
+              </p>
+
+              <p>Network:</p>
+            </div>
+          </div>
+
+          <div className="p-2 bg-blue-100 border-b border-blue-200">
+            <div className="table w-full border-spacing-2">
+              <p className="table-row">
+                <p className="table-cell max-w-min">Name:</p>
+                <p className="table-cell w-full">Seat payment</p>
+              </p>
+
+              <p className="table-row">
+                <p className="table-cell max-w-min">Description:</p>
+                <p className="table-cell w-full">
+                  Payments for seats: seat-a-1, seat-a-2, seat-a-3, seat-b-1.
+                  seat-b-2, seat-b-3
+                </p>
+              </p>
+
+              <p>Network:</p>
+            </div>
           </div>
         </div>
-        <div className="flex gap-4">
+
+        <div className="flex gap-4 p-4">
           <button
             type="button"
             onClick={() => window.close()}
