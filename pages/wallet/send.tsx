@@ -210,6 +210,7 @@ export default function SendWalletPage() {
   }, []);
 
   useEffect(() => {
+    console.log(details.amount, network.nativeCurrency.decimals);
     (async () => {
       try {
         if (details.address && details.amount) {

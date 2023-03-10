@@ -1,4 +1,8 @@
-import { primaryFixedValue, GAS_PRIORITY } from "@/constants/digits";
+import {
+  primaryFixedValue,
+  GAS_PRIORITY,
+  gasPriceFixedValue,
+} from "@/constants/digits";
 import { AccountContext } from "@/context/account";
 import { NETWORKS } from "@/interfaces/IRpc";
 import { getCoinUSD } from "@/utils/priceFeed";
@@ -9,14 +13,23 @@ import {
 } from "@/utils/wallet";
 import { useContext, useEffect, useState } from "react";
 import NET_CONFIG from "config/allNet";
+import { convertToWei, getGasPrice } from "@/utils/tools";
+import { ProviderContext } from "@/context/web3";
+import { ETH_DECIMAL } from "@/constants/networks";
+import { NetworkContext } from "@/context/network";
 
 export default function SendTransaction() {
   const [account, setAccount] = useContext(AccountContext);
   const [accountName, setAccountName] = useState<string>("Loading...");
-  const [price, setPrice] = useState<number>();
+  const [price, setPrice] = useState<string>();
   const [name, setName] = useState<string>();
   const [token, setToken] = useState<string>();
   const [description, setDescription] = useState<string>();
+  const [gasFee, setGasFee] = useState<string>();
+  const [provider] = useContext(ProviderContext);
+  const [network] = useContext(NetworkContext);
+
+  const recipientAddress = "0x403f75592Edb876578BEbC80D41d8599a50422c4";
 
   async function confirmTransaction() {}
 
@@ -78,12 +91,28 @@ export default function SendTransaction() {
   }, [account]);
 
   useEffect(() => {
+    getGasPrice(
+      provider,
+      {
+        to: recipientAddress,
+        from: account.address,
+        value: convertToWei("0.0020", network.nativeCurrency.decimals),
+      },
+      network.nativeCurrency.decimals
+    )
+      .then((e) => {
+        setGasFee(e.toFixed(gasPriceFixedValue));
+        console.log("gas fee", e);
+      })
+      .catch((e) => console.log("gas fee error", e));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [price, network]);
+
+  useEffect(() => {
     setWalletAccount();
     let query = new URLSearchParams(window.location.search);
 
-    console.log(query.toString());
-
-    setPrice(Number(query.get("price")) || 0);
+    setPrice(query.get("price") || "0");
     setName(query.get("name")?.toString());
     setToken(query.get("token")?.toString());
     setDescription(query.get("description")?.toString());
@@ -122,17 +151,17 @@ export default function SendTransaction() {
             <div className="table w-full border-spacing-4">
               <p className="table-row">
                 <p className="table-cell">Token:</p>
-                <p className="table-cell w-full text-right">{token}</p>
+                <p className="table-cell text-right">{token}</p>
               </p>
 
               <p className="table-row">
                 <p className="table-cell">Price:</p>
-                <p className="table-cell w-full text-right">{price}</p>
+                <p className="table-cell text-right">{price}</p>
               </p>
 
               <p className="table-row">
-                <p className="table-cell">Gas Fee:</p>
-                <p className="table-cell text-right"></p>
+                <p className="table-cell break-keep">Gas Fee:</p>
+                <p className="table-cell text-right">{gasFee}</p>
               </p>
 
               <p className="table-row">
