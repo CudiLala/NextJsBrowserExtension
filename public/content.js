@@ -30,10 +30,16 @@ document.addEventListener("__connect", (e) => {
 });
 
 document.addEventListener("__sendTransaction", (e) => {
+  let { left, top, price, token, name: _name, description } = e.detail;
+
   chrome.runtime.sendMessage({
     name: "sendTransaction",
-    left: e.detail.left,
-    top: e.detail.top,
+    left,
+    top,
+    price,
+    description,
+    token,
+    _name,
   });
 });
 

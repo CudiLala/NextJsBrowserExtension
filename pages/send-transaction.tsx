@@ -13,6 +13,10 @@ import NET_CONFIG from "config/allNet";
 export default function SendTransaction() {
   const [account, setAccount] = useContext(AccountContext);
   const [accountName, setAccountName] = useState<string>("Loading...");
+  const [price, setPrice] = useState<number>();
+  const [name, setName] = useState<string>();
+  const [token, setToken] = useState<string>();
+  const [description, setDescription] = useState<string>();
 
   async function confirmTransaction() {}
 
@@ -60,8 +64,6 @@ export default function SendTransaction() {
     }
   }
 
-  console.log(account);
-
   useEffect(() => {
     (async () => {
       if (!account.address) return;
@@ -77,6 +79,15 @@ export default function SendTransaction() {
 
   useEffect(() => {
     setWalletAccount();
+    let query = new URLSearchParams(window.location.search);
+
+    console.log(query.toString());
+
+    setPrice(Number(query.get("price")) || 0);
+    setName(query.get("name")?.toString());
+    setToken(query.get("token")?.toString());
+    setDescription(query.get("description")?.toString());
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -97,39 +108,36 @@ export default function SendTransaction() {
 
           <div className="table w-full border-spacing-4">
             <p className="table-row">
-              <p className="table-cell max-w-min">Name:</p>
-              <p className="table-cell w-full">Seat payment</p>
+              <p className="table-cell">Name:</p>
+              <p className="table-cell w-full">{name}</p>
             </p>
 
             <p className="table-row">
-              <p className="table-cell max-w-min">Description:</p>
-              <p className="table-cell w-full">
-                Payments for seats: seat-a-1, seat-a-2, seat-a-3, seat-b-1.
-                seat-b-2, seat-b-3
-              </p>
+              <p className="table-cell">Description:</p>
+              <p className="table-cell w-full">{description}</p>
             </p>
           </div>
 
           <div className="bg-sky-50 border-y border-sky-100">
             <div className="table w-full border-spacing-4">
               <p className="table-row">
-                <p className="table-cell max-w-min">Network:</p>
-                <p className="table-cell w-full text-right"></p>
+                <p className="table-cell">Token:</p>
+                <p className="table-cell w-full text-right">{token}</p>
               </p>
 
               <p className="table-row">
-                <p className="table-cell max-w-min">Price:</p>
-                <p className="table-cell w-full text-right">Seat payment</p>
+                <p className="table-cell">Price:</p>
+                <p className="table-cell w-full text-right">{price}</p>
               </p>
 
               <p className="table-row">
-                <p className="table-cell max-w-min break-keep">Gas Fee:</p>
-                <p className="table-cell w-full text-right"></p>
+                <p className="table-cell">Gas Fee:</p>
+                <p className="table-cell text-right"></p>
               </p>
 
               <p className="table-row">
-                <p className="table-cell max-w-min">Total:</p>
-                <p className="table-cell w-full text-right"></p>
+                <p className="table-cell">Total:</p>
+                <p className="table-cell text-right"></p>
               </p>
             </div>
           </div>

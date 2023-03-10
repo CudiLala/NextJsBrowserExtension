@@ -25,6 +25,14 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
       break;
     }
     case "sendTransaction": {
+      const { price, token, _name, description } = msg;
+
+      let query = new URLSearchParams();
+      query.append("price", price);
+      query.append("token", token);
+      query.append("name", _name);
+      query.append("description", description);
+
       chrome.windows.create({
         focused: true,
         height: 600,
@@ -32,7 +40,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
         left: msg.left,
         top: msg.top,
         type: "popup",
-        url: `send-transaction.html`,
+        url: `send-transaction.html?${query.toString()}`,
       });
       break;
     }

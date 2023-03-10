@@ -26,14 +26,19 @@ window.molaWallet = {
   },
 
   sendTransaction: function (args) {
-    let price = args?.price;
-    let token = args?.token;
-    let testNet = args?.testNet;
+    let price = args?.price || "";
+    let token = args?.token || "";
+    let name = args?.name || "";
+    let description = args?.description || "";
 
     let ev = new CustomEvent("__sendTransaction", {
       detail: {
         left: window.screenLeft + window.outerWidth - 352,
         top: window.screenTop,
+        price,
+        token,
+        name,
+        description,
       },
     });
     document.dispatchEvent(ev);
