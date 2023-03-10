@@ -124,7 +124,7 @@ export default function WalletPage() {
 
   useEffect(() => {
     let molaAsset = assets?.find((e) => e.token.name.startsWith("MOL"));
-    if (!molaAsset) setMolaAsset(undefined);
+    if (!molaAsset) setMolaAsset(null);
     else setMolaAsset(molaAsset);
   }, [assets]);
 
@@ -137,12 +137,15 @@ export default function WalletPage() {
     <div className="flex flex-col">
       <WalletHeader />
       <div className="py-1.5 flex justify-between items-center border-b border-slate-300">
-        <div className="px-3 flex flex-col gap-0.5 justify-start">
-          <p>{accountName}</p>
-          <p className="font-mono" title={account?.address}>
+        <button
+          className="px-3 flex flex-col gap-0.5 justify-start text-start"
+          onClick={() => setAccDetailsModal("visible")}
+        >
+          <span>{accountName}</span>
+          <span className="font-mono" title={account?.address}>
             {shorten(account?.address || "", 10, 8, 20)}
-          </p>
-        </div>
+          </span>
+        </button>
         <div className="relative">
           <button
             className="flex flex-col justify-center items-center gap-1 px-3 relative"
@@ -173,10 +176,18 @@ export default function WalletPage() {
 
       <div className="px-8 py-10 w-full flex flex-col items-center gap-2">
         <p className="font-semibold text-2xl text-center">
-          {molaAsset ? `${molaAsset.value} ${molaAsset.token.symbol}` : `- -`}
+          {molaAsset === undefined
+            ? `- -`
+            : molaAsset
+            ? `${molaAsset.value} ${molaAsset.token.symbol}`
+            : `0 MOL`}
         </p>
         <p className="text-base font-semibold">
-          {molaAsset ? `$${molaAsset.usdValue}` : `-`}
+          {molaAsset === undefined
+            ? `-`
+            : molaAsset
+            ? `$${molaAsset.usdValue}`
+            : `$0.00`}
         </p>
 
         <div className="pt-4 flex gap-6">
@@ -332,18 +343,7 @@ function AccModal({
         </span>
         Account details
       </button>
-      <button className="flex items-center justify-start p-1 py-2">
-        <span className="w-5 h-5 flex mr-2">
-          <ExpandIcon />
-        </span>
-        Expand view
-      </button>
-      <button className="flex items-center justify-start p-1 py-2">
-        <span className="w-5 h-5 flex mr-2">
-          <ConnectedNode />
-        </span>
-        Connected site
-      </button>
+
       <Link
         href="/wallet/remove-account"
         className="flex items-center justify-start p-1 py-2"
