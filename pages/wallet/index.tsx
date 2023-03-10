@@ -6,9 +6,12 @@ import {
   DeleteIcon,
   ExpandIcon,
   EyeIcon,
+  PenOnLineIcon,
+  TickHeavyIcon,
+  TickIcon,
 } from "@/components/icons/accessibility";
 import Image from "next/image";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { SendArrow, SwapArrow, ArrowForward } from "@/components/icons/arrows";
 import Link from "next/link";
 import {
@@ -405,7 +408,7 @@ function AccountDetailsModal({
           </span>
         </div>
 
-        <p className="font-semibold text-base text-center">{accountName}</p>
+        <AccountNameEditor accountName={accountName} />
 
         <div className="flex justify-center">
           <span className="flex w-28 h-28">
@@ -441,6 +444,73 @@ function AccountDetailsModal({
           </Link>
         </div>
       </div>
+    </div>
+  );
+}
+
+function AccountNameEditor({
+  accountName,
+}: {
+  accountName: string | undefined;
+}) {
+  const [view, setView] = useState("show");
+  const [account, setAccount] = useContext(AccountContext);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  async function handleSubmit(e: any) {
+    e.preventDefault();
+    let name = inputRef.current?.value;
+
+    if (!name) return setView("show");
+
+    let $ = await chrome.storage.local.get("accounts");
+
+    let newAccounts = $.accounts?.map((e: any) =>
+      e.name === accountName ? { ...e, name } : e
+    );
+
+    await chrome.storage.local.set({ accounts: newAccounts });
+
+    setAccount({ ...account });
+    setView("show");
+  }
+
+  return (
+    <div className="flex gap-6 items-center justify-center">
+      {view === "show" && (
+        <>
+          <p className="font-semibold text-base text-center">{accountName}</p>
+          <button className="flex w-6 h-6" onClick={() => setView("edit")}>
+            <PenOnLineIcon />
+          </button>
+        </>
+      )}
+      {view === "edit" && (
+        <form
+          className="flex gap-4 items-center justify-center"
+          onSubmit={handleSubmit}
+        >
+          <input
+            className="px-4 py-1.5 leading-none border border-neutral-500 outline-none focus:outline-none"
+            ref={inputRef}
+          />
+          <div className="flex gap-2 items-center justify-center">
+            <button
+              type="button"
+              className="flex w-6 h-6 border border-neutral-500 rounded-full"
+              onClick={() => setView("show")}
+            >
+              <CloseIcon />
+            </button>
+            <button
+              type="submit"
+              className="flex w-6 h-6 border border-neutral-500 rounded-full"
+            >
+              <TickIcon />
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 }

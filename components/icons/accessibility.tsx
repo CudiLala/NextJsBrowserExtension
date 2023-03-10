@@ -466,6 +466,26 @@ export function TickHeavyIcon() {
   );
 }
 
+export function TickIcon() {
+  return (
+    <svg
+      width="100%"
+      height="100%"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M6 12L10.2426 16.2426L18.7275 7.75732"
+        stroke="currentcolor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function UpIcon() {
   return (
     <svg
