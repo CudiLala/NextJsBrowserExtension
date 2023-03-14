@@ -42,6 +42,11 @@ window.molaWallet = {
     document.dispatchEvent(ev);
   },
 
+  disconnect: function () {
+    let ev = new CustomEvent("__disconnect");
+    document.dispatchEvent(ev);
+  },
+
   sendTransaction: function (args, onReject, onSuccess) {
     let price = args?.price || "";
     let network = args?.network || "";

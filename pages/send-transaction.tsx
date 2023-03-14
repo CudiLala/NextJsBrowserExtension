@@ -18,6 +18,7 @@ import { ProviderContext } from "@/context/web3";
 import { NetworkContext } from "@/context/network";
 import { sendERC20Token } from "@/utils/transactions";
 import { AssetProviderContext } from "@/context/web3/assets";
+import { LoaderContext } from "@/context/loader";
 
 let networkSymbolMap = {
   ETHEREUM: "MLE",
@@ -41,10 +42,13 @@ export default function SendTransaction() {
   const [assets] = useContext(AssetProviderContext);
   const [molaToken, setMolaToken] = useState<any>();
   const [balance, setBalance] = useState<number>();
+  const [startLoader, stopLoader] = useContext(LoaderContext);
 
   const recipientAddress = "0x0367682AaC811c930C2b0810bF9b30e5a27E821D";
 
   async function confirmTransaction() {
+    startLoader();
+
     if (!account.address || price === undefined) return;
     const tabId = new URLSearchParams(window.location.search).get("tabId");
     const callbackId = new URLSearchParams(window.location.search).get(
@@ -76,8 +80,7 @@ export default function SendTransaction() {
       },
     });
 
-    alert(callbackId);
-    alert(tabId);
+    startLoader();
 
     window.close();
   }

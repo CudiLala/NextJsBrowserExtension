@@ -25,6 +25,9 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
       });
       break;
     }
+    case "disconnect": {
+      chrome.storage.session.remove(["currentAddress", "isConnected"]);
+    }
     case "sendTransaction": {
       const { price, network, _name, description, callbackId } = msg;
 
