@@ -28,6 +28,17 @@ import NET_CONFIG from "config/allNet";
 import { addressAvatar } from "@/utils/avatar";
 import WalletHeader from "@/page_components/wallet/header";
 import { AssetProviderContext } from "@/context/web3/assets";
+import { networkLogoMap } from "@/page_components/wallet/network_selector";
+import { NetworkContext } from "@/context/network";
+
+let networkSymbolMap = {
+  ETHEREUM: "MLE",
+  POLYGON: "MLP",
+  BINANCE: "MLB",
+  GOERLI: "MLE",
+  T_BINANCE: "MLB",
+  MUMBAI: "MLP",
+};
 
 export default function WalletPage() {
   const [copied, setCopied] = useState(false);
@@ -44,6 +55,7 @@ export default function WalletPage() {
   const [walletAssets] = useContext(AssetProviderContext);
   const [assets, setAssets] = useState<any[]>();
   const [molaAsset, setMolaAsset] = useState<any>();
+  const [network] = useContext(NetworkContext);
 
   async function setWalletAccount() {
     try {
@@ -183,7 +195,7 @@ export default function WalletPage() {
             ? `- -`
             : molaAsset
             ? `${molaAsset.value} ${molaAsset.token.symbol}`
-            : `0 MOL`}
+            : `0 ${networkSymbolMap[network.nativeCurrency.name as NETWORKS]}`}
         </p>
         <p className="text-base font-semibold">
           {molaAsset === undefined

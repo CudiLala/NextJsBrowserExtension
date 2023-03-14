@@ -1,6 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { IAccount } from "interfaces/IAccount";
 import { decryptWallet } from "@/utils/wallet";
+import { fetchWalletAssets } from "@/utils/assetEngine";
+import { NetworkContext } from "./network";
+import { NETWORKS } from "@/interfaces/IRpc";
+
+let networkSymbolMap = {
+  ETHEREUM: "MLE",
+  POLYGON: "MLP",
+  BINANCE: "MLB",
+  GOERLI: "MLE",
+  T_BINANCE: "MLB",
+  MUMBAI: "MLP",
+};
 
 export const AccountContext = React.createContext<
   [IAccount, React.Dispatch<React.SetStateAction<IAccount>>]
@@ -23,6 +35,7 @@ export function AcoountContextComponent({
     privateKey: "",
   };
   const [account, setAccount] = useState<IAccount>(defaultAccount as IAccount);
+  const [network] = useContext(NetworkContext);
 
   async function getCurrentTab() {
     let queryOptions = { active: true, lastFocusedWindow: true };
@@ -36,23 +49,37 @@ export function AcoountContextComponent({
       if (account.address) {
         chrome.storage.local.set({ lastWalletAddress: account.address });
 
+        let walletAssets = await fetchWalletAssets(
+          account.address,
+          network.chainId
+        );
+
+        let balance =
+          walletAssets.find((e) => e.token?.name.startsWith("MOL"))?.value ||
+          "0";
+
+        let symbol =
+          walletAssets.find((e) => e.token?.name.startsWith("MOL"))?.token
+            ?.symbol ||
+          networkSymbolMap[network.nativeCurrency.name as NETWORKS];
+
         let tabId = Number((await getCurrentTab()).id);
 
         await chrome.storage.session.set({ currentAddress: account.address });
 
         await chrome.scripting.executeScript({
-          func: (address) => {
+          func: (address, balance, symbol) => {
             let ev = new CustomEvent("__molaWalletAddressChange", {
-              detail: { address: address },
+              detail: { address: address, balance, symbol },
             });
             document.dispatchEvent(ev);
           },
-          args: [account.address],
+          args: [account.address, balance, symbol],
           target: { tabId },
         });
       }
     })();
-  }, [account]);
+  }, [account, network]);
 
   return (
     <AccountContext.Provider value={[account, setAccount]}>
