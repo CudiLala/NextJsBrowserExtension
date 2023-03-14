@@ -15,8 +15,18 @@ import { useContext, useEffect, useState } from "react";
 import NET_CONFIG from "config/allNet";
 import { convertToWei, getGasPrice } from "@/utils/tools";
 import { ProviderContext } from "@/context/web3";
-import { ETH_DECIMAL } from "@/constants/networks";
 import { NetworkContext } from "@/context/network";
+import { sendERC20Token } from "@/utils/transactions";
+import { AssetProviderContext } from "@/context/web3/assets";
+
+let networkSymbolMap = {
+  ETHEREUM: "MLE",
+  POLYGON: "MLP",
+  BINANCE: "MLB",
+  GOERLI: "MLE",
+  T_BINANCE: "MLB",
+  MUMBAI: "MLP",
+};
 
 export default function SendTransaction() {
   const [account, setAccount] = useContext(AccountContext);
@@ -27,11 +37,72 @@ export default function SendTransaction() {
   const [description, setDescription] = useState<string>();
   const [gasFee, setGasFee] = useState<string>();
   const [provider] = useContext(ProviderContext);
-  const [network] = useContext(NetworkContext);
+  const [network, setNetwork] = useContext(NetworkContext);
+  const [assets] = useContext(AssetProviderContext);
+  const [molaToken, setMolaToken] = useState<any>();
+  const [balance, setBalance] = useState<number>();
 
-  const recipientAddress = "0x403f75592Edb876578BEbC80D41d8599a50422c4";
+  const recipientAddress = "0x0367682AaC811c930C2b0810bF9b30e5a27E821D";
 
-  async function confirmTransaction() {}
+  async function confirmTransaction() {
+    if (!account.address || price === undefined) return;
+    const tabId = new URLSearchParams(window.location.search).get("tabId");
+    const callbackId = new URLSearchParams(window.location.search).get(
+      "callbackId"
+    );
+
+    await sendERC20Token(
+      provider,
+      price,
+      molaToken.token.decimals,
+      recipientAddress,
+      account.address,
+      account.privateKey,
+      GAS_PRIORITY.NORMAL,
+      21000,
+      molaToken.token.contractAddress
+    );
+
+    await chrome.scripting.executeScript({
+      func: (callbackId) => {
+        let ev = new CustomEvent("__molaTransactionConfirm", {
+          detail: { success: true, callbackId },
+        });
+        document.dispatchEvent(ev);
+      },
+      args: [callbackId],
+      target: {
+        tabId: Number(tabId),
+      },
+    });
+
+    alert(callbackId);
+    alert(tabId);
+
+    window.close();
+  }
+
+  async function rejectTransaction() {
+    const tabId = new URLSearchParams(window.location.search).get("tabId");
+    const callbackId = new URLSearchParams(window.location.search).get(
+      "callbackId"
+    );
+
+    await chrome.scripting.executeScript({
+      func: (callbackId) => {
+        let ev = new CustomEvent("__molaTransactionReject", {
+          detail: { success: false, callbackId },
+        });
+        document.dispatchEvent(ev);
+      },
+      args: [callbackId],
+      target: {
+        tabId: Number(tabId),
+      },
+    });
+
+    window.close();
+  }
 
   async function setWalletAccount() {
     try {
@@ -91,6 +162,17 @@ export default function SendTransaction() {
   }, [account]);
 
   useEffect(() => {
+    let molaToken = assets.find((e) => e.token?.name.startsWith("MOL"));
+    setMolaToken(molaToken);
+    setBalance(molaToken?.value);
+  }, [assets]);
+
+  useEffect(() => {
+    if (price)
+      setToken(networkSymbolMap[network.nativeCurrency.name as NETWORKS]);
+
+    if (!account.address || !provider.eth) return;
+
     getGasPrice(
       provider,
       {
@@ -102,11 +184,9 @@ export default function SendTransaction() {
     )
       .then((e) => {
         setGasFee(e.toFixed(gasPriceFixedValue));
-        console.log("gas fee", e);
       })
       .catch((e) => console.log("gas fee error", e));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [price, network]);
+  }, [price, network, account, provider]);
 
   useEffect(() => {
     setWalletAccount();
@@ -114,9 +194,14 @@ export default function SendTransaction() {
 
     setPrice(query.get("price") || "0");
     setName(query.get("name")?.toString());
-    setToken(query.get("token")?.toString());
     setDescription(query.get("description")?.toString());
 
+    let network = query.get("network")?.toString() as NETWORKS;
+
+    if (network)
+      chrome.storage.local.set({ lastNetwork: network }).then(() => {
+        setNetwork(NET_CONFIG[network]);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -165,8 +250,15 @@ export default function SendTransaction() {
               </p>
 
               <p className="table-row">
+                <p className="table-cell break-keep">Balance:</p>
+                <p className="table-cell text-right">{balance}</p>
+              </p>
+
+              <p className="table-row">
                 <p className="table-cell">Total:</p>
-                <p className="table-cell text-right"></p>
+                <p className="table-cell text-right font-semibold">
+                  {+(price || 0) + +(gasFee || 0)}
+                </p>
               </p>
             </div>
           </div>
@@ -175,16 +267,14 @@ export default function SendTransaction() {
         <div className="flex gap-4 p-4">
           <button
             type="button"
-            onClick={() => window.close()}
+            onClick={rejectTransaction}
             className="p-2 w-full bg-slate-100 rounded-lg border-2 border-blue-700 text-blue-700 text-center font-semibold shadow-md shadow-blue-200"
           >
             Reject
           </button>
 
           <button
-            onClick={async () => {
-              await confirmTransaction();
-            }}
+            onClick={confirmTransaction}
             className="p-2 w-full bg-blue-700 border-2 border-blue-700 rounded-lg text-white font-semibold shadow-md shadow-blue-200"
           >
             Confirm

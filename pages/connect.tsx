@@ -14,6 +14,18 @@ import { GAS_PRIORITY, primaryFixedValue } from "@/constants/digits";
 import { IAccount } from "@/interfaces/IAccount";
 import { ProviderContext } from "@/context/web3";
 import NET_CONFIG from "config/allNet";
+import { NetworkContext } from "@/context/network";
+import { AssetProviderContext } from "@/context/web3/assets";
+import { fetchWalletAssets } from "@/utils/assetEngine";
+
+let networkSymbolMap = {
+  ETHEREUM: "MLE",
+  POLYGON: "MLP",
+  BINANCE: "MLB",
+  GOERLI: "MLE",
+  T_BINANCE: "MLB",
+  MUMBAI: "MLP",
+};
 
 export default function ConnectPage() {
   const router = useRouter();
@@ -21,6 +33,8 @@ export default function ConnectPage() {
   const [accounts, setAccounts] = useState<any[]>();
   const [selectedAddress, setSelectedAddress] = useState<string>();
   const [account, setAccount] = useContext(AccountContext);
+  const [network, setNetwork] = useContext(NetworkContext);
+  const [assets] = useContext(AssetProviderContext);
   const [, setProvider] = useContext(ProviderContext);
 
   async function connectWallet() {
@@ -30,26 +44,42 @@ export default function ConnectPage() {
 
     await switchAccount(selectedAddress);
 
+    let walletAssets = await fetchWalletAssets(
+      selectedAddress,
+      network.chainId
+    );
+
+    let balance =
+      walletAssets.find((e) => e.token?.name.startsWith("MOL"))?.value || "0";
+
+    let symbol =
+      walletAssets.find((e) => e.token?.name.startsWith("MOL"))?.token
+        ?.symbol || networkSymbolMap[network.nativeCurrency.name as NETWORKS];
+
+    let callbackId = new URLSearchParams(window.location.search).get(
+      "callbackId"
+    );
+
     await chrome.storage.session.set({ isConnected: true });
 
     await chrome.scripting.executeScript({
-      func: (address) => {
+      func: (address, balance, symbol, callbackId) => {
         let ev = new CustomEvent("__molaWalletConnect", {
-          detail: { selectedAddress: address },
+          detail: { selectedAddress: address, balance, symbol, callbackId },
         });
         document.dispatchEvent(ev);
       },
-      args: [selectedAddress],
+      args: [selectedAddress, balance, symbol, callbackId],
       target: {
         tabId: Number(tabId),
       },
     });
 
-    window.close();
+    setTimeout(window.close, 100);
   }
 
   async function switchAccount(address: string) {
-    const provider = getWeb3Connection(NETWORKS.ETHEREUM);
+    const provider = getWeb3Connection(network.nativeCurrency.name as NETWORKS);
 
     startLoader();
 
@@ -67,8 +97,7 @@ export default function ConnectPage() {
     const balanceFiat = Number(
       (balance <= 0
         ? 0
-        : (await getCoinUSD(NET_CONFIG.ETHEREUM.nativeCurrency.symbol)).value! *
-          balance
+        : (await getCoinUSD(network.nativeCurrency.symbol)).value! * balance
       ).toFixed(primaryFixedValue)
     );
 
@@ -96,11 +125,16 @@ export default function ConnectPage() {
   useEffect(() => {
     startLoader();
     const tabId = new URLSearchParams(window.location.search).get("tabId");
+    const network =
+      new URLSearchParams(window.location.search).get("network") || "ETHEREUM";
+    const callbackId = new URLSearchParams(window.location.search).get(
+      "callbackId"
+    );
 
     try {
       (async () => {
         await chrome.storage.session.set({
-          callpage: `/connect?tabId=${tabId}`,
+          callpage: `/connect?tabId=${tabId}&network=${network}&callbackId=${callbackId}`,
         });
         let $ = await chrome.storage.local.get("encryptedWallets");
         let $$ = await chrome.storage.session.get("unlockPassword");

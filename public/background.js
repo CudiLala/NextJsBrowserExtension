@@ -13,6 +13,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
       break;
     }
     case "connect": {
+      chrome.storage.local.set({ lastNetwork: msg.network });
       chrome.windows.create({
         focused: true,
         height: 600,
@@ -20,18 +21,20 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
         left: msg.left,
         top: msg.top,
         type: "popup",
-        url: `connect.html?tabId=${sender.tab.id}`,
+        url: `connect.html?tabId=${sender.tab.id}&network=${msg.network}&callbackId=${msg.callbackId}`,
       });
       break;
     }
     case "sendTransaction": {
-      const { price, token, _name, description } = msg;
+      const { price, network, _name, description, callbackId } = msg;
 
       let query = new URLSearchParams();
       query.append("price", price);
-      query.append("token", token);
+      query.append("network", network);
       query.append("name", _name);
       query.append("description", description);
+      query.append("callbackId", callbackId);
+      query.append("tabId", sender.tab.id);
 
       chrome.windows.create({
         focused: true,
@@ -54,6 +57,29 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
             isConnected: result.isConnected,
           });
         });
+      break;
+    }
+    case "setNetwork": {
+      chrome.storage.local.set({ lastNetwork: msg.network });
+      break;
+    }
+    case "getBalance": {
+      chrome.storage.session.get("assets").then(($) => {
+        if (!$.assets)
+          return chrome.tabs.sendMessage(sender.tab.id, {
+            name: "molaBalanceRetrieveError",
+            errorMessage: "No assets found, try connecting wallet",
+          });
+        chrome.tabs.sendMessage(sender.tab.id, {
+          name: "molaBalanceRetrieve",
+          balance:
+            $.assets.find((e) => e.token.name.startsWith("MOL"))?.value || "0",
+          symbol:
+            $.assets.find((e) => e.token.name.startsWith("MOL"))?.token
+              .symbol || "MOL",
+        });
+      });
+      break;
     }
     default: {
     }

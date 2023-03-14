@@ -4,6 +4,15 @@ window.molaWallet = {
   isConnected: false,
   currentAddress: null,
 
+  networks: {
+    ETHEREUM: "ETHEREUM",
+    POLYGON: "POLYGON",
+    BINANCE: "BINANCE",
+    GOERLI: "GOERLI",
+    T_BINANCE: "T_BINANCE",
+    MUMBAI: "MUMBAI",
+  },
+
   open: function () {
     let ev = new CustomEvent("__open", {
       detail: {
@@ -14,51 +23,118 @@ window.molaWallet = {
     document.dispatchEvent(ev);
   },
 
-  connect: function (args) {
+  connect: function (network = this.networks.ETHEREUM, callback = () => {}) {
+    let callbackId = Date.now()
+      .toString()
+      .concat(Math.floor(Math.random() * 1000))
+      .toString();
+
+    window.__mola_details.connectCallbacks[callbackId] = callback;
+
     let ev = new CustomEvent("__connect", {
       detail: {
         left: window.screenLeft + window.outerWidth - 352,
         top: window.screenTop,
+        network,
+        callbackId,
       },
     });
     document.dispatchEvent(ev);
-    window.__mola_details.connectCallbacks.push(args?.callback || (() => {}));
   },
 
-  sendTransaction: function (args) {
+  sendTransaction: function (args, onReject, onSuccess) {
     let price = args?.price || "";
-    let token = args?.token || "";
+    let network = args?.network || "";
     let name = args?.name || "";
     let description = args?.description || "";
+
+    let callbackId = Date.now()
+      .toString()
+      .concat(Math.floor(Math.random() * 1000))
+      .toString();
+
+    window.__mola_details.transactionCallbacks[callbackId] = [
+      onReject,
+      onSuccess,
+    ];
 
     let ev = new CustomEvent("__sendTransaction", {
       detail: {
         left: window.screenLeft + window.outerWidth - 352,
         top: window.screenTop,
         price,
-        token,
+        network,
         name,
         description,
+        callbackId,
       },
     });
     document.dispatchEvent(ev);
   },
+
+  setNetwork: function (network) {
+    let ev = new CustomEvent("__setNetwork", {
+      detail: { network },
+    });
+
+    document.dispatchEvent(ev);
+  },
+
+  getBalance: function (network) {
+    return new Promise((resolve, reject) => {
+      if (!window.molaWallet.isConnected) {
+        return reject({ message: "Wallet not connected" });
+      }
+
+      let ev = new CustomEvent("__getBalance", {
+        detail: { network },
+      });
+
+      document.dispatchEvent(ev);
+
+      document.addEventListener("molaBalanceRetrieve", (e) => {
+        resolve({ balance: e.detail.balance, symbol: e.detail.symbol });
+      });
+
+      document.addEventListener("molaBalanceRetrieveError", (e) => {
+        reject({ message: e.detail.errorMessage });
+      });
+    });
+  },
 };
 
 window.__mola_details = {
-  connectCallbacks: [],
+  connectCallbacks: {},
+  transactionCallbacks: {},
 };
 
 document.addEventListener("__molaWalletConnect", (e) => {
   window.molaWallet.isConnected = true;
   window.molaWallet.currentAddress = e.detail.selectedAddress;
 
+  let address = e.detail.selectedAddress;
+  let balance = e.detail.balance;
+  let symbol = e.detail.symbol;
+  let callbackId = e.detail.callbackId;
+
   try {
-    window.__mola_details.connectCallbacks.pop()?.();
+    if (window.__mola_details.connectCallbacks[callbackId]) {
+      window.__mola_details.connectCallbacks[callbackId]({
+        address,
+        balance,
+        symbol,
+      });
+    }
+
+    delete window.__mola_details.connectCallbacks[callbackId];
   } catch (error) {}
 
   let ev = new CustomEvent("molaWalletConnect", {
-    detail: { address: e.detail.selectedAddress },
+    detail: {
+      address,
+      balance,
+      symbol,
+    },
   });
   document.dispatchEvent(ev);
 });
@@ -79,3 +155,21 @@ document.addEventListener("__windowAddDetails", (e) => {
 
 let ev = new CustomEvent("__presistDetails");
 document.dispatchEvent(ev);
+
+document.addEventListener("__molaTransactionConfirm", (e) => {
+  let callbackId = e.detail.callbackId;
+
+  if (callbackId && window.__mola_details.transactionCallbacks[callbackId])
+    window.__mola_details.transactionCallbacks[callbackId][1]();
+
+  delete window.__mola_details.transactionCallbacks[callbackId];
+});
+
+document.addEventListener("__molaTransactionReject", (e) => {
+  let callbackId = e.detail.callbackId;
+
+  if (callbackId && window.__mola_details.transactionCallbacks[callbackId])
+    window.__mola_details.transactionCallbacks[callbackId][0]();
+
+  delete window.__mola_details.transactionCallbacks[callbackId];
+});

@@ -29,10 +29,13 @@ export function AssetProviderContextComponent({
       fetchWalletAssets(account.address, network.chainId).then(
         (walletAssets) => {
           setAssetsProvider(walletAssets);
+          chrome.storage.session.set({ assets: walletAssets });
         }
       );
 
       setProvider(provider);
+    } else {
+      chrome.storage.session.set({ assets: [] });
     }
   }, [account, network]);
 

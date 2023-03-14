@@ -26,11 +26,21 @@ document.addEventListener("__connect", (e) => {
     name: "connect",
     left: e.detail.left,
     top: e.detail.top,
+    network: e.detail.network,
+    callbackId: e.detail.callbackId,
   });
 });
 
 document.addEventListener("__sendTransaction", (e) => {
-  let { left, top, price, token, name: _name, description } = e.detail;
+  let {
+    left,
+    top,
+    price,
+    network,
+    name: _name,
+    description,
+    callbackId,
+  } = e.detail;
 
   chrome.runtime.sendMessage({
     name: "sendTransaction",
@@ -38,7 +48,8 @@ document.addEventListener("__sendTransaction", (e) => {
     top,
     price,
     description,
-    token,
+    network,
+    callbackId,
     _name,
   });
 });
@@ -49,6 +60,20 @@ document.addEventListener("__presistDetails", (e) => {
   });
 });
 
+document.addEventListener("__setNetwork", (e) => {
+  chrome.runtime.sendMessage({
+    name: "setNetwork",
+    network: e.detail.network,
+  });
+});
+
+document.addEventListener("__getBalance", (e) => {
+  chrome.runtime.sendMessage({
+    name: "getBalance",
+    network: e.detail.network,
+  });
+});
+
 chrome.runtime.onMessage.addListener((msg, sender, response) => {
   switch (msg.name) {
     case "presist": {
@@ -56,6 +81,27 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
         detail: {
           currentAddress: msg.currentAddress,
           isConnected: msg.isConnected,
+        },
+      });
+      document.dispatchEvent(ev);
+      break;
+    }
+
+    case "molaBalanceRetrieve": {
+      let ev = new CustomEvent("molaBalanceRetrieve", {
+        detail: {
+          balance: msg.balance,
+          symbol: msg.symbol,
+        },
+      });
+      document.dispatchEvent(ev);
+      break;
+    }
+
+    case "molaBalanceRetrieveError": {
+      let ev = new CustomEvent("molaBalanceRetrieveError", {
+        detail: {
+          errorMessage: msg.errorMessage,
         },
       });
       document.dispatchEvent(ev);

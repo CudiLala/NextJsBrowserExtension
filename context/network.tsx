@@ -10,6 +10,7 @@ import {
 import { NETWORKS } from "interfaces/IRpc";
 import INETWORK_CONFIG from "interfaces/INetwok";
 import NETWORK_CONFIG from "config/networksLive";
+import NET_CONFIG from "@/config/allNet";
 
 export const NetworkContext = createContext<
   [INETWORK_CONFIG, Dispatch<SetStateAction<INETWORK_CONFIG>>]
@@ -17,19 +18,22 @@ export const NetworkContext = createContext<
 
 export function NetworkContextComponent({ children }: { children: ReactNode }) {
   const [network, setNetwork] = useState<INETWORK_CONFIG>(
-    NETWORK_CONFIG[NETWORKS.ETHEREUM]
+    NET_CONFIG[NETWORKS.ETHEREUM]
   );
   const [rendered, setRendered] = useState(false);
 
   useEffect(() => {
     if (rendered && network)
-      chrome.storage.session.set({ lastNetwork: network });
+      chrome.storage.local.set({ lastNetwork: network.nativeCurrency.name });
   }, [network, rendered]);
 
   useEffect(() => {
-    chrome.storage.session.get("lastNetwork").then((result) => {
-      if (result.lastNetwork) setNetwork(result.lastNetwork);
-      else setNetwork(NETWORK_CONFIG[NETWORKS.ETHEREUM]);
+    chrome.storage.local.get("lastNetwork").then((result) => {
+      //@ts-ignore
+      if (NET_CONFIG[result.lastNetwork])
+        //@ts-ignore
+        setNetwork(NET_CONFIG[result.lastNetwork]);
+      else setNetwork(NET_CONFIG[NETWORKS.ETHEREUM]);
     });
     setRendered(true);
   }, []);

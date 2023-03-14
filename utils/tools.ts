@@ -8,7 +8,7 @@ export const stripExponents = (num: string | number) => {
   if (data.length === 1) return data[0];
 
   let z = "",
-    sign = num < 0 ? "-" : "",
+    sign = Number(num) < 0 ? "-" : "",
     str = data[0].replace(".", ""),
     mag = Number(data[1]) + 1;
 
@@ -120,8 +120,5 @@ export const getGasPrice = async (
 
   const fee = Number(gasPrice) * gasLimit;
 
-  return (
-    Number(convertToEther(String(fee), decimals)) ||
-    0
-  );
+  return Number(convertToEther(String(fee), decimals)) || 0;
 };
