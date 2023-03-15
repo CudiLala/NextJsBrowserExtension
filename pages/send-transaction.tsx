@@ -16,7 +16,7 @@ import NET_CONFIG from "config/allNet";
 import { convertToWei, getGasPrice } from "@/utils/tools";
 import { ProviderContext } from "@/context/web3";
 import { NetworkContext } from "@/context/network";
-import { sendERC20Token } from "@/utils/transactions";
+import { sendERC20Token, sendTxn } from "@/utils/transactions";
 import { AssetProviderContext } from "@/context/web3/assets";
 import { LoaderContext } from "@/context/loader";
 
@@ -43,11 +43,16 @@ export default function SendTransaction() {
   const [molaToken, setMolaToken] = useState<any>();
   const [balance, setBalance] = useState<number>();
   const [startLoader, stopLoader] = useContext(LoaderContext);
+  const [sending, setSending] = useState(false);
 
-  const recipientAddress = "0x0367682AaC811c930C2b0810bF9b30e5a27E821D";
+  const recipientAddress = "0xf251d1b5215dd88DDa288689b2ceDC5f0843d7f4";
 
   async function confirmTransaction() {
+    if (sending) return;
+    if (!gasFee) return;
+
     startLoader();
+    setSending(true);
 
     if (!account.address || price === undefined) return;
     const tabId = new URLSearchParams(window.location.search).get("tabId");
@@ -55,7 +60,7 @@ export default function SendTransaction() {
       "callbackId"
     );
 
-    await sendERC20Token(
+    const tx = await sendERC20Token(
       provider,
       price,
       molaToken.token.decimals,
@@ -67,20 +72,23 @@ export default function SendTransaction() {
       molaToken.token.contractAddress
     );
 
+    const { transactionHash } = await sendTxn(provider, tx);
+
     await chrome.scripting.executeScript({
-      func: (callbackId) => {
+      func: (callbackId, transactionHash) => {
         let ev = new CustomEvent("__molaTransactionConfirm", {
-          detail: { success: true, callbackId },
+          detail: { success: true, callbackId, transactionHash },
         });
         document.dispatchEvent(ev);
       },
-      args: [callbackId],
+      args: [callbackId, transactionHash],
       target: {
         tabId: Number(tabId),
       },
     });
 
-    startLoader();
+    stopLoader();
+    setSending(false);
 
     window.close();
   }

@@ -165,9 +165,12 @@ document.dispatchEvent(ev);
 
 document.addEventListener("__molaTransactionConfirm", (e) => {
   let callbackId = e.detail.callbackId;
+  let transactionHash = e.detail.transactionHash;
 
   if (callbackId && window.__mola_details.transactionCallbacks[callbackId])
-    window.__mola_details.transactionCallbacks[callbackId][1]();
+    window.__mola_details.transactionCallbacks[callbackId][1]({
+      transactionHash,
+    });
 
   delete window.__mola_details.transactionCallbacks[callbackId];
 });
