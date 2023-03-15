@@ -43,6 +43,8 @@ window.molaWallet = {
   },
 
   disconnect: function () {
+    window.molaWallet.isConnected = false;
+    window.molaWallet.currentAddress = null;
     let ev = new CustomEvent("__disconnect");
     document.dispatchEvent(ev);
   },

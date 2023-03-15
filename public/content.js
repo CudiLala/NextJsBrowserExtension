@@ -31,7 +31,7 @@ document.addEventListener("__connect", (e) => {
   });
 });
 
-ocument.addEventListener("__connect", (e) => {
+document.addEventListener("__disconnect", (e) => {
   chrome.runtime.sendMessage({
     name: "disconnect",
   });
