@@ -63,7 +63,7 @@ export default function WalletHeader() {
           <UserNavModal setVisibility={setUserModal} />
         </div>
       </div>
-      <button
+      {/* <button
         className="flex items-center pl-4 pr-3 py-1 border-2 border-current rounded-full justify-end gap-4 text-neutral-700"
         onClick={() => setNetworkModal(true)}
       >
@@ -71,8 +71,8 @@ export default function WalletHeader() {
         <span className="w-4 h-4 flex rounded-full">
           <CaretDownOutline />
         </span>
-      </button>
-      <NetworkSelector active={networkModal} setActive={setNetworkModal} />
+      </button> */}
+      {/* <NetworkSelector active={networkModal} setActive={setNetworkModal} /> */}
     </div>
   );
 }

@@ -28,8 +28,11 @@ import NET_CONFIG from "config/allNet";
 import { addressAvatar } from "@/utils/avatar";
 import WalletHeader from "@/page_components/wallet/header";
 import { AssetProviderContext } from "@/context/web3/assets";
-import { networkLogoMap } from "@/page_components/wallet/network_selector";
+import NetworkSelector, {
+  networkLogoMap,
+} from "@/page_components/wallet/network_selector";
 import { NetworkContext } from "@/context/network";
+import QRCode from "qrcode";
 
 let networkSymbolMap = {
   ETHEREUM: "MLE",
@@ -46,6 +49,7 @@ export default function WalletPage() {
   const [accModal, setAccModal] = useState<"visible" | "invisible">(
     "invisible"
   );
+  const [networkModalActive, setNetworkModalActive] = useState(false);
   const [accDetailsModal, setAccDetailsModal] = useState<
     "visible" | "invisible"
   >("invisible");
@@ -151,15 +155,15 @@ export default function WalletPage() {
   return (
     <div className="flex flex-col">
       <WalletHeader />
-      <div className="py-1.5 flex justify-between items-center border-b border-slate-300">
+      <div className="py-2 flex justify-between items-center border-b border-slate-300">
         <button
           className="px-3 flex flex-col gap-0.5 justify-start text-start"
           onClick={() => setAccDetailsModal("visible")}
         >
           <span>{accountName}</span>
-          <span className="font-mono" title={account?.address}>
+          {/* <span className="font-mono" title={account?.address}>
             {shorten(account?.address || "", 10, 8, 20)}
-          </span>
+          </span> */}
         </button>
         <div className="relative">
           <button
@@ -184,8 +188,14 @@ export default function WalletPage() {
             <AccModal
               setAccModal={setAccModal}
               setAccDetailsModal={setAccDetailsModal}
+              setNetworkModalActive={setNetworkModalActive}
             />
           </div>
+
+          <NetworkSelector
+            active={networkModalActive}
+            setActive={setNetworkModalActive}
+          />
         </div>
       </div>
 
@@ -281,10 +291,7 @@ export default function WalletPage() {
 
           <div className="pt-4">
             <p className="text-center p-3 font-semibold text-neutral-600">
-              <button className="text-blue-700">Refresh List</button> or{" "}
-              <Link href="#" className="text-blue-700">
-                import tokens
-              </Link>
+              <button className="text-blue-700">Refresh List</button>
             </p>
           </div>
         </>
@@ -299,7 +306,7 @@ export default function WalletPage() {
           activities.map((e, i) => <p key={i}>{e.name}</p>)
         ))}
 
-      <p className="text-center p-3 font-semibold text-neutral-600">
+      <p className="text-center px-3 py-6 font-semibold text-neutral-600">
         Need help? Contact{" "}
         <Link href="#" className="text-blue-700">
           Mola Support
@@ -315,7 +322,7 @@ export default function WalletPage() {
 
 const activities = [
   {
-    name: "Mint",
+    name: "",
     date: "Feb 12",
     from: "",
     to: "",
@@ -332,11 +339,13 @@ const activities = [
 function AccModal({
   setAccModal,
   setAccDetailsModal,
+  setNetworkModalActive,
 }: {
   setAccModal: React.Dispatch<React.SetStateAction<"visible" | "invisible">>;
   setAccDetailsModal: React.Dispatch<
     React.SetStateAction<"visible" | "invisible">
   >;
+  setNetworkModalActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
     <>
@@ -346,6 +355,7 @@ function AccModal({
         </span>
         View on account block explorer
       </button>
+
       <button
         className="flex items-center justify-start p-1 py-2"
         onClick={() => {
@@ -357,6 +367,19 @@ function AccModal({
           <AvatarScanIcon />
         </span>
         Account details
+      </button>
+
+      <button
+        className="flex items-center justify-start p-1 py-2"
+        onClick={() => {
+          setNetworkModalActive(true);
+          setAccModal("invisible");
+        }}
+      >
+        <span className="w-5 h-5 flex mr-2">
+          <AvatarScanIcon />
+        </span>
+        Switch Network
       </button>
 
       <Link
@@ -381,6 +404,7 @@ function AccountDetailsModal({
 }) {
   const [account] = useContext(AccountContext);
   const [accountName, setAccountName] = useState<string>();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     (async () => {
@@ -392,6 +416,7 @@ function AccountDetailsModal({
 
       setAccountName(_account.name);
     })();
+    QRCode.toCanvas(canvasRef.current, account.address, () => {});
   }, [account]);
 
   return (
@@ -422,24 +447,11 @@ function AccountDetailsModal({
 
         <AccountNameEditor accountName={accountName} />
 
-        <div className="flex justify-center">
-          <span className="flex w-28 h-28">
-            <svg
-              width="100%"
-              height="100%"
-              viewBox="0 0 111 111"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M18.375 18.375H45.9375V45.9375H18.375V18.375ZM91.875 18.375V45.9375H64.3125V18.375H91.875ZM64.3125 68.9062H73.5V59.7188H64.3125V50.5312H73.5V59.7188H82.6875V50.5312H91.875V59.7188H82.6875V68.9062H91.875V82.6875H82.6875V91.875H73.5V82.6875H59.7188V91.875H50.5312V73.5H64.3125V68.9062ZM73.5 68.9062V82.6875H82.6875V68.9062H73.5ZM18.375 91.875V64.3125H45.9375V91.875H18.375ZM27.5625 27.5625V36.75H36.75V27.5625H27.5625ZM73.5 27.5625V36.75H82.6875V27.5625H73.5ZM27.5625 73.5V82.6875H36.75V73.5H27.5625ZM18.375 50.5312H27.5625V59.7188H18.375V50.5312ZM41.3438 50.5312H59.7188V68.9062H50.5312V59.7188H41.3438V50.5312ZM50.5312 27.5625H59.7188V45.9375H50.5312V27.5625ZM9.1875 9.1875V27.5625H0V9.1875C0 6.75082 0.967966 4.41395 2.69096 2.69096C4.41395 0.967966 6.75082 0 9.1875 0L27.5625 0V9.1875H9.1875ZM101.062 0C103.499 0 105.836 0.967966 107.559 2.69096C109.282 4.41395 110.25 6.75082 110.25 9.1875V27.5625H101.062V9.1875H82.6875V0H101.062ZM9.1875 82.6875V101.062H27.5625V110.25H9.1875C6.75082 110.25 4.41395 109.282 2.69096 107.559C0.967966 105.836 0 103.499 0 101.062V82.6875H9.1875ZM101.062 101.062V82.6875H110.25V101.062C110.25 103.499 109.282 105.836 107.559 107.559C105.836 109.282 103.499 110.25 101.062 110.25H82.6875V101.062H101.062Z"
-                fill="#858CA0"
-              />
-            </svg>
-          </span>
+        <div className="flex justify-center pt-6 pb-10">
+          <canvas ref={canvasRef} className="flex w-28 h-28"></canvas>
         </div>
 
-        <div className="bg-gray-300 border border-gray-500 max-w-[16rem] rounded-lg self-center p-2">
+        {/* <div className="bg-gray-300 border border-gray-500 max-w-[16rem] rounded-lg self-center p-2">
           <p className="text-center break-words font-mono">{account.address}</p>
         </div>
 
@@ -454,7 +466,7 @@ function AccountDetailsModal({
           >
             Export private key
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );
