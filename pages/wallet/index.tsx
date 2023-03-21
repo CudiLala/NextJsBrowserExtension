@@ -7,6 +7,7 @@ import {
   ExpandIcon,
   EyeIcon,
   PenOnLineIcon,
+  ReloadIcon,
   TickHeavyIcon,
   TickIcon,
 } from "@/components/icons/accessibility";
@@ -377,7 +378,7 @@ function AccModal({
         }}
       >
         <span className="w-5 h-5 flex mr-2">
-          <AvatarScanIcon />
+          <ReloadIcon />
         </span>
         Switch Network
       </button>
