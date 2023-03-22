@@ -201,7 +201,7 @@ export default function WalletPage() {
       </div>
 
       <div className="px-8 py-10 w-full flex flex-col items-center gap-2">
-        <p className="font-semibold text-2xl text-center">
+        {/* <p className="font-semibold text-2xl text-center">
           {molaAsset === undefined
             ? `- -`
             : molaAsset
@@ -214,7 +214,7 @@ export default function WalletPage() {
             : molaAsset
             ? `$${molaAsset.usdValue}`
             : `$0.00`}
-        </p>
+        </p> */}
 
         <div className="pt-4 flex gap-6">
           <div className="flex items-center flex-col">
@@ -226,12 +226,12 @@ export default function WalletPage() {
             </Link>
             <p className="font-semibold text-base text-blue-700">Send</p>
           </div>
-          <div className="flex items-center flex-col">
+          {/* <div className="flex items-center flex-col">
             <button className="py-2.5 px-6 h-10 rounded-lg bg-blue-700 text-white">
               <SwapArrow />
             </button>
             <p className="font-semibold text-base text-blue-700">Swap</p>
-          </div>
+          </div> */}
         </div>
       </div>
 
