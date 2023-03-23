@@ -207,14 +207,14 @@ export default function WalletPage() {
             : molaAsset
             ? `${molaAsset.value} ${molaAsset.token.symbol}`
             : `0 ${networkSymbolMap[network.nativeCurrency.name as NETWORKS]}`}
-        </p>
-        <p className="text-base font-semibold">
+        </p> */}
+        <p className="text-xl font-semibold">
           {molaAsset === undefined
             ? `-`
             : molaAsset
             ? `$${molaAsset.usdValue}`
             : `$0.00`}
-        </p> */}
+        </p>
 
         <div className="pt-4 flex gap-6">
           <div className="flex items-center flex-col">
